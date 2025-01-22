@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/21 10:59:53 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/22 10:51:12 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,7 @@ typedef struct s_plane
 	t_img	*texture;
 	t_img	*normal_map;
 
-	t_vect	abc;
+	t_vect	v;
 	double	d;
 }	t_plane;//		pl
 

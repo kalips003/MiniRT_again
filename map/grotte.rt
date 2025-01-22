@@ -1,0 +1,32 @@
+# (Shininess) S=20.0		(Transparence, gamma) T=[0,1],[-PI/2, PI/2]		(Mirroir) M=[0,1]	(Texture) X="sphere_texture.xpm"		(Normal Map) N="sphere_normal.xpm"
+
+# (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
+A 						0.1 					255,255,255
+
+# (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
+C 						8.682409,5.000000,-124.240388		-0.154953,-0.005685,0.987906				70
+C 						-143.55,9.55,26.94		    	0.995901,-0.023594,-0.087321					70
+# C 						50,10,-50		    	-1,0,-1					70
+
+# (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
+L 						5,10,0 			0.5 					255,255,0
+L 						-5,10,0 		0.6 					255,155,0
+L 						0,5,0 			0.3 					155,255,0
+L 						0,10,-5 			0.4 					255,12,0
+L 						0,12,0 			0.8 					255,255,0
+
+
+# (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255] X=texture/rock2.xpm 
+sp 						0,10,0 				2 						255,50,50
+sp 						0,11,0 				1.5 						255,200,0
+
+
+# (pl) Plane:           POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
+# pl 						0,0,0 				0,1.0,0 				255,0,10 X=txt/rock_t.xpm
+pl 						0,-5,0 				0,1.0,0 				125,87,45 X=txt/rock_t.xpm N=txt/rock_n.xpm
+pl 						-500,0,100 				0.3,0.4,-0.5 				0,255,10 X=txt/rock_t.xpm N=txt/rock_n.xpm
+pl 						500,0,100 				-0.3,0.5,-0.5 				0,10,255 X=txt/rock_t.xpm N=txt/rock_n.xpm
+
+# (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER		HEIGHT		COLOR_rgb [0, 255]
+cy 						-25,-5,50 				0.1,1,-0.10					15 			50 		255,0,112 X=txt/brique_t.xpm N=txt/brique_n.xpm
+cy 						25,-5,50 				-0.10,1,-0.10					15 			50 		255,0,112 X=txt/brique_t.xpm N=txt/brique_n.xpm

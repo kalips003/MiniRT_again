@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2024/12/14 20:28:49 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/22 10:51:12 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ int	in_shadow_of_plane(t_calcul_px *calcul, t_plane *p)
 
 // RESOLVE A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
-	c.top = -(p->abc.dx * calcul->c0.x + p->abc.dy * calcul->c0.y + p->abc.dz * calcul->c0.z + p->d);
-	c.bot = p->abc.dx * calcul->v_view.dx + p->abc.dy * calcul->v_view.dy + p->abc.dz * calcul->v_view.dz;
+	c.top = -(p->v.dx * calcul->c0.x + p->v.dy * calcul->c0.y + p->v.dz * calcul->c0.z + p->d);
+	c.bot = p->v.dx * calcul->v_view.dx + p->v.dy * calcul->v_view.dy + p->v.dz * calcul->v_view.dz;
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to the plane

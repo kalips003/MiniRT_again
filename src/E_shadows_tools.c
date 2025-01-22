@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/18 00:11:53 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/22 13:39:36 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	sphere_ptr = data->spheres - 1;
 	while (++sphere_ptr && *sphere_ptr)
 	{
-		if (*sphere_ptr == c->object)
-			continue;
+		// if (*sphere_ptr == c->object)
+		// 	continue;
 		if (in_shadow_of_sphere(&calcul, *sphere_ptr))
 			return (1);
 	}
@@ -74,8 +74,8 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	plane_ptr = data->planes - 1;
 	while (++plane_ptr && *plane_ptr)
 	{
-		if (*plane_ptr == c->object)
-			continue;
+		// if (*plane_ptr == c->object)
+		// 	continue;
 		if (in_shadow_of_plane(&calcul, *plane_ptr))
 			return (1);
 	}
@@ -83,8 +83,8 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	cyl_ptr = data->cylinders - 1;
 	while (++cyl_ptr && *cyl_ptr)
 	{
-		if (*cyl_ptr == c->object)
-			continue;
+		// if (*cyl_ptr == c->object)
+		// 	continue;
 		if (in_shadow_of_cylinder(&calcul, *cyl_ptr) ||
 				in_shadow_of_cicle(c, (t_circle){(*cyl_ptr)->c0, (*cyl_ptr)->color,
 					(*cyl_ptr)->shiny, (*cyl_ptr)->mirror, (*cyl_ptr)->transparence, (*cyl_ptr)->gamma,

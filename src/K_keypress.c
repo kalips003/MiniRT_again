@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/21 12:23:09 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/22 13:38:46 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,13 +119,10 @@ void	print_clic(t_data *data, int x, int y)
 	f_calculate_combined_quaternion(data, angleA, angleB, &c.v_view);
 	calculate_pixel_color_simple(data, &c);
 
-	
+	printf("Camera = [%f,%f,%f]\t\t[%f,%f,%f]\n\n", data->eye.c->xyz.x, data->eye.c->xyz.y, data->eye.c->xyz.z, c.v_view.dx, c.v_view.dy, c.v_view.dz);
 	printf("Mouse clicked at position (%d, %d)\n", x, y);
-	printf("Vector view = [%f, %f, %f]\n", c.v_view.dx, c.v_view.dy, c.v_view.dz);
-	printf("Camera = [%f, %f, %f]\n", data->eye.c->xyz.x, data->eye.c->xyz.y, data->eye.c->xyz.z);
 	printf("Vector normal surface = [%f, %f, %f]\n", c.v_normal.dx, c.v_normal.dy, c.v_normal.dz);
 	printf("Intersection point = [%f, %f, %f]\n", c.inter.x, c.inter.y, c.inter.z);
-	printf("Mouse clicked at position (%d, %d)\n", x, y);
 
 	c.dist = -1.0;
 	c.c0 = c.inter;

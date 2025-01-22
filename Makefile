@@ -24,9 +24,12 @@ all: $(NAME)
 
 NAMEE = minirt
 
-MAP = map/scene2.rt
+MAP = map/grotte.rt
+map: $(NAMEE)
+	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
+	./$(word 1, $^) $(MAP)
 
-# RUN MINISHELL
+# RUN MAPS
 a: $(NAMEE)
 	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
 	./$(word 1, $^) map/scene1.rt

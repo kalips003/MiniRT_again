@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/21 12:52:07 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/22 16:15:17 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@
 # define SIN_ROTA2 0.00759612349389596903
 # define COSSIN_ROTA 0.08682408883346516559
 # define EPSILON 1e-6
-# define SCALAR_LIGHT_DIST 1000.0
-# define SCALAR_REFLECTION 0.4
-# define SCALAR_SHINY 10.0
+# define SCALAR_LIGHT_DIST 10.0
+# define SCALAR_REFLECTION 0.04
+# define SCALAR_SHINY 1.0
 
 # define SIZE_SCREEN_Y 500
 # define SIZE_SCREEN_X 600

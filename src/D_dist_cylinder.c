@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/21 14:27:02 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/22 10:52:04 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ t_rgb	ft_textures_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder
 	cy_cross.view = cylinder->v;
 	h_camera_calc_up_right_vect(&cy_cross);
 	
-	t_img *texture = ((t_sphere*)calcul->object)->texture;
+	t_img *texture = ((t_cylinder*)calcul->object)->texture;
 
 	double cosθ = ft_vect_dot_product(&calcul->v_normal, &cy_cross.up);
 	double sinθ = ft_vect_dot_product(&calcul->v_normal, &cy_cross.right);

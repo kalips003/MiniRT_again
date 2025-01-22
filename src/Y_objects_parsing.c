@@ -128,18 +128,22 @@ int	parse_pl(t_data *data, char **raw_split)
 		return (put(ERRM), 2);
 	data->planes = (t_plane **)expand_tab((void **)data->planes, plane);
 
-	if (tab_size(raw_split) != 3)
+	// if (tab_size(raw_split) != 3)
+	// 	return (put(ERR1"bad number of args (PLANES OBJECT)\n"), 1);
+	if (tab_size(raw_split) < 3)
 		return (put(ERR1"bad number of args (PLANES OBJECT)\n"), 1);
-
-	if (ato_coor(raw_split[0], &(plane->c0)) || ato_coor(raw_split[1], (t_coor *)&plane->abc) || ato_rgb(raw_split[2], &(plane->color)))
+	else if (raw_split[3])
+		parse_reste(data, &raw_split[3], (void*)plane);
+	
+	if (ato_coor(raw_split[0], &(plane->c0)) || ato_coor(raw_split[1], (t_coor *)&plane->v) || ato_rgb(raw_split[2], &(plane->color)))
 		return (1);
 
-	if (plane->abc.dx < -1.0 || plane->abc.dx > 1.0 || 
-			plane->abc.dy < -1.0 || plane->abc.dy > 1.0 || 
-			plane->abc.dz < -1.0 || plane->abc.dz > 1.0)
+	if (plane->v.dx < -1.0 || plane->v.dx > 1.0 || 
+			plane->v.dy < -1.0 || plane->v.dy > 1.0 || 
+			plane->v.dz < -1.0 || plane->v.dz > 1.0)
 		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[1]), 1);
-	plane->d = -(plane->abc.dx * plane->c0.x + plane->abc.dy * plane->c0.y + plane->abc.dz * plane->c0.z);
-	ft_normalize_vect(&plane->abc);
+	plane->d = -(plane->v.dx * plane->c0.x + plane->v.dy * plane->c0.y + plane->v.dz * plane->c0.z);
+	ft_normalize_vect(&plane->v);
 	return (0);
 }
 

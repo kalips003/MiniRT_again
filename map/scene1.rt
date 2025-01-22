@@ -1,25 +1,28 @@
 # (Shininess) S=20.0		(Transparence, gamma) T=[0,1],[-PI/2, PI/2]		(Mirroir) M=[0,1]	(Texture) X="sphere_texture.xpm"		(Normal Map) N="sphere_normal.xpm"
 
 # (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
-A 						0.05 					255,255,255
+A 						0.1 					255,255,255
 
 # (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
 C 						0,0,-50		    	0,0,1				70
-C 						0,100,0		    	0,-1.0,0					70
+C 						-143.55,9.55,26.94		    	0.995901,-0.023594,-0.087321					70
 # C 						50,10,-50		    	-1,0,-1					70
 
 # (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
 L 						0,0,-25 			0.8 					255,255,255
+L 						100,45,-25 			0.8 					255,255,255
+# L 						0,-15,-25 			0.8 					255,255,255
 # L 						15,50,100 			0.7 					0,255,0
 
 # (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255] X=texture/rock2.xpm 
 # sp 						0,0,0 				20 						255,50,50 X=texture/earthmap4k.xpm
-sp 						0,0,0 				20 						255,50,50 N=texture/rock2.xpm
+# sp 						0,0,0 				20 						255,50,50 
 # sp 					10,20,60 				20 						255,50,50
 
 
 # (pl) Plane:           POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
-# pl 						0,0,0 				0,1.0,0 				255,10,10
+# pl 						0,-5,0 				0,1.0,0 				255,255,10 X=texture/test_tile.xpm
+# pl 						0,-5,0 				0,0.5,0.5 				255,255,10 X=texture/big_ball.xpm
 
 # (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER		HEIGHT		COLOR_rgb [0, 255]
-# cy 						0,-5,0 				0,1,0					14.2 			20 		255,0,112 N=texture/n_metal_opengl.xpm X=texture/metal.xpm
+cy 						0,-5,0 				0,1,0					14.2 			20 		255,0,112 N=texture/n_metal_opengl.xpm X=texture/metal.xpm

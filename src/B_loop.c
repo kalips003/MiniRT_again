@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/14 11:14:55 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/22 01:35:52 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	ft_render_frame(t_data *data)
 	while (++y < SIZE_SCREEN_Y)
 	{
 		x = -1;
-		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst_y);
+		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst_x);
 		while (++x < SIZE_SCREEN_X)
 		{
 			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst_x);
@@ -98,7 +98,7 @@ int	ft_render_frame_plus(t_data *data)
 	while (++y < SIZE_SCREEN_Y)
 	{
 		x = -1;
-		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst_y);
+		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst_x);
 		while (++x < SIZE_SCREEN_X)
 		{
 			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst_x);
