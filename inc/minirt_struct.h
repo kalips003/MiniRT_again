@@ -153,6 +153,7 @@ typedef struct s_data
 	t_sphere	**spheres;
 	t_plane		**planes;
 	t_cylinder	**cylinders;
+	t_cylinder	**cones;
 
 	t_img		**textures;
 // shortcut to the vector camera
@@ -268,6 +269,27 @@ typedef struct s_cicle_v2
 	double	radius;
 	t_vect	v;
 }	t_circle_v2;//		circle
+
+
+typedef struct s_cone
+{
+	t_coor	c0;
+	t_rgb	color;
+
+	double	shiny;
+	double	mirror;
+	double transparence;
+	double gamma;
+	t_img	*texture;
+	t_img	*normal_map;
+
+	t_vect	v;
+	double	height;
+	double	radius;
+
+	t_coor	apex;
+	t_rgb	color2;
+}	t_cone;//		co
 
 typedef struct s_square
 {

@@ -18,6 +18,7 @@ int	parse_L(t_data *data, char **raw_split);
 int	parse_pl(t_data *data, char **raw_split);
 int	parse_sp(t_data *data, char **raw_split);
 int	parse_cy(t_data *data, char **raw_split);
+int	parse_co(t_data *data, char **raw_split);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 			AMBIENT LIGHT
@@ -219,5 +220,48 @@ int	parse_cy(t_data *data, char **raw_split)
 		cylinder->c0.x + cylinder->height * cylinder->v.dx,
 		cylinder->c0.y + cylinder->height * cylinder->v.dy,
 		cylinder->c0.z + cylinder->height * cylinder->v.dz};
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			CONE
+// 		XYZ = float
+// 		xyz vector [-1,1] float
+// 		RADIUS = float
+// 		HEIGHT = float
+// 		RGB [0, 255] int
+int	parse_co(t_data *data, char **raw_split)
+{
+	t_cone	*cone;
+	int	err;
+	
+	cone = mem(0, sizeof(t_cone));
+	if (!cone)
+		return (put(ERRM), 2);
+	data->cones = (t_cone **)expand_tab((void **)data->cones, cone);
+
+	// if (tab_size(raw_split) != 5)
+	// 	return (put(ERR1"bad number of args (CYLINDER OBJECT)\n"), 1);
+	if (tab_size(raw_split) < 5)
+		return (put(ERR1"bad number of args (CONE OBJECT)\n"), 1);
+	else if (raw_split[5])
+		parse_reste(data, &raw_split[5], (void*)cone);
+// 
+	err = 0;
+	cone->radius = ft_atof(raw_split[2], &err);
+	cone->height = ft_atof(raw_split[3], &err);
+
+	if (err || ato_coor(raw_split[0], &(cone->c0)) || ato_coor(raw_split[1], (t_coor *)&cone->v) || ato_rgb(raw_split[4], &(cone->color)))
+		return (1);
+
+	if (cone->v.dx < -1.0 || cone->v.dx > 1.0 || 
+			cone->v.dy < -1.0 || cone->v.dy > 1.0 || 
+			cone->v.dz < -1.0 || cone->v.dz > 1.0)
+		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
+	ft_normalize_vect(&cone->v);
+	cone->apex = (t_coor){
+		cone->c0.x + cone->height * cone->v.dx,
+		cone->c0.y + cone->height * cone->v.dy,
+		cone->c0.z + cone->height * cone->v.dz};
 	return (0);
 }

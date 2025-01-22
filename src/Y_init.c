@@ -27,6 +27,7 @@ static const t_dico_pair	dico[] = {
 	{"pl", parse_pl},
 	{"sp", parse_sp},
 	{"cy", parse_cy},
+	{"co", parse_co},
 	{NULL, NULL}
 };
 

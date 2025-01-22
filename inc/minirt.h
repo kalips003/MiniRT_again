@@ -168,6 +168,7 @@ int	parse_L(t_data *data, char **raw_split);
 int	parse_pl(t_data *data, char **raw_split);
 int	parse_sp(t_data *data, char **raw_split);
 int	parse_cy(t_data *data, char **raw_split);
+int	parse_co(t_data *data, char **raw_split);
 // 
 int	parse_reste(t_data *data, char **raw_split, void *obj);
 /********************************

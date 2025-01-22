@@ -25,6 +25,7 @@ void	end(t_data *data, int exit_code, int full_clean)
 	data->spheres = free_tab((char **)data->spheres);
 	data->planes = free_tab((char **)data->planes);
 	data->cylinders = free_tab((char **)data->cylinders);
+	data->cones = free_tab((char **)data->cones);
 	data->eye.c = NULL;
 
 	destroy_textures(data);
@@ -47,6 +48,7 @@ int	end2(t_data *data)
 	free_tab((char **)data->spheres);
 	free_tab((char **)data->planes);
 	free_tab((char **)data->cylinders);
+	free_tab((char **)data->cones);
 	// if (data->buffer.img)
 	// 	mlx_destroy_image(data->mlx, data->buffer.img);
 	destroy_textures(data);

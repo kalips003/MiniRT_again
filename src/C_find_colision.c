@@ -25,6 +25,7 @@ int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
 	t_sphere	**sphere_ptr;
 	t_plane		**plane_ptr;
 	t_cylinder	**cyl_ptr;
+	t_cone		**cone_ptr;
 
 	c->dist = -1.0;
 	sphere_ptr = data->spheres - 1;
@@ -45,5 +46,13 @@ int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
 		distance_from_cicle_v2(c, (t_circle_v2){
 			*cyl_ptr, (*cyl_ptr)->xyz_other, (*cyl_ptr)->radius, (*cyl_ptr)->v});
 	}
+
+	// cone_ptr = data->cones - 1;
+	// while (++cone_ptr && *cone_ptr)
+	// {
+	// 	distance_from_cone(c, *cone_ptr);
+	// 	distance_from_cicle_v2(c, (t_circle_v2){
+	// 		*cone_ptr, (*cone_ptr)->c0, (*cone_ptr)->radius, (*cone_ptr)->v});
+	// }
 	return (c->dist != -1.0);
 }
