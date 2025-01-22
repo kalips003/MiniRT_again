@@ -24,6 +24,7 @@ all: $(NAME)
 
 NAMEE = minirt
 
+
 MAP = map/grotte.rt
 map: $(NAMEE)
 	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
