@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/22 16:15:17 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/23 13:45:38 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@
 # define SIN_ROTA2 0.00759612349389596903
 # define COSSIN_ROTA 0.08682408883346516559
 # define EPSILON 1e-6
-# define SCALAR_LIGHT_DIST 10.0
+# define SCALAR_LIGHT_DIST 300.0
 # define SCALAR_REFLECTION 0.04
 # define SCALAR_SHINY 1.0
 
@@ -113,7 +113,9 @@ double	distance_from_sphere_v2(t_calcul_px *calcul, t_sphere *sphere);
 void	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, double dist, int inside);
 t_rgb	ft_txt_sphere(t_calcul_px *calcul);
 t_vect	ft_nmap_sphere(t_calcul_px *calcul);
-
+// 	CONE
+double	distance_from_cone(t_calcul_px *calcul, t_cone *cy);
+void	h_dist_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc *c);
 /********************************
 		E
 ********************************/
@@ -130,7 +132,9 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
 int	in_shadow_of_sphere(t_calcul_px *calcul, t_sphere *sphere);
 int	in_shadow_of_plane(t_calcul_px *calcul, t_plane *p);
 int	in_shadow_of_cicle(t_calcul_px *calcul, t_circle circle);
+int	in_shadow_of_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle);
 int	in_shadow_of_cylinder(t_calcul_px *calcul, t_cylinder *cy);
+int	in_shadow_of_cone(t_calcul_px *calcul, t_cone *cone);
 /********************************
 		K
 ********************************/

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/22 13:39:36 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/23 11:38:20 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	t_sphere	**sphere_ptr;
 	t_plane		**plane_ptr;
 	t_cylinder	**cyl_ptr;
+	t_cone	**cone_ptr;
 	t_calcul_px	calcul;
 
 	calcul.c0 = c->inter;
@@ -92,6 +93,15 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 				in_shadow_of_cicle(c, (t_circle){(*cyl_ptr)->xyz_other, (*cyl_ptr)->color,
 					(*cyl_ptr)->shiny, (*cyl_ptr)->mirror, (*cyl_ptr)->transparence, (*cyl_ptr)->gamma,
 					(*cyl_ptr)->texture, (*cyl_ptr)->normal_map, (*cyl_ptr)->radius, (*cyl_ptr)->v}))
+			return (1);
+	}
+
+	cone_ptr = data->cones - 1;
+	while (++cone_ptr && *cone_ptr)
+	{
+		if (in_shadow_of_cone(&calcul, *cone_ptr) ||
+				in_shadow_of_cicle_v2(c, (t_circle_v2){
+			*cone_ptr, (*cone_ptr)->c0, (*cone_ptr)->radius, (*cone_ptr)->v}))
 			return (1);
 	}
 	return (0);

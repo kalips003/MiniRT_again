@@ -230,6 +230,7 @@ int	parse_cy(t_data *data, char **raw_split)
 // 		RADIUS = float
 // 		HEIGHT = float
 // 		RGB [0, 255] int
+// 		RGB2 [0, 255] int
 int	parse_co(t_data *data, char **raw_split)
 {
 	t_cone	*cone;
@@ -242,16 +243,16 @@ int	parse_co(t_data *data, char **raw_split)
 
 	// if (tab_size(raw_split) != 5)
 	// 	return (put(ERR1"bad number of args (CYLINDER OBJECT)\n"), 1);
-	if (tab_size(raw_split) < 5)
+	if (tab_size(raw_split) < 6)
 		return (put(ERR1"bad number of args (CONE OBJECT)\n"), 1);
-	else if (raw_split[5])
-		parse_reste(data, &raw_split[5], (void*)cone);
+	if (raw_split[6])
+		parse_reste(data, &raw_split[6], (void*)cone);
 // 
 	err = 0;
 	cone->radius = ft_atof(raw_split[2], &err);
 	cone->height = ft_atof(raw_split[3], &err);
 
-	if (err || ato_coor(raw_split[0], &(cone->c0)) || ato_coor(raw_split[1], (t_coor *)&cone->v) || ato_rgb(raw_split[4], &(cone->color)))
+	if (err || ato_coor(raw_split[0], &(cone->c0)) || ato_coor(raw_split[1], (t_coor *)&cone->v) || ato_rgb(raw_split[4], &(cone->color)) || ato_rgb(raw_split[5], &(cone->color2)))
 		return (1);
 
 	if (cone->v.dx < -1.0 || cone->v.dx > 1.0 || 

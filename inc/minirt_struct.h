@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/22 10:51:12 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/23 11:31:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -388,5 +388,32 @@ typedef struct s_cylinder_calc {
 	double	dist;
 	t_coor	projec_point;
 } t_cylinder_calc;
+
+typedef struct s_cone_calc {
+	double	φ;
+
+	double	b1;
+	double	b2;
+	double	b3;
+
+	double	Φ;
+
+	double	a1;
+	double	a2;
+	double	a3;
+	double	slope;
+
+	double A;
+	double B;
+	double C;
+
+	double Δ;
+	double	det1;
+	double	det2;
+
+	double	dist_h;
+	double	dist;
+	t_coor	projec_point;
+} t_cone_calc;
 
 #endif

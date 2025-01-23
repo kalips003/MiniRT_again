@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/22 16:04:42 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/23 11:57:58 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	ft_handle_shadows_plus(t_data *data, t_calcul_px *c)
 		if (c->cos_angle < 0.0 || something_block_the_light(data, c, *lights))
 			continue ;
 		adjusted_intensity = (*lights)->ratio * c->cos_angle;
-		adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light);
-		// adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light * c->dist_light);
+		// adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light);
+		adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light * c->dist_light);
 		diffuse.x += c->px_color.r * (*lights)->color.r / 255.0 * adjusted_intensity;
 		diffuse.y += c->px_color.g * (*lights)->color.g / 255.0 * adjusted_intensity;
 		diffuse.z += c->px_color.b * (*lights)->color.b / 255.0 * adjusted_intensity;

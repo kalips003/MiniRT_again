@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/21 12:22:34 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/23 11:33:01 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
 			*cyl_ptr, (*cyl_ptr)->xyz_other, (*cyl_ptr)->radius, (*cyl_ptr)->v});
 	}
 
-	// cone_ptr = data->cones - 1;
-	// while (++cone_ptr && *cone_ptr)
-	// {
-	// 	distance_from_cone(c, *cone_ptr);
-	// 	distance_from_cicle_v2(c, (t_circle_v2){
-	// 		*cone_ptr, (*cone_ptr)->c0, (*cone_ptr)->radius, (*cone_ptr)->v});
-	// }
+	cone_ptr = data->cones - 1;
+	while (++cone_ptr && *cone_ptr)
+	{
+		distance_from_cone(c, *cone_ptr);
+		distance_from_cicle_v2(c, (t_circle_v2){
+			*cone_ptr, (*cone_ptr)->c0, (*cone_ptr)->radius, (*cone_ptr)->v});
+	}
 	return (c->dist != -1.0);
 }
