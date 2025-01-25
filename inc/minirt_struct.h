@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/23 11:31:51 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/25 02:11:17 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,10 @@ typedef struct s_data
 
 	char **av;
 	time_t last_modif_time;
+
+	t_sphere	*change_obj;
+	int		change;
+	double	move_camera;
 
 }	t_data;
 ////////////////////////////////////////////]

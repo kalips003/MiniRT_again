@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/22 10:52:04 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/25 01:24:56 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ t_vect	ft_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_ca
 double	distance_from_cylinder_v2(t_calcul_px *calcul, t_cylinder *cy)
 {
 	t_cylinder_calc	c;
+
+	cy->xyz_other = (t_coor){
+		cy->c0.x + cy->height * cy->v.dx,
+		cy->c0.y + cy->height * cy->v.dy,
+		cy->c0.z + cy->height * cy->v.dz};
 
 	c.radius = cy->diameter / 2;
 	// (P - E).W = At + B

@@ -216,10 +216,10 @@ int	parse_cy(t_data *data, char **raw_split)
 			cylinder->v.dz < -1.0 || cylinder->v.dz > 1.0)
 		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
 	ft_normalize_vect(&cylinder->v);
-	cylinder->xyz_other = (t_coor){
-		cylinder->c0.x + cylinder->height * cylinder->v.dx,
-		cylinder->c0.y + cylinder->height * cylinder->v.dy,
-		cylinder->c0.z + cylinder->height * cylinder->v.dz};
+	// cylinder->xyz_other = (t_coor){
+	// 	cylinder->c0.x + cylinder->height * cylinder->v.dx,
+	// 	cylinder->c0.y + cylinder->height * cylinder->v.dy,
+	// 	cylinder->c0.z + cylinder->height * cylinder->v.dz};
 	return (0);
 }
 
@@ -260,9 +260,9 @@ int	parse_co(t_data *data, char **raw_split)
 			cone->v.dz < -1.0 || cone->v.dz > 1.0)
 		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
 	ft_normalize_vect(&cone->v);
-	cone->apex = (t_coor){
-		cone->c0.x + cone->height * cone->v.dx,
-		cone->c0.y + cone->height * cone->v.dy,
-		cone->c0.z + cone->height * cone->v.dz};
+	// cone->apex = (t_coor){
+	// 	cone->c0.x + cone->height * cone->v.dx,
+	// 	cone->c0.y + cone->height * cone->v.dy,
+	// 	cone->c0.z + cone->height * cone->v.dz};
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/23 13:42:39 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/24 14:54:28 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	in_shadow_of_cicle(t_calcul_px *calcul, t_circle circle)
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to d plane
-	if (!c.top || !c.bot)
+	if (fabs(c.top) < EPSILON || fabs(c.bot) < EPSILON)
 		return (0);
 
 	c.dist = c.top / c.bot;
@@ -126,7 +126,7 @@ int	in_shadow_of_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle)
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to d plane
-	if (!c.top || !c.bot)
+	if (fabs(c.top) < EPSILON || fabs(c.bot) < EPSILON)
 		return (0);
 
 	c.dist = c.top / c.bot;
@@ -183,32 +183,32 @@ int	in_shadow_of_cone(t_calcul_px *calcul, t_cone *cone)
 {
 	t_cone_calc	c;
 
-	c.φ = -(calcul->v_view.dx * cone->v.dx + calcul->v_view.dy * cone->v.dy + calcul->v_view.dz * cone->v.dz);
-	c.Φ = -(cone->v.dx * (calcul->c0.x - cone->apex.x) + cone->v.dy * (calcul->c0.y - cone->apex.y) + cone->v.dz * (calcul->c0.z - cone->apex.z));
+	c.φ = calcul->v_view.dx * cone->v.dx + calcul->v_view.dy * cone->v.dy + calcul->v_view.dz * cone->v.dz;
+	c.Φ = cone->v.dx * (calcul->c0.x - cone->apex.x) + cone->v.dy * (calcul->c0.y - cone->apex.y) + cone->v.dz * (calcul->c0.z - cone->apex.z);
 	c.slope = (cone->radius * cone->radius) / (cone->height * cone->height);
 
-	c.a1 = -calcul->v_view.dx - c.φ * cone->v.dx;
-	c.a2 = -calcul->v_view.dy - c.φ * cone->v.dy;
-	c.a3 = -calcul->v_view.dz - c.φ * cone->v.dz;
+	c.a1 = calcul->v_view.dx - c.φ * cone->v.dx;
+	c.a2 = calcul->v_view.dy - c.φ * cone->v.dy;
+	c.a3 = calcul->v_view.dz - c.φ * cone->v.dz;
 
-	c.b1 = -calcul->c0.x + cone->apex.x - c.Φ * cone->v.dx;
-	c.b2 = -calcul->c0.y + cone->apex.y - c.Φ * cone->v.dy;
-	c.b3 = -calcul->c0.z + cone->apex.z - c.Φ * cone->v.dz;
+	c.b1 = calcul->c0.x - cone->apex.x - c.Φ * cone->v.dx;
+	c.b2 = calcul->c0.y - cone->apex.y - c.Φ * cone->v.dy;
+	c.b3 = calcul->c0.z - cone->apex.z - c.Φ * cone->v.dz;
 
 	c.A = c.a1 * c.a1 + c.a2 * c.a2 + c.a3 * c.a3 - c.slope * c.φ * c.φ;
 	c.B = 2 * c.a1 * c.b1 + 2 * c.a2 * c.b2 + 2 * c.a3 * c.b3 - 2 * c.φ * c.Φ * c.slope;
 	c.C = c.b1 * c.b1 + c.b2 * c.b2 + c.b3 * c.b3 - c.Φ * c.Φ * c.slope;
 
 	c.Δ = c.B * c.B - 4 * c.A * c.C;
-	if (c.Δ < EPSILON || fabs(c.A) < EPSILON)
+	if (c.Δ < EPSILON || fabs(c.A) < 0.0)
 		return (0);
 
 	c.det1 = (-c.B + sqrt(c.Δ)) / (2 * c.A);
 	c.det2 = (-c.B - sqrt(c.Δ)) / (2 * c.A);
 	c.dist = h_smalest_Δ(c.det1, c.det2);
-	c.dist_h = c.Φ + c.φ * c.dist;// height from apex
+	c.dist_h = -c.Φ + -c.φ * c.dist;// height from apex
 
-	if (c.dist < 0.0 || c.dist_h > cone->height || c.dist_h < 0.0)
+	if (c.dist < EPSILON || c.dist_h > cone->height || c.dist_h < EPSILON)
 		return (0);
 	return (1);
 }

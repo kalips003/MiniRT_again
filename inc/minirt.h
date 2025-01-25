@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/23 13:45:38 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/25 01:48:48 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,10 @@
 # define COSSIN_ROTA 0.08682408883346516559
 # define EPSILON 1e-6
 # define SCALAR_LIGHT_DIST 300.0
-# define SCALAR_REFLECTION 0.04
+# define SCALAR_SPECULAR 0.04
 # define SCALAR_SHINY 1.0
+# define REFLECTION_BOUNCES 1
+# define TRANSPARENCE_BOUNCES 1
 
 # define SIZE_SCREEN_Y 500
 # define SIZE_SCREEN_X 600
@@ -128,6 +130,7 @@ t_coor	ft_reflected(t_data *data, t_calcul_px *c);
 // 
 double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
 int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
+t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
 // 
 int	in_shadow_of_sphere(t_calcul_px *calcul, t_sphere *sphere);
 int	in_shadow_of_plane(t_calcul_px *calcul, t_plane *p);
@@ -159,6 +162,7 @@ t_vect	ft_vect_cross_product(t_vect *u, t_vect *v);
 double	dist_two_points(t_coor *a, t_coor *b);
 void	f_calculate_combined_quaternion(t_data *data, double angle_α, double angle_β, t_vect *rtrn);
 double h_smalest_Δ(double a, double b);
+void	move_point(t_coor* p, t_vect *v, double incre);
 
 /********************************
 		Y

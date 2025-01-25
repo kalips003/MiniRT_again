@@ -5,33 +5,40 @@ A 						0.2 					255,255,255
 
 # (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
 C 						0,1,-50		    	0,0,1				70
-C 						-143.55,9.55,26.94		    	0.995901,-0.023594,-0.087321					70
+C 						-34.571403,36.912115,-79.205666       0.329934,-0.378206,0.864930					70
 # C 						50,10,-50		    	-1,0,-1					70
 
 # (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
 L 						0,10,-25 			0.8 					255,255,255
-L 						5,10,5 			0.8 					255,255,255
+# L 						15,13,7 			0.8 					0,255,255
+# L 						-5,15,10 			0.8 					255,255,255
+# L 						0,12,0 			0.6 					255,255,255
 # L 						0,-15,-25 			0.8 					255,255,255
 # L 						15,50,100 			0.7 					0,255,0
 
 # (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255] X=texture/rock2.xpm 
-# sp 						0,0,0 				20 						255,50,50 X=texture/earthmap4k.xpm
+sp 						0,0,0 				20 						255,50,50 X=texture/earthmap4k.xpm N=txt/earth_n.xpm
 # sp 						0,0,0 				20 						255,50,50 
-# sp 					10,20,60 				20 						255,50,50
+# sp 					10,5,10 				7 						255,0,0	N=txt/brique_n.xpm
 
 
 # (pl) Plane:           POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
 pl 						0,0,0 				0,1.0,0 				255,255,10
 # pl 						0,-5,0 				0,0.5,0.5 				255,255,10 X=texture/big_ball.xpm
 
-# (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER		HEIGHT		COLOR_rgb [0, 255]
-# cy 						0,10,0 				1,0,0					0.5 			20 		65,158,97
-cy 						-5,5,0 				1,0,0					0.5 			15 		255,0,0
-cy 						0,-5,0 				0,1,0					0.5 			15 		0,255,0
-cy 						0,5,-5 				0,0,1					0.5 			15 		0,0,255
+# (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER	HEIGHT		COLOR_rgb [0, 255]
+# cy 						0,5,0 				-0.3,0.7,0.2					3 			9.42 		255,00,0	N=txt/brique_n.xpm
 
-# (co) Cone:	    	POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		    HEIGHT		COLOR_rgb [0, 255]		COLOR_2 [0, 255]
+# (co) Cone:	    	POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]		COLOR_2 [0, 255]
+# co 						0,5,0 				0,1,0					3 			6 		185,8,96	12,203,156
+
+
+
+
+# VECTOR AXIS
 co 						10,5,0 				1,0,0					1 			4 		255,0,0	255,0,0
+cy 						-5,5,0 				1,0,0					0.5 		15 		255,0,0
 co 						0,10,0 				0,1,0					1 			4 		0,255,0	0,255,0
+cy 						0,-5,0 				0,1,0					0.5 		15 		0,255,0
 co 						0,5,10 				0,0,1					1 			4 		0,0,255	0,0,255
-co 						3,0,10 			0,1,0					3 			6 		185,8,96	12,203,156
+cy 						0,5,-5 				0,0,1					0.5 		15 		0,0,255

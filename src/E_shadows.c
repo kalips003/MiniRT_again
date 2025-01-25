@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/23 11:57:58 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/24 15:48:41 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,11 @@ void	ft_handle_shadows_plus(t_data *data, t_calcul_px *c)
 		diffuse.y += c->px_color.g * (*lights)->color.g / 255.0 * adjusted_intensity;
 		diffuse.z += c->px_color.b * (*lights)->color.b / 255.0 * adjusted_intensity;
 
-		t_vect reflected_view = c->v_view;
-		double	dot_pro = 2.0 * ft_vect_dot_product(&c->v_view, &c->v_normal);
-		reflected_view.dx -= dot_pro * c->v_normal.dx;
-		reflected_view.dy -= dot_pro * c->v_normal.dy;
-		reflected_view.dz -= dot_pro * c->v_normal.dz;
-		ft_normalize_vect(&reflected_view);
-		double	cos_angle2 = c->v_light.dx * reflected_view.dx + c->v_light.dy * reflected_view.dy + c->v_light.dz * reflected_view.dz;
-		cos_angle2 = fmax(-1.0, fmin(1.0, cos_angle2));
+		t_vect reflected_view = ft_vect_reflected(&c->v_view, &c->v_normal);
+		double	cos_angle2 = fmax(-1.0, fmin(1.0, ft_vect_dot_product(&c->v_light, &reflected_view)));
 		if (cos_angle2 < 0.0)
 			continue ;
-		adjusted_intensity = SCALAR_REFLECTION * (*lights)->ratio * pow(cos_angle2, SCALAR_SHINY);
+		adjusted_intensity = SCALAR_SPECULAR * (*lights)->ratio * pow(cos_angle2, SCALAR_SHINY);
 		// adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light * c->dist_light);
 		diffuse.x += (*lights)->color.r * adjusted_intensity;
 		diffuse.y += (*lights)->color.g * adjusted_intensity;

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/22 01:35:52 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/25 02:14:22 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int 	ft_loop_empty(t_data *data)
 	return (0);
 }
 
+#define CHANGE 0.25
 ///////////////////////////////////////////////////////////////////////////////]
 // main loop refresh if file is changed
 int 	ft_loop_empty_v2(t_data *data)
@@ -49,6 +50,14 @@ int 	ft_loop_empty_v2(t_data *data)
 	}
 	else
 		perror("stat");
+	if (data->change)//click on an object, swiitch to some variable in the object, start incresing it % max
+	{
+		if (data->change_obj)
+			// ((t_sphere *)(data->change_obj))->color.r = (((t_sphere *)(data->change_obj))->color.r + CHANGE) % 256;
+			data->change_obj->c0.x += CHANGE;
+		ft_render_frame(data);
+		usleep(100);
+	}
 	return (0);
 }
 

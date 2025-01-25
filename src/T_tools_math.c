@@ -18,6 +18,7 @@ t_vect	ft_vect_cross_product(t_vect *u, t_vect *v);
 double	dist_two_points(t_coor *a, t_coor *b);
 void	f_calculate_combined_quaternion(t_data *data, double angle_α, double angle_β, t_vect *rtrn);
 double h_smalest_Δ(double a, double b);
+void	move_point(t_coor* p, t_vect *v, double incre);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // Normalize vector
@@ -94,4 +95,11 @@ double h_smalest_Δ(double a, double b)
 	if (b < EPSILON)
 		return (a);
 	return (a * (a < b) + b * (b < a));
+}
+
+void	move_point(t_coor* p, t_vect *v, double incre)
+{
+	p->x += v->dx * incre;
+	p->y += v->dy * incre;
+	p->z += v->dz * incre;
 }

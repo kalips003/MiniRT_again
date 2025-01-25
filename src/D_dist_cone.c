@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/23 13:42:12 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/25 01:22:49 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,33 +21,22 @@ double	distance_from_cone(t_calcul_px *calcul, t_cone *cone)
 {
 	t_cone_calc	c;
 
-	// c.φ = calcul->v_view.dx * cone->v.dx + calcul->v_view.dy * cone->v.dy + calcul->v_view.dz * cone->v.dz;
-	// c.Φ = cone->v.dx * (calcul->c0.x - cone->apex.x) + cone->v.dy * (calcul->c0.y - cone->apex.y) + cone->v.dz * (calcul->c0.z - cone->apex.z);
-	// c.slope = (cone->radius * cone->radius) / (cone->height * cone->height);
+	cone->apex = (t_coor){
+		cone->c0.x + cone->height * cone->v.dx,
+		cone->c0.y + cone->height * cone->v.dy,
+		cone->c0.z + cone->height * cone->v.dz};
 
-	// c.a1 = calcul->v_view.dx - c.φ * cone->v.dx;
-	// c.a2 = calcul->v_view.dy - c.φ * cone->v.dy;
-	// c.a3 = calcul->v_view.dz - c.φ * cone->v.dz;
-
-	// c.b1 = calcul->c0.x - cone->apex.x - c.Φ * cone->v.dx;
-	// c.b2 = calcul->c0.y - cone->apex.y - c.Φ * cone->v.dy;
-	// c.b3 = calcul->c0.z - cone->apex.z - c.Φ * cone->v.dz;
-
-	// c.A = c.a1 * c.a1 + c.a2 * c.a2 + c.a3 * c.a3 - c.slope * c.φ * c.φ;
-	// c.B = 2 * c.a1 * c.b1 + 2 * c.a2 * c.b2 + 2 * c.a3 * c.b3 - 2 * c.φ * c.Φ * c.slope;
-	// c.C = c.b1 * c.b1 + c.b2 * c.b2 + c.b3 * c.b3 - c.Φ * c.Φ * c.slope;
-
-	c.φ = -(calcul->v_view.dx * cone->v.dx + calcul->v_view.dy * cone->v.dy + calcul->v_view.dz * cone->v.dz);
-	c.Φ = -(cone->v.dx * (calcul->c0.x - cone->apex.x) + cone->v.dy * (calcul->c0.y - cone->apex.y) + cone->v.dz * (calcul->c0.z - cone->apex.z));
+	c.φ = calcul->v_view.dx * cone->v.dx + calcul->v_view.dy * cone->v.dy + calcul->v_view.dz * cone->v.dz;
+	c.Φ = cone->v.dx * (calcul->c0.x - cone->apex.x) + cone->v.dy * (calcul->c0.y - cone->apex.y) + cone->v.dz * (calcul->c0.z - cone->apex.z);
 	c.slope = (cone->radius * cone->radius) / (cone->height * cone->height);
 
-	c.a1 = -calcul->v_view.dx - c.φ * cone->v.dx;
-	c.a2 = -calcul->v_view.dy - c.φ * cone->v.dy;
-	c.a3 = -calcul->v_view.dz - c.φ * cone->v.dz;
+	c.a1 = calcul->v_view.dx - c.φ * cone->v.dx;
+	c.a2 = calcul->v_view.dy - c.φ * cone->v.dy;
+	c.a3 = calcul->v_view.dz - c.φ * cone->v.dz;
 
-	c.b1 = -calcul->c0.x + cone->apex.x - c.Φ * cone->v.dx;
-	c.b2 = -calcul->c0.y + cone->apex.y - c.Φ * cone->v.dy;
-	c.b3 = -calcul->c0.z + cone->apex.z - c.Φ * cone->v.dz;
+	c.b1 = calcul->c0.x - cone->apex.x - c.Φ * cone->v.dx;
+	c.b2 = calcul->c0.y - cone->apex.y - c.Φ * cone->v.dy;
+	c.b3 = calcul->c0.z - cone->apex.z - c.Φ * cone->v.dz;
 
 	c.A = c.a1 * c.a1 + c.a2 * c.a2 + c.a3 * c.a3 - c.slope * c.φ * c.φ;
 	c.B = 2 * c.a1 * c.b1 + 2 * c.a2 * c.b2 + 2 * c.a3 * c.b3 - 2 * c.φ * c.Φ * c.slope;
@@ -60,9 +49,9 @@ double	distance_from_cone(t_calcul_px *calcul, t_cone *cone)
 	c.det1 = (-c.B + sqrt(c.Δ)) / (2 * c.A);
 	c.det2 = (-c.B - sqrt(c.Δ)) / (2 * c.A);
 	c.dist = h_smalest_Δ(c.det1, c.det2);
-	c.dist_h = c.Φ + c.φ * c.dist;// height from apex
+	c.dist_h = -c.Φ + -c.φ * c.dist;// height from apex
 
-	if (c.dist < 0.0 || c.dist_h > cone->height || c.dist_h < 0.0)
+	if (c.dist < EPSILON || c.dist_h > cone->height || c.dist_h < 0.0)
 		return (-1.0);
 
 	if (c.dist < calcul->dist || calcul->dist < 0.0)

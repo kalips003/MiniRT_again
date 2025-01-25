@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/21 12:16:55 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/24 14:53:40 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ double	distance_from_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle)
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to d plane
-	if (!c.top || !c.bot)
+	if (fabs(c.top) < EPSILON || fabs(c.bot) < EPSILON)
 		return (-1.0);
 
 	c.dist = c.top / c.bot;
