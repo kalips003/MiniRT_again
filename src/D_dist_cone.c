@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/25 01:22:49 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/29 15:05:22 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,21 @@ double	distance_from_cone(t_calcul_px *calcul, t_cone *cone)
 	t_cone_calc	c;
 
 	cone->apex = (t_coor){
-		cone->c0.x + cone->height * cone->v.dx,
-		cone->c0.y + cone->height * cone->v.dy,
-		cone->c0.z + cone->height * cone->v.dz};
+		cone->O.c0.x + cone->height * cone->O.view.dx,
+		cone->O.c0.y + cone->height * cone->O.view.dy,
+		cone->O.c0.z + cone->height * cone->O.view.dz};
 
-	c.φ = calcul->v_view.dx * cone->v.dx + calcul->v_view.dy * cone->v.dy + calcul->v_view.dz * cone->v.dz;
-	c.Φ = cone->v.dx * (calcul->c0.x - cone->apex.x) + cone->v.dy * (calcul->c0.y - cone->apex.y) + cone->v.dz * (calcul->c0.z - cone->apex.z);
+	c.φ = calcul->v_view.dx * cone->O.view.dx + calcul->v_view.dy * cone->O.view.dy + calcul->v_view.dz * cone->O.view.dz;
+	c.Φ = cone->O.view.dx * (calcul->c0.x - cone->apex.x) + cone->O.view.dy * (calcul->c0.y - cone->apex.y) + cone->O.view.dz * (calcul->c0.z - cone->apex.z);
 	c.slope = (cone->radius * cone->radius) / (cone->height * cone->height);
 
-	c.a1 = calcul->v_view.dx - c.φ * cone->v.dx;
-	c.a2 = calcul->v_view.dy - c.φ * cone->v.dy;
-	c.a3 = calcul->v_view.dz - c.φ * cone->v.dz;
+	c.a1 = calcul->v_view.dx - c.φ * cone->O.view.dx;
+	c.a2 = calcul->v_view.dy - c.φ * cone->O.view.dy;
+	c.a3 = calcul->v_view.dz - c.φ * cone->O.view.dz;
 
-	c.b1 = calcul->c0.x - cone->apex.x - c.Φ * cone->v.dx;
-	c.b2 = calcul->c0.y - cone->apex.y - c.Φ * cone->v.dy;
-	c.b3 = calcul->c0.z - cone->apex.z - c.Φ * cone->v.dz;
+	c.b1 = calcul->c0.x - cone->apex.x - c.Φ * cone->O.view.dx;
+	c.b2 = calcul->c0.y - cone->apex.y - c.Φ * cone->O.view.dy;
+	c.b3 = calcul->c0.z - cone->apex.z - c.Φ * cone->O.view.dz;
 
 	c.A = c.a1 * c.a1 + c.a2 * c.a2 + c.a3 * c.a3 - c.slope * c.φ * c.φ;
 	c.B = 2 * c.a1 * c.b1 + 2 * c.a2 * c.b2 + 2 * c.a3 * c.b3 - 2 * c.φ * c.Φ * c.slope;
@@ -71,18 +71,18 @@ void	h_dist_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc *c)
 		calcul->c0.z + calcul->v_view.dz * c->dist};
 
 	c->projec_point = (t_coor){
-		cone->c0.x + c->dist_h * cone->v.dx, 
-		cone->c0.y + c->dist_h * cone->v.dy, 
-		cone->c0.z + c->dist_h * cone->v.dz};
+		cone->O.c0.x + c->dist_h * cone->O.view.dx, 
+		cone->O.c0.y + c->dist_h * cone->O.view.dy, 
+		cone->O.c0.z + c->dist_h * cone->O.view.dz};
 
 	calcul->v_normal = (t_vect){
 		calcul->inter.x - c->projec_point.x,
 		calcul->inter.y - c->projec_point.y,
 		calcul->inter.z - c->projec_point.z};
-	double	dot = ft_vect_dot_product(&calcul->v_normal, &cone->v);
-	calcul->v_normal.dx -= (1 + c->slope) * dot * cone->v.dx;
-	calcul->v_normal.dy -= (1 + c->slope) * dot * cone->v.dy;
-	calcul->v_normal.dz -= (1 + c->slope) * dot * cone->v.dz;
+	double	dot = ft_vect_dot_product(&calcul->v_normal, &cone->O.view);
+	calcul->v_normal.dx -= (1 + c->slope) * dot * cone->O.view.dx;
+	calcul->v_normal.dy -= (1 + c->slope) * dot * cone->O.view.dy;
+	calcul->v_normal.dz -= (1 + c->slope) * dot * cone->O.view.dz;
 	ft_normalize_vect(&calcul->v_normal);
 	
 	// calcul->px_color = cone->color;

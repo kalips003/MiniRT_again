@@ -16,6 +16,7 @@ int	parse_reste(t_data *data, char **raw_split, void *obj);
 static double	ft_parse_shininess(char *raw);
 static double	ft_parse_transparence(char *raw, double *gamma);
 static t_img	*helper_texture(t_data *data, char *path);
+int	h_obj_vect_space(t_obj *obj, t_vect *view);
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 // (Shininess) S=20.0
@@ -30,7 +31,7 @@ int	parse_reste(t_data *data, char **raw_split, void *obj)
 		if (**raw_split == 'S')
 			((t_sphere *)obj)->shiny = ft_parse_shininess(&(*raw_split)[2]);
 		else if (**raw_split == 'T')
-			((t_sphere *)obj)->transparence = ft_parse_transparence(&(*raw_split)[2], &((t_obj *)obj)->gamma);
+			((t_sphere *)obj)->transparence = ft_parse_transparence(&(*raw_split)[2], &((t_sphere *)obj)->gamma);
 		else if (**raw_split == 'M')
 			((t_sphere *)obj)->mirror = ft_parse_shininess(&(*raw_split)[2]);
 		else if (**raw_split == 'X')
@@ -73,7 +74,7 @@ static double	ft_parse_transparence(char *raw, double *gamma)
 		transparence = 0.0;
 
 	transparence = fmax(0.0, fmin(1.0, transparence));
-	*gamma = fmax(-PI / 2, fmin(PI / 2, *gamma));
+	// *gamma = fmax(-PI / 2, fmin(PI / 2, *gamma));
 	free_tab(split_tg);
 	return (transparence);
 }
@@ -97,4 +98,20 @@ static t_img	*helper_texture(t_data *data, char *path)
 
 	texture->addr = mlx_get_data_addr(texture->img, &texture->bpp, &texture->ll, &texture->end);
 	return (texture);
+}
+
+int	h_obj_vect_space(t_obj *obj, t_vect *view)
+{
+	if (view)
+	{
+		if (view->dx < -1.0 || view->dx > 1.0 || 
+				view->dy < -1.0 || view->dy > 1.0 || 
+				view->dz < -1.0 || view->dz > 1.0)
+			return (put(ERR1"Vector should be [-1.0,1.0]\n"), 1);
+		ft_normalize_vect(view);
+		h_vector_space(obj);
+	}
+	else
+		*obj = (t_obj){obj->c0, {0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}, {1.0, 0.0, 0.0}};
+	return (0);
 }

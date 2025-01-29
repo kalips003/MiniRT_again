@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/25 02:32:15 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/29 13:01:16 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	key_press(int keysym, t_data *data)
 	else
 		data->is_not_moving = 0;
 
-	if (keys_wasd(keysym, data))
+	if (direction_pad(keysym, data))
 		return (ft_render_frame(data));
 	// if (keysym == XK_Up)
 	// {
@@ -57,24 +57,26 @@ int	key_press(int keysym, t_data *data)
 	// 	data->eye.c->xyz.y += 5.0 * data->eye.c->right.dy;
 	// 	data->eye.c->xyz.z += 5.0 * data->eye.c->right.dz;
 	// }
-	else if (keysym == XK_a)
-		rotation_camera(data, &data->eye.c->up, -1);
-	else if (keysym == XK_d)
-		rotation_camera(data, &data->eye.c->up, 1);
-	else if (keysym == XK_w)
-		rotation_camera(data, &data->eye.c->right, 1);
-	else if (keysym == XK_s)
-		rotation_camera(data, &data->eye.c->right, -1);
-	else if (keysym == XK_n)
-	{
-		data->eye.current_camera++;
-		data->eye.c = data->camera[data->eye.current_camera];
-		if (!data->eye.c)
-		{
-			data->eye.c = data->camera[0];
-			data->eye.current_camera = 0;
-		}
-	}
+	// else if (keysym == XK_a)
+	// 	rotation_camera(data, &data->eye.c->up, -1);
+	// else if (keysym == XK_d)
+	// 	rotation_camera(data, &data->eye.c->up, 1);
+	// else if (keysym == XK_w)
+	// 	rotation_camera(data, &data->eye.c->right, 1);
+	// else if (keysym == XK_s)
+	// 	rotation_camera(data, &data->eye.c->right, -1);
+	// else if (keysym == XK_n)
+	// {
+	// 	data->eye.current_camera++;
+	// 	data->eye.c = data->camera[data->eye.current_camera];
+	// 	if (!data->eye.c)
+	// 	{
+	// 		data->eye.c = data->camera[0];
+	// 		data->eye.current_camera = 0;
+	// 	}
+	// }
+	else if (keys_wasd(keysym, data))
+		return (ft_render_frame(data));
 	else if (keysym == XK_space)
 		data->change ^= 1;
 	else
@@ -115,14 +117,14 @@ void	print_clic(t_data *data, int x, int y)
 	printf(CLEAR);
 	t_calcul_px c;
 	ft_memset(&c, 0, sizeof(t_calcul_px));
-	c.c0 = data->eye.c->xyz;
-	double angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst_y);
-	double angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst_x);
+	c.c0 = data->eye.c->O.c0;
+	double angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst);
+	double angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
 
 	f_calculate_combined_quaternion(data, angleA, angleB, &c.v_view);
 	calculate_pixel_color_simple(data, &c);
 
-	printf("Camera = [%f,%f,%f\t%f,%f,%f]\n\n", data->eye.c->xyz.x, data->eye.c->xyz.y, data->eye.c->xyz.z, c.v_view.dx, c.v_view.dy, c.v_view.dz);
+	printf("Camera = [%f,%f,%f\t%f,%f,%f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v_view.dx, c.v_view.dy, c.v_view.dz);
 	printf("Mouse clicked at position (%d, %d)\n", x, y);
 	printf("Vector normal surface = [%f, %f, %f]\n", c.v_normal.dx, c.v_normal.dy, c.v_normal.dz);
 	printf("Intersection point = [%f, %f, %f]\n", c.inter.x, c.inter.y, c.inter.z);
@@ -132,7 +134,7 @@ void	print_clic(t_data *data, int x, int y)
 		data->change_obj = NULL;
 	else
 		data->change_obj = c.object;
-	printf("\tOBJECT = %p\n", c.object);
+	printf("\tOBJECT.1 = %p;OBJECT.2 = %p\n", c.object, data->change_obj);
 	c.dist = -1.0;
 	c.c0 = c.inter;
 	t_sphere	**sphere_ptr;

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/25 01:48:48 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/29 12:53:22 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,13 @@
 ///////////////////////////////////////////////////////////////////////////////]
 
 # define PI 3.14159265358979323846
+// CONST ROTATION
 # define COS_ROTA 0.99619469809174554520
 # define COS_ROTA2 0.99240387650610406567
 # define SIN_ROTA 0.08715574274765816587
 # define SIN_ROTA2 0.00759612349389596903
 # define COSSIN_ROTA 0.08682408883346516559
+
 # define EPSILON 1e-6
 # define SCALAR_LIGHT_DIST 300.0
 # define SCALAR_SPECULAR 0.04
@@ -145,6 +147,10 @@ int	key_press(int keysym, t_data *data);
 int	key_release(int keysym, t_data *data);
 int	mouse_clic(int button, int x, int y, void *data);
 void	print_clic(t_data *data, int x, int y);
+// tools
+void	function_1(t_data *data, t_obj *obj);
+int	direction_pad(int keysym, t_data *data);
+int	keys_wasd(int keysym, t_data *data);
 /********************************
 		T	Tools
 ********************************/
@@ -155,6 +161,9 @@ int		ato_rgb(char *str, t_rgb *rgb);
 // camera
 void	h_camera_calc_up_right_vect(t_camera *camera);
 void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
+void	h_vector_space(t_obj *obj);
+void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
+void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg);
 // math
 int	ft_normalize_vect(t_vect *vect);
 double	ft_vect_dot_product(t_vect *a, t_vect *b);
@@ -179,6 +188,7 @@ int	parse_cy(t_data *data, char **raw_split);
 int	parse_co(t_data *data, char **raw_split);
 // 
 int	parse_reste(t_data *data, char **raw_split, void *obj);
+int	h_obj_vect_space(t_obj *obj, t_vect *view);
 /********************************
 		Z
 ********************************/

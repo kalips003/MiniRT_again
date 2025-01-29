@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/25 02:11:17 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/29 16:33:08 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,14 @@ typedef struct s_light			t_light;
 typedef struct s_sphere			t_sphere;
 typedef struct s_plane			t_plane;
 typedef struct s_cylinder		t_cylinder;
+typedef struct s_cone		t_cone;
 typedef struct s_square			t_square;
 typedef struct s_calcul_px			t_calcul_px;
 typedef struct s_img			t_img;
 typedef struct s_eye			t_eye;
 typedef struct s_eye_v2			t_eye_v2;
 typedef struct s_data			t_data;
+typedef struct s_obj			t_obj;
 
 ////////////////////////////////////////////]
 ////////////////////////////////////////////]
@@ -153,7 +155,7 @@ typedef struct s_data
 	t_sphere	**spheres;
 	t_plane		**planes;
 	t_cylinder	**cylinders;
-	t_cylinder	**cones;
+	t_cone	**cones;
 
 	t_img		**textures;
 // shortcut to the vector camera
@@ -171,6 +173,15 @@ typedef struct s_data
 }	t_data;
 ////////////////////////////////////////////]
 
+
+typedef struct s_obj
+{
+	t_coor		c0;
+	t_vect		view;
+	t_vect		up;
+	t_vect		right;
+
+}	t_obj;//		objeccts param
 ////////////////////////////////////////////]
 typedef struct s_ambient_light
 {
@@ -180,13 +191,15 @@ typedef struct s_ambient_light
 
 typedef struct s_camera
 {
-	t_coor		xyz;
-	t_vect		view;
-	t_vect		up;
-	t_vect		right;
+	t_obj	O;
+	// t_coor	c0;
+	// t_coor		xyz;
+	// t_vect		view;
+	// t_vect		up;
+	// t_vect		right;
 	int			fov;
-	double		fov_cst_x;// = tan(fov/2) / screenX
-	double		fov_cst_y;// = tan(fov/2) / screenY
+	double		fov_cst;// = tan(fov/2) / screenX
+	// double		fov_cst_y;// = tan(fov/2) / screenY
 }	t_camera;//			C
 
 typedef struct s_light
@@ -199,7 +212,8 @@ typedef struct s_light
 ////////////////////////////////////////////]
 typedef struct s_sphere
 {
-	t_coor	c0;
+	t_obj	O;
+	// t_coor	c0;
 	t_rgb	color;
 
 	double	shiny;
@@ -215,7 +229,8 @@ typedef struct s_sphere
 
 typedef struct s_plane
 {
-	t_coor	c0;
+	t_obj	O;
+	// t_coor	c0;
 	t_rgb	color;
 
 	double	shiny;
@@ -225,14 +240,15 @@ typedef struct s_plane
 	t_img	*texture;
 	t_img	*normal_map;
 
-	t_vect	v;
+	// t_vect	v;
 	double	d;
 }	t_plane;//		pl
 
 
 typedef struct s_cylinder
 {
-	t_coor	c0;
+	t_obj	O;
+	// t_coor	c0;
 	t_rgb	color;
 
 	double	shiny;
@@ -242,7 +258,7 @@ typedef struct s_cylinder
 	t_img	*texture;
 	t_img	*normal_map;
 
-	t_vect	v;
+	// t_vect	v;
 	t_coor	xyz_other;
 	double	diameter;
 	double	height;
@@ -251,7 +267,8 @@ typedef struct s_cylinder
 
 typedef struct s_cicle
 {
-	t_coor	c0;
+	t_obj	O;
+	// t_coor	c0;
 	t_rgb	color;
 
 	double	shiny;
@@ -277,7 +294,8 @@ typedef struct s_cicle_v2
 
 typedef struct s_cone
 {
-	t_coor	c0;
+	t_obj	O;
+	// t_coor	c0;
 	t_rgb	color;
 
 	double	shiny;
@@ -287,7 +305,7 @@ typedef struct s_cone
 	t_img	*texture;
 	t_img	*normal_map;
 
-	t_vect	v;
+	// t_vect	v;
 	double	height;
 	double	radius;
 
@@ -304,19 +322,6 @@ typedef struct s_square
 	t_rgb	color;
 }	t_square;//		sq
 
-
-typedef struct s_obj
-{
-	double	shiny;
-	double	mirror;
-
-	double transparence;
-	double gamma;
-
-	t_img	*texture;
-	t_img	*normal_map;
-
-}	t_obj;//		objeccts param
 ///////////////////////////////////////////////////////////////////////////////]
 
 typedef struct s_calcul_px

@@ -72,14 +72,14 @@ void	f_calculate_combined_quaternion(t_data *data, double angle_α, double angle
 	double cosB = cos(-angle_β / 2);
 	double sinB = sin(-angle_β / 2);
 
-	double Qw = cosA*cosB - sinA*sinB * (c->right.dx * c->up.dx + c->right.dy * c->up.dy + c->right.dz * c->up.dz);
-	double Qi = cosB*sinA * c->up.dx + cosA*sinB * c->right.dx + sinA*sinB*(c->right.dy * c->up.dz - c->right.dz * c->up.dy);
-	double Qj = cosB*sinA * c->up.dy + cosA*sinB * c->right.dy + sinA*sinB*(c->right.dz * c->up.dx - c->right.dx * c->up.dz);
-	double Qk = cosB*sinA * c->up.dz + cosA*sinB * c->right.dz + sinA*sinB*(c->right.dx * c->up.dy - c->right.dy * c->up.dx);
+	double Qw = cosA*cosB - sinA*sinB * (c->O.right.dx * c->O.up.dx + c->O.right.dy * c->O.up.dy + c->O.right.dz * c->O.up.dz);
+	double Qi = cosB*sinA * c->O.up.dx + cosA*sinB * c->O.right.dx + sinA*sinB*(c->O.right.dy * c->O.up.dz - c->O.right.dz * c->O.up.dy);
+	double Qj = cosB*sinA * c->O.up.dy + cosA*sinB * c->O.right.dy + sinA*sinB*(c->O.right.dz * c->O.up.dx - c->O.right.dx * c->O.up.dz);
+	double Qk = cosB*sinA * c->O.up.dz + cosA*sinB * c->O.right.dz + sinA*sinB*(c->O.right.dx * c->O.up.dy - c->O.right.dy * c->O.up.dx);
 
-	rtrn->dx = c->view.dx * (Qw * Qw + Qi * Qi - Qj * Qj - Qk * Qk) + 2*c->view.dy * (Qi*Qj - Qw*Qk) + 2*c->view.dz * (Qi*Qk + Qw*Qj);
-	rtrn->dy = c->view.dy * (Qw * Qw + Qj * Qj - Qi * Qi - Qk * Qk) + 2*c->view.dz * (Qj*Qk - Qw*Qi) + 2*c->view.dx * (Qi*Qj + Qw*Qk);
-	rtrn->dz = c->view.dz * (Qw * Qw + Qk * Qk - Qi * Qi - Qj * Qj) + 2*c->view.dx * (Qi*Qk - Qw*Qj) + 2*c->view.dy * (Qj*Qk + Qw*Qi);
+	rtrn->dx = c->O.view.dx * (Qw * Qw + Qi * Qi - Qj * Qj - Qk * Qk) + 2*c->O.view.dy * (Qi*Qj - Qw*Qk) + 2*c->O.view.dz * (Qi*Qk + Qw*Qj);
+	rtrn->dy = c->O.view.dy * (Qw * Qw + Qj * Qj - Qi * Qi - Qk * Qk) + 2*c->O.view.dz * (Qj*Qk - Qw*Qi) + 2*c->O.view.dx * (Qi*Qj + Qw*Qk);
+	rtrn->dz = c->O.view.dz * (Qw * Qw + Qk * Qk - Qi * Qi - Qj * Qj) + 2*c->O.view.dx * (Qi*Qk - Qw*Qj) + 2*c->O.view.dy * (Qj*Qk + Qw*Qi);
 
 	ft_normalize_vect(rtrn);
 }

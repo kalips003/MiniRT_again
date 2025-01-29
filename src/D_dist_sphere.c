@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/21 14:29:30 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/29 14:33:37 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ double	distance_from_sphere_v2(t_calcul_px *calcul, t_sphere *sphere)
 	t_sphere_calc	c;
 
 //	diff center sphere and center camera
-	c.x0 = calcul->c0.x - sphere->c0.x;
-	c.y0 = calcul->c0.y - sphere->c0.y;
-	c.z0 = calcul->c0.z - sphere->c0.z;
+	c.x0 = calcul->c0.x - sphere->O.c0.x;
+	c.y0 = calcul->c0.y - sphere->O.c0.y;
+	c.z0 = calcul->c0.z - sphere->O.c0.z;
 
 // RESOLVE ((t.Vx + EYEx) - x0)² + ((t.Vy + EYEy) - y0)² + ((t.Vz + EYEz) - z0)² = R²
 // ==> At² + Bt + C = 0; 
@@ -73,9 +73,9 @@ void	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, double dist, int insid
 		calcul->c0.z + calcul->v_view.dz * dist};
 
 	calcul->v_normal = (t_vect){
-		calcul->inter.x - sphere->c0.x, 
-		calcul->inter.y - sphere->c0.y, 
-		calcul->inter.z - sphere->c0.z};
+		calcul->inter.x - sphere->O.c0.x, 
+		calcul->inter.y - sphere->O.c0.y, 
+		calcul->inter.z - sphere->O.c0.z};
 	ft_normalize_vect(&calcul->v_normal);
 	if (sphere->texture)
 		calcul->px_color = ft_txt_sphere(calcul);
@@ -93,10 +93,19 @@ void	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, double dist, int insid
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 t_rgb	ft_txt_sphere(t_calcul_px *calcul)
 {
+	t_vect	local_n = {
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),    // X = up
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),  // Y = view
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
+	};
+	ft_normalize_vect(&local_n);
+
 	//  [−π,π][−π,π] > [0,1].
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
+	// double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
+	double	l_θ = fmin(1.0, fmax(0.0, atan2(local_n.dz, local_n.dx) / (2 * PI) + 0.5));
 	// [0,π] > [0,1].
-	double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
+	// double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
+	double	l_ϕ = fmin(1.0, fmax(0.0, acos(local_n.dy) / PI));
 
 	t_img *texture = ((t_sphere*)calcul->object)->texture;
 
@@ -116,10 +125,19 @@ t_rgb	ft_txt_sphere(t_calcul_px *calcul)
 
 t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 {
+	t_vect	normal_map = {
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),    // X = up
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),  // Y = view
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
+	};
+	ft_normalize_vect(&normal_map);
+
 	//  [−π,π][−π,π] > [0,1].
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
+	// double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
+	double	l_θ = fmin(1.0, fmax(0.0, atan2(normal_map.dz, normal_map.dx) / (2 * PI) + 0.5));
 	// [0,π] > [0,1].
-	double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
+	// double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
+	double	l_ϕ = fmin(1.0, fmax(0.0, acos(normal_map.dy) / PI));
 
 	t_img *nmap = ((t_sphere*)calcul->object)->normal_map;
 	int text_x = (int)(l_θ * nmap->sz_x) % nmap->sz_x;
@@ -127,30 +145,38 @@ t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 	char *pixel = nmap->addr + (text_y * nmap->ll + text_x * (nmap->bpp / 8));
 	int color = *(unsigned int *)pixel;
 
-	t_vect	normal_map = {
+	normal_map = (t_vect){
 		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
 		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
 		(color & 0xFF) / 255.0};
+	// normal_map.dz *= -1; ???
+	// normal_map.dx *= -1; ???
 	ft_normalize_vect(&normal_map);
 
-	t_camera	x;
-	x.view = calcul->v_normal;
-	h_camera_calc_up_right_vect(&x);
+	t_obj	local;
+	local.view = calcul->v_normal;
+	local.right = ft_vect_cross_product(&local.view, &((t_sphere*)calcul->object)->O.view);
+	ft_normalize_vect(&local.right);
+	local.up = ft_vect_cross_product(&local.right, &local.view);
+	ft_normalize_vect(&local.up);
 
+	t_vect world_normal = {
+		ft_vect_dot_product(&normal_map, &local.up),
+		ft_vect_dot_product(&normal_map, &local.view),
+		ft_vect_dot_product(&normal_map, &local.right)
+	};
+	ft_normalize_vect(&world_normal);
 
-	t_vect world_normal;
-
-	// // 	[NTB].[normal_map]
+	// // 	[NTB].[normal_map] WRONG
 	// world_normal.dx = normal_map.dx * x.right.dx + normal_map.dy * x.right.dy + normal_map.dz * x.right.dz;
 	// world_normal.dy = normal_map.dx * x.up.dx + normal_map.dy * x.up.dy + normal_map.dz * x.up.dz;
 	// world_normal.dz = normal_map.dx * x.view.dx + normal_map.dy * x.view.dy + normal_map.dz * x.view.dz;
 
-// 	[NTB].[normal_map]
-	world_normal.dx = normal_map.dx * x.right.dx + normal_map.dy * x.up.dx + normal_map.dz * x.view.dx;
-	world_normal.dy = normal_map.dx * x.right.dy + normal_map.dy * x.up.dy + normal_map.dz * x.view.dy;
-	world_normal.dz = normal_map.dx * x.right.dz + normal_map.dy * x.up.dz + normal_map.dz * x.view.dz;
-
-	ft_normalize_vect(&world_normal);
+// 	[NTB].[normal_map] RIGHT
+	// world_normal.dx = normal_map.dx * x.right.dx + normal_map.dy * x.up.dx + normal_map.dz * x.view.dx;
+	// world_normal.dy = normal_map.dx * x.right.dy + normal_map.dy * x.up.dy + normal_map.dz * x.view.dy;
+	// world_normal.dz = normal_map.dx * x.right.dz + normal_map.dy * x.up.dz + normal_map.dz * x.view.dz;
+	// ft_normalize_vect(&world_normal);
 
 	return (world_normal);
 	

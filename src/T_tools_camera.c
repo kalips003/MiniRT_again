@@ -14,6 +14,9 @@
 
 void	h_camera_calc_up_right_vect(t_camera *camera);
 void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
+void	h_vector_space(t_obj *obj);
+void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
+void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 	Compute the Up and Right vector for each camera
@@ -21,41 +24,65 @@ void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
 void	h_camera_calc_up_right_vect(t_camera *camera)
 {
 // if camera vector is == Y vector
-	if (fabs(camera->view.dx) < EPSILON && fabs(camera->view.dz) < EPSILON)
+	if (fabs(camera->O.view.dx) < EPSILON && fabs(camera->O.view.dz) < EPSILON)
 	{
-		if (camera->view.dy > 0)
+		if (camera->O.view.dy > 0)
 		{
-			camera->up = (t_vect){0.0, 0.0, -1.0};
-			camera->right = (t_vect){1.0, 0.0, 0.0};
+			camera->O.up = (t_vect){0.0, 0.0, -1.0};
+			camera->O.right = (t_vect){1.0, 0.0, 0.0};
 			return ;
 		}
 		else
 		{
-			camera->up = (t_vect){0.0, 0.0, 1.0};
-			camera->right = (t_vect){-1.0, 0.0, 0.0};
+			camera->O.up = (t_vect){0.0, 0.0, 1.0};
+			camera->O.right = (t_vect){-1.0, 0.0, 0.0};
 			return ;
 		}
 	}
 
 // Right = Camera x Y = {-Cz, 0, Cx}
-	camera->right.dx = -camera->view.dz;
-	camera->right.dy = 0;
-	camera->right.dz = camera->view.dx;
-	ft_normalize_vect(&camera->right);
+	camera->O.right.dx = -camera->O.view.dz;
+	camera->O.right.dy = 0;
+	camera->O.right.dz = camera->O.view.dx;
+	ft_normalize_vect(&camera->O.right);
 
 // Up = Right x Camera = {-CxCy, Cx²+Cz², -CyCz}
-	camera->up.dx = -camera->view.dx * camera->view.dy;
-	camera->up.dy = camera->view.dx * camera->view.dx + camera->view.dz * camera->view.dz;
-	camera->up.dz = -camera->view.dy * camera->view.dz;
-	ft_normalize_vect(&camera->up);
+	camera->O.up.dx = -camera->O.view.dx * camera->O.view.dy;
+	camera->O.up.dy = camera->O.view.dx * camera->O.view.dx + camera->O.view.dz * camera->O.view.dz;
+	camera->O.up.dz = -camera->O.view.dy * camera->O.view.dz;
+	ft_normalize_vect(&camera->O.up);
 }
 
+void	h_vector_space(t_obj *obj)
+{
+// if camera vector is == Y vector
+	if (fabs(obj->view.dx) < EPSILON && fabs(obj->view.dz) < EPSILON)
+	{
+		if (obj->view.dy > 0)
+			*obj = (t_obj){obj->c0, {0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}, {1.0, 0.0, 0.0}};
+		else
+			*obj = (t_obj){obj->c0, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}, {1.0, 0.0, 0.0}};
+		return ;
+	}
+
+// Right = Camera x Y = {-Cz, 0, Cx}
+	obj->right.dx = -obj->view.dz;
+	obj->right.dy = 0;
+	obj->right.dz = obj->view.dx;
+	ft_normalize_vect(&obj->right);
+
+// Up = Right x Camera = {-CxCy, Cx²+Cz², -CyCz}
+	obj->up.dx = -obj->view.dx * obj->view.dy;
+	obj->up.dy = obj->view.dx * obj->view.dx + obj->view.dz * obj->view.dz;
+	obj->up.dz = -obj->view.dy * obj->view.dz;
+	ft_normalize_vect(&obj->up);
+}
 
 ///////////////////////////////////////////////////////////////////////////////]
 // rotate the camera (eye) vector of fixed angle
 void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg)
 {
-	t_vect *c = &data->eye.c->view;
+	t_vect *c = &data->eye.c->O.view;
 	
 	double Vx2 = axis_rota->dx * axis_rota->dx;
 	double Vy2 = axis_rota->dy * axis_rota->dy;
@@ -71,4 +98,34 @@ void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg)
 
 	ft_normalize_vect(c);
 	h_camera_calc_up_right_vect(data->eye.c);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// rotate the obj (eye) vector of fixed angle
+void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg)
+{
+	t_vect	cross = ft_vect_cross_product(axis_rota, &obj->view);
+	ft_normalize_vect(&cross);
+	double	dot = ft_vect_dot_product(axis_rota, &obj->view);
+	t_vect	new_view = {
+		obj->view.dx * COS_ROTA + cross.dx * (posi_neg) * SIN_ROTA + axis_rota->dx * dot * (1 - COS_ROTA),
+		obj->view.dy * COS_ROTA + cross.dy * (posi_neg) * SIN_ROTA + axis_rota->dy * dot * (1 - COS_ROTA),
+		obj->view.dz * COS_ROTA + cross.dz * (posi_neg) * SIN_ROTA + axis_rota->dz * dot * (1 - COS_ROTA)
+	};
+	ft_normalize_vect(&new_view);
+	
+	cross = ft_vect_cross_product(axis_rota, &obj->up);
+	ft_normalize_vect(&cross);
+	dot = ft_vect_dot_product(axis_rota, &obj->up);
+	t_vect	new_up = {
+		obj->up.dx * COS_ROTA + cross.dx * (posi_neg) * SIN_ROTA + axis_rota->dx * dot * (1 - COS_ROTA),
+		obj->up.dy * COS_ROTA + cross.dy * (posi_neg) * SIN_ROTA + axis_rota->dy * dot * (1 - COS_ROTA),
+		obj->up.dz * COS_ROTA + cross.dz * (posi_neg) * SIN_ROTA + axis_rota->dz * dot * (1 - COS_ROTA)
+	};
+	ft_normalize_vect(&new_up);
+	
+	cross = ft_vect_cross_product(&new_view, &new_up);
+	ft_normalize_vect(&cross);
+	
+	*obj = (t_obj){obj->c0, new_view, new_up, cross};
 }

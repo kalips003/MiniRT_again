@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/24 15:45:11 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/29 16:28:17 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	while (++cyl_ptr && *cyl_ptr)
 	{
 		if (in_shadow_of_cylinder(&calcul, *cyl_ptr) ||
-				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){*cyl_ptr, (*cyl_ptr)->c0, (*cyl_ptr)->radius, (*cyl_ptr)->v}) ||
-				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){*cyl_ptr, (*cyl_ptr)->xyz_other, (*cyl_ptr)->radius, (*cyl_ptr)->v}))
+				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){*cyl_ptr, (*cyl_ptr)->O.c0, (*cyl_ptr)->radius, (*cyl_ptr)->O.view}) ||
+				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){*cyl_ptr, (*cyl_ptr)->xyz_other, (*cyl_ptr)->radius, (*cyl_ptr)->O.view}))
 			return (1);
 	}
 
@@ -96,7 +96,7 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	{
 		if (in_shadow_of_cone(&calcul, *cone_ptr) ||
 				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){
-			*cone_ptr, (*cone_ptr)->c0, (*cone_ptr)->radius, (*cone_ptr)->v}))
+			*cone_ptr, (*cone_ptr)->O.c0, (*cone_ptr)->radius, (*cone_ptr)->O.view}))
 			return (1);
 	}
 	return (0);

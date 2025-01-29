@@ -64,20 +64,21 @@ int	parse_C(t_data *data, char **raw_split)
 	
 	err = 0;
 	camera->fov = ft_atoi(raw_split[2], &err);
-	if (err || ato_coor(raw_split[0], &(camera->xyz)) || ato_coor(raw_split[1], (t_coor *)&camera->view))
+	if (err || ato_coor(raw_split[0], &(camera->O.c0)) || ato_coor(raw_split[1], (t_coor *)&camera->O.view))
 		return (1);
 
 	if (camera->fov < 0 || camera->fov > 180)
 		return (put(ERR1"(%s) camera fov should be [0, 180]\n", raw_split[0]), 1);
 
-	if (camera->view.dx < -1.0 || camera->view.dx > 1.0 || 
-			camera->view.dy < -1.0 || camera->view.dy > 1.0 || 
-			camera->view.dz < -1.0 || camera->view.dz > 1.0)
-		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
-	ft_normalize_vect(&camera->view);
-	h_camera_calc_up_right_vect(camera);
-	camera->fov_cst_x = tan(camera->fov / 2) / SIZE_SCREEN_X;
-	camera->fov_cst_y = tan(camera->fov / 2) / SIZE_SCREEN_Y;
+	// if (camera->view.dx < -1.0 || camera->view.dx > 1.0 || 
+	// 		camera->view.dy < -1.0 || camera->view.dy > 1.0 || 
+	// 		camera->view.dz < -1.0 || camera->view.dz > 1.0)
+	// 	return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
+	// ft_normalize_vect(&camera->view);
+	if(h_obj_vect_space(&camera->O, &camera->O.view))
+		return (1);
+	camera->fov_cst = tan(camera->fov / 2) / SIZE_SCREEN_X;
+	// camera->fov_cst_y = tan(camera->fov / 2) / SIZE_SCREEN_Y;
 	return (0);
 }
 
@@ -136,15 +137,17 @@ int	parse_pl(t_data *data, char **raw_split)
 	else if (raw_split[3])
 		parse_reste(data, &raw_split[3], (void*)plane);
 	
-	if (ato_coor(raw_split[0], &(plane->c0)) || ato_coor(raw_split[1], (t_coor *)&plane->v) || ato_rgb(raw_split[2], &(plane->color)))
+	if (ato_coor(raw_split[0], &(plane->O.c0)) || ato_coor(raw_split[1], (t_coor *)&plane->O.view) || ato_rgb(raw_split[2], &(plane->color)))
 		return (1);
 
-	if (plane->v.dx < -1.0 || plane->v.dx > 1.0 || 
-			plane->v.dy < -1.0 || plane->v.dy > 1.0 || 
-			plane->v.dz < -1.0 || plane->v.dz > 1.0)
-		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[1]), 1);
-	plane->d = -(plane->v.dx * plane->c0.x + plane->v.dy * plane->c0.y + plane->v.dz * plane->c0.z);
-	ft_normalize_vect(&plane->v);
+	// if (plane->v.dx < -1.0 || plane->v.dx > 1.0 || 
+	// 		plane->v.dy < -1.0 || plane->v.dy > 1.0 || 
+	// 		plane->v.dz < -1.0 || plane->v.dz > 1.0)
+	// 	return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[1]), 1);
+	if (h_obj_vect_space(&plane->O, &plane->O.view))
+		return (1);
+	// plane->d = -(plane->v.dx * plane->O.c0.x + plane->v.dy * plane->O.c0.y + plane->v.dz * plane->O.c0.z);
+	// ft_normalize_vect(&plane->v);
 	return (0);
 }
 
@@ -174,7 +177,9 @@ int	parse_sp(t_data *data, char **raw_split)
 	err = 0;
 	sphere->diameter = ft_atof(raw_split[1], &err);
 	sphere->radius = sphere->diameter / 2;
-	if (err || ato_coor(raw_split[0], &(sphere->c0)) || ato_rgb(raw_split[2], &(sphere->color)))
+	if (err || ato_coor(raw_split[0], &(sphere->O.c0)) || ato_rgb(raw_split[2], &(sphere->color)))
+		return (1);
+	if (h_obj_vect_space(&sphere->O, NULL))
 		return (1);
 	return (0);
 }
@@ -208,14 +213,16 @@ int	parse_cy(t_data *data, char **raw_split)
 	cylinder->radius = cylinder->diameter / 2;
 	cylinder->height = ft_atof(raw_split[3], &err);
 
-	if (err || ato_coor(raw_split[0], &(cylinder->c0)) || ato_coor(raw_split[1], (t_coor *)&cylinder->v) || ato_rgb(raw_split[4], &(cylinder->color)))
+	if (err || ato_coor(raw_split[0], &(cylinder->O.c0)) || ato_coor(raw_split[1], (t_coor *)&cylinder->O.view) || ato_rgb(raw_split[4], &(cylinder->color)))
 		return (1);
 
-	if (cylinder->v.dx < -1.0 || cylinder->v.dx > 1.0 || 
-			cylinder->v.dy < -1.0 || cylinder->v.dy > 1.0 || 
-			cylinder->v.dz < -1.0 || cylinder->v.dz > 1.0)
-		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
-	ft_normalize_vect(&cylinder->v);
+	// if (cylinder->v.dx < -1.0 || cylinder->v.dx > 1.0 || 
+	// 		cylinder->v.dy < -1.0 || cylinder->v.dy > 1.0 || 
+	// 		cylinder->v.dz < -1.0 || cylinder->v.dz > 1.0)
+	// 	return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
+	// ft_normalize_vect(&cylinder->v);
+	if (h_obj_vect_space(&cylinder->O, &cylinder->O.view))
+		return (1);
 	// cylinder->xyz_other = (t_coor){
 	// 	cylinder->c0.x + cylinder->height * cylinder->v.dx,
 	// 	cylinder->c0.y + cylinder->height * cylinder->v.dy,
@@ -252,14 +259,16 @@ int	parse_co(t_data *data, char **raw_split)
 	cone->radius = ft_atof(raw_split[2], &err);
 	cone->height = ft_atof(raw_split[3], &err);
 
-	if (err || ato_coor(raw_split[0], &(cone->c0)) || ato_coor(raw_split[1], (t_coor *)&cone->v) || ato_rgb(raw_split[4], &(cone->color)) || ato_rgb(raw_split[5], &(cone->color2)))
+	if (err || ato_coor(raw_split[0], &(cone->O.c0)) || ato_coor(raw_split[1], (t_coor *)&cone->O.view) || ato_rgb(raw_split[4], &(cone->color)) || ato_rgb(raw_split[5], &(cone->color2)))
 		return (1);
 
-	if (cone->v.dx < -1.0 || cone->v.dx > 1.0 || 
-			cone->v.dy < -1.0 || cone->v.dy > 1.0 || 
-			cone->v.dz < -1.0 || cone->v.dz > 1.0)
-		return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
-	ft_normalize_vect(&cone->v);
+	// if (cone->v.dx < -1.0 || cone->v.dx > 1.0 || 
+	// 		cone->v.dy < -1.0 || cone->v.dy > 1.0 || 
+	// 		cone->v.dz < -1.0 || cone->v.dz > 1.0)
+	// 	return (put(ERR1"(%s) vector should be [-1.0,1.0]\n", raw_split[0]), 1);
+	// ft_normalize_vect(&cone->v);
+	if (h_obj_vect_space(&cone->O, &cone->O.view))
+		return (1);
 	// cone->apex = (t_coor){
 	// 	cone->c0.x + cone->height * cone->v.dx,
 	// 	cone->c0.y + cone->height * cone->v.dy,

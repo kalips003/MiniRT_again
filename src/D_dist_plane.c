@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/22 16:13:14 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/29 15:03:32 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ double	distance_from_plane_v2(t_calcul_px *calcul, t_plane *p)
 
 // RESOLVE A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
-	c.top = -(p->v.dx * calcul->c0.x + p->v.dy * calcul->c0.y + p->v.dz * calcul->c0.z + p->d);
-	c.bot = p->v.dx * calcul->v_view.dx + p->v.dy * calcul->v_view.dy + p->v.dz * calcul->v_view.dz;
+	c.top = -(p->O.view.dx * calcul->c0.x + p->O.view.dy * calcul->c0.y + p->O.view.dz * calcul->c0.z + p->d);
+	c.bot = p->O.view.dx * calcul->v_view.dx + p->O.view.dy * calcul->v_view.dy + p->O.view.dz * calcul->v_view.dz;
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to the plane
@@ -57,7 +57,7 @@ void	h_dist_plane(t_calcul_px *calcul, t_plane *plane, t_plane_calc* c)
 		calcul->c0.y + calcul->v_view.dy * c->dist,
 		calcul->c0.z + calcul->v_view.dz * c->dist};
 
-	calcul->v_normal = plane->v;
+	calcul->v_normal = plane->O.view;
 
 	if (plane->texture)
 		calcul->px_color = ft_textures_plane(calcul, plane);
@@ -67,33 +67,23 @@ void	h_dist_plane(t_calcul_px *calcul, t_plane *plane, t_plane_calc* c)
 	if (plane->normal_map)
 		calcul->v_normal = ft_nmap_plane(calcul, plane);
 	
-	if (ft_vect_dot_product(&calcul->v_view, &plane->v) > 0.0)
+	if (ft_vect_dot_product(&calcul->v_view, &plane->O.view) > 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 }
 
 t_rgb	ft_textures_plane(t_calcul_px *calcul, t_plane* plane)
 {
-	t_camera	pl_v_space;
-	pl_v_space.view = plane->v;
-	h_camera_calc_up_right_vect(&pl_v_space);
-
 	t_img *texture = ((t_plane*)calcul->object)->texture;
 	t_vect	o_to_inter = (t_vect){
-		calcul->inter.x - plane->c0.x,
-		calcul->inter.y - plane->c0.y,
-		calcul->inter.z - plane->c0.z
+		calcul->inter.x - plane->O.c0.x,
+		calcul->inter.y - plane->O.c0.y,
+		calcul->inter.z - plane->O.c0.z
 	};
-	double	u = ft_vect_dot_product(&o_to_inter, &pl_v_space.right);
-	double	v = ft_vect_dot_product(&o_to_inter, &pl_v_space.up);
+	double	u = ft_vect_dot_product(&o_to_inter, &plane->O.right);
+	double	v = ft_vect_dot_product(&o_to_inter, &plane->O.up);
 
-	// int text_x = (int)u % texture->sz_x;
-	// int text_y = (int)v % texture->sz_y;
-	// int text_x = (int)fmod(u , texture->sz_x);
-	// int text_y = (int)fmod(v , texture->sz_y);
-	// if (text_x < 0) text_x += texture->sz_x;
-	// if (text_y < 0) text_y += texture->sz_y;
-int text_x = ((int)floor(u) % texture->sz_x + texture->sz_x) % texture->sz_x;
-int text_y = ((int)floor(v) % texture->sz_y + texture->sz_y) % texture->sz_y;
+	int text_x = ((int)floor(u) % texture->sz_x + texture->sz_x) % texture->sz_x;
+	int text_y = ((int)floor(v) % texture->sz_y + texture->sz_y) % texture->sz_y;
 
 	char *pixel = texture->addr + (text_y * texture->ll + text_x * (texture->bpp / 8));
 	int color = *(unsigned int *)pixel;
@@ -104,29 +94,22 @@ int text_y = ((int)floor(v) % texture->sz_y + texture->sz_y) % texture->sz_y;
 		color & 0xFF
 	};
 
-
 	return (rtrn);
 }
 
 t_vect	ft_nmap_plane(t_calcul_px *calcul, t_plane* plane)
 {
-	t_camera	pl_v_space;
-	pl_v_space.view = plane->v;
-	h_camera_calc_up_right_vect(&pl_v_space);
-
 	t_img *texture = ((t_plane*)calcul->object)->normal_map;
 	t_vect	o_to_inter = (t_vect){
-		calcul->inter.x - plane->c0.x,
-		calcul->inter.y - plane->c0.y,
-		calcul->inter.z - plane->c0.z
+		calcul->inter.x - plane->O.c0.x,
+		calcul->inter.y - plane->O.c0.y,
+		calcul->inter.z - plane->O.c0.z
 	};
-	double	u = ft_vect_dot_product(&o_to_inter, &pl_v_space.right) * 10;
-	double	v = ft_vect_dot_product(&o_to_inter, &pl_v_space.up) * 10;
+	double	u = ft_vect_dot_product(&o_to_inter, &plane->O.right);
+	double	v = ft_vect_dot_product(&o_to_inter, &plane->O.up);
 
-	int text_x = (int)fmod(u, texture->sz_x);
-	int text_y = (int)fmod(v, texture->sz_y);
-	text_x += texture->sz_x * (u < 0);
-	text_y += texture->sz_y * (v < 0);
+	int text_x = ((int)floor(u) % texture->sz_x + texture->sz_x) % texture->sz_x;
+	int text_y = ((int)floor(v) % texture->sz_y + texture->sz_y) % texture->sz_y;
 
 	char *pixel = texture->addr + (text_y * texture->ll + text_x * (texture->bpp / 8));
 	int color = *(unsigned int *)pixel;
@@ -136,14 +119,17 @@ t_vect	ft_nmap_plane(t_calcul_px *calcul, t_plane* plane)
 		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
 		// (color & 0xFF) / 255.0 * 2.0 - 1.0};
 		(color & 0xFF) / 255.0};
+	// normal_map.dz *= -1; ???
+	// normal_map.dx *= -1; ???
 	ft_normalize_vect(&normal_map);
 
-	t_vect world_normal;
 	// normal_map.dz *= -1; // Flip depth axis if needed (opengl map)
-	world_normal.dx = normal_map.dx * pl_v_space.right.dx + normal_map.dy * pl_v_space.up.dx + normal_map.dz * pl_v_space.view.dx;
-	world_normal.dy = normal_map.dx * pl_v_space.right.dy + normal_map.dy * pl_v_space.up.dy + normal_map.dz * pl_v_space.view.dy;
-	world_normal.dz = normal_map.dx * pl_v_space.right.dz + normal_map.dy * pl_v_space.up.dz + normal_map.dz * pl_v_space.view.dz;
-
+	t_vect world_normal = {
+		ft_vect_dot_product(&normal_map, &plane->O.up),
+		ft_vect_dot_product(&normal_map, &plane->O.view),
+		ft_vect_dot_product(&normal_map, &plane->O.right)
+	};
 	ft_normalize_vect(&world_normal);
+	
 	return (world_normal);
 }

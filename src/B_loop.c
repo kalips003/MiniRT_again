@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/25 02:14:22 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/27 16:14:07 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int 	ft_loop_empty_v2(t_data *data)
 	{
 		if (data->change_obj)
 			// ((t_sphere *)(data->change_obj))->color.r = (((t_sphere *)(data->change_obj))->color.r + CHANGE) % 256;
-			data->change_obj->c0.x += CHANGE;
+			data->change_obj->O.c0.x += CHANGE;
 		ft_render_frame(data);
 		usleep(100);
 	}
@@ -73,16 +73,16 @@ int	ft_render_frame(t_data *data)
 	t_calcul_px c;
 
 	ft_memset(&c, 0, sizeof(t_calcul_px));
-	c.c0 = data->eye.c->xyz;
+	c.c0 = data->eye.c->O.c0;
 
 	y = -1;
 	while (++y < SIZE_SCREEN_Y)
 	{
 		x = -1;
-		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst_x);
+		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst);
 		while (++x < SIZE_SCREEN_X)
 		{
-			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst_x);
+			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
 			f_calculate_combined_quaternion(data, angleA, angleB, &c.v_view);
 			calculate_pixel_color_simple(data, &c);
 			mlx_pixel_put(data->mlx, data->win, x, y, c.px_color.r << 16 | c.px_color.g << 8 | c.px_color.b);
@@ -101,16 +101,16 @@ int	ft_render_frame_plus(t_data *data)
 	t_calcul_px c;
 
 	ft_memset(&c, 0, sizeof(t_calcul_px));
-	c.c0 = data->eye.c->xyz;
+	c.c0 = data->eye.c->O.c0;
 
 	y = -1;
 	while (++y < SIZE_SCREEN_Y)
 	{
 		x = -1;
-		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst_x);
+		angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst);
 		while (++x < SIZE_SCREEN_X)
 		{
-			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst_x);
+			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
 			f_calculate_combined_quaternion(data, angleA, angleB, &c.v_view);
 			calculate_pixel_color_plus(data, &c);
 			mlx_pixel_put(data->mlx, data->win, x, y, c.px_color.r << 16 | c.px_color.g << 8 | c.px_color.b);

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/25 01:18:55 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/25 03:12:55 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void	initialization(int ac, char **av, t_data *data)
 	stat(data->av[1], &file_stat);
 	data->last_modif_time = file_stat.st_mtime;
 	data->eye.c = data->camera[0];
+
+	// data->move_camera = 
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
