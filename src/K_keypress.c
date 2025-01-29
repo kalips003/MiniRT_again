@@ -22,7 +22,8 @@ int	key_press(int keysym, t_data *data)
 {
 	if (keysym == XK_Escape)
 		end2(data);
-	if (keysym == XK_KP_Enter)
+	if (keysym == XK_p)
+	// if (keysym == XK_KP_Enter)
 	{
 		data->is_not_moving = 1;
 		ft_render_frame_plus(data);

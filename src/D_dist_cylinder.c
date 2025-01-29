@@ -140,8 +140,9 @@ t_vect	ft_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_ca
 		// (color & 0xFF) / 255.0 * 2.0 - 1.0};
 		(color & 0xFF) / 255.0};
 	ft_normalize_vect(&normal_map);
-	// normal_map.dz *= -1; ???
-	// normal_map.dx *= -1; ???
+	// normal_map.dz *= -1;// ???
+	normal_map.dy *= -1;// ???
+	normal_map.dx *= -1;// ???
 
 	t_obj	local;
 	local.view = calcul->v_normal;

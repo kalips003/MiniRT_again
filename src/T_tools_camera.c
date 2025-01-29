@@ -104,8 +104,13 @@ void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg)
 // rotate the obj (eye) vector of fixed angle
 void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg)
 {
+	// printf("obj: view= %f,%f,%f\nup= %f,%f,%f\nright= %f,%f,%f\n",
+	// obj->view.dx, obj->view.dy, obj->view.dz,\
+	// obj->up.dx, obj->up.dy, obj->up.dz, \
+	// obj->right.dx, obj->right.dy, obj->right.dz);
 	t_vect	cross = ft_vect_cross_product(axis_rota, &obj->view);
 	ft_normalize_vect(&cross);
+
 	double	dot = ft_vect_dot_product(axis_rota, &obj->view);
 	t_vect	new_view = {
 		obj->view.dx * COS_ROTA + cross.dx * (posi_neg) * SIN_ROTA + axis_rota->dx * dot * (1 - COS_ROTA),
@@ -116,6 +121,7 @@ void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg)
 	
 	cross = ft_vect_cross_product(axis_rota, &obj->up);
 	ft_normalize_vect(&cross);
+
 	dot = ft_vect_dot_product(axis_rota, &obj->up);
 	t_vect	new_up = {
 		obj->up.dx * COS_ROTA + cross.dx * (posi_neg) * SIN_ROTA + axis_rota->dx * dot * (1 - COS_ROTA),

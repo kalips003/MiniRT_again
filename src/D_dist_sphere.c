@@ -94,18 +94,18 @@ void	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, double dist, int insid
 t_rgb	ft_txt_sphere(t_calcul_px *calcul)
 {
 	t_vect	local_n = {
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),    // X = up
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),  // Y = view
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),    // X = up
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),  // Y = view
 		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
 	};
 	ft_normalize_vect(&local_n);
 
 	//  [−π,π][−π,π] > [0,1].
 	// double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(local_n.dz, local_n.dx) / (2 * PI) + 0.5));
+	double	l_θ = fmin(1.0, fmax(0.0, atan2(local_n.dy, local_n.dz) / (2 * PI) + 0.5));
 	// [0,π] > [0,1].
 	// double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
-	double	l_ϕ = fmin(1.0, fmax(0.0, acos(local_n.dy) / PI));
+	double	l_ϕ = fmin(1.0, fmax(0.0, acos(local_n.dx) / PI));
 
 	t_img *texture = ((t_sphere*)calcul->object)->texture;
 
@@ -126,18 +126,18 @@ t_rgb	ft_txt_sphere(t_calcul_px *calcul)
 t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 {
 	t_vect	normal_map = {
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),    // X = up
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),  // Y = view
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),    // X = up
+		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),  // Y = view
 		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
 	};
 	ft_normalize_vect(&normal_map);
 
 	//  [−π,π][−π,π] > [0,1].
 	// double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(normal_map.dz, normal_map.dx) / (2 * PI) + 0.5));
+	double	l_θ = fmin(1.0, fmax(0.0, atan2(normal_map.dy, normal_map.dz) / (2 * PI) + 0.5));
 	// [0,π] > [0,1].
 	// double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
-	double	l_ϕ = fmin(1.0, fmax(0.0, acos(normal_map.dy) / PI));
+	double	l_ϕ = fmin(1.0, fmax(0.0, acos(normal_map.dx) / PI));
 
 	t_img *nmap = ((t_sphere*)calcul->object)->normal_map;
 	int text_x = (int)(l_θ * nmap->sz_x) % nmap->sz_x;
@@ -149,8 +149,9 @@ t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
 		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
 		(color & 0xFF) / 255.0};
-	// normal_map.dz *= -1; ???
-	// normal_map.dx *= -1; ???
+	// normal_map.dz *= -1;// ???
+	// normal_map.dy *= -1;// ???
+	// normal_map.dx *= -1;// ???
 	ft_normalize_vect(&normal_map);
 
 	t_obj	local;

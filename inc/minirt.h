@@ -57,8 +57,8 @@
 # define REFLECTION_BOUNCES 1
 # define TRANSPARENCE_BOUNCES 1
 
-# define SIZE_SCREEN_Y 500
-# define SIZE_SCREEN_X 600
+# define SIZE_SCREEN_Y 800
+# define SIZE_SCREEN_X 1000
 
 
 typedef struct s_rgb			t_rgb;
