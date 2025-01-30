@@ -127,6 +127,14 @@ void	print_clic(t_data *data, int x, int y)
 
 	printf("Camera = [%f,%f,%f\t%f,%f,%f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v_view.dx, c.v_view.dy, c.v_view.dz);
 	printf("Mouse clicked at position (%d, %d)\n", x, y);
+	if (c.object)
+	{
+		t_obj *obj = &((t_sphere*)c.object)->O;
+		printf("\tOBJECT: view= %f,%f,%f\nup= %f,%f,%f\nright= %f,%f,%f\n", \
+		obj->view.dx, obj->view.dy, obj->view.dz,\
+		obj->up.dx, obj->up.dy, obj->up.dz, \
+		obj->right.dx, obj->right.dy, obj->right.dz);
+	}
 	printf("Vector normal surface = [%f, %f, %f]\n", c.v_normal.dx, c.v_normal.dy, c.v_normal.dz);
 	printf("Intersection point = [%f, %f, %f]\n", c.inter.x, c.inter.y, c.inter.z);
 

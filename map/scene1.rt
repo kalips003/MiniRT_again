@@ -17,13 +17,14 @@ L 						0,10,-25 			0.8 					255,255,255
 # L 						15,50,100 			0.7 					0,255,0
 
 # (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255] X=texture/rock2.xpm 
-sp 						0,0,0 				20 						255,50,50 X=texture/earthmap4k.xpm N=txt/earth_n.xpm
+sp 						0,0,0 				10 						255,50,50
+# X=texture/earthmap4k.xpm N=txt/earth_n.xpm
 # sp 						0,0,0 				20 						255,50,50 
 # sp 					10,5,10 				7 						255,0,0	N=txt/brique_n.xpm
 
 
 # (pl) Plane:           POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
-# pl 						0,0,0 				0,1.0,0 				255,255,10
+pl 						-30,0,0 				0.9,0.1,0 				255,255,10  M=0.2
 # pl 						0,-5,0 				0,0.5,0.5 				255,255,10 X=texture/big_ball.xpm
 
 # (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER	HEIGHT		COLOR_rgb [0, 255]

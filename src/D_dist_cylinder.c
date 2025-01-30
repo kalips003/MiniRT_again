@@ -105,8 +105,11 @@ t_rgb	ft_textures_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder
 	double cosθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.up);
 	double sinθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.right);
 	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
-	int text_x = (int)(l_θ * texture->sz_x) % texture->sz_x;
-	int text_y = (int)((c->dist_h / cylinder->height) * texture->sz_y) % texture->sz_y;
+
+	// int text_x = (int)(l_θ * texture->sz_x) % texture->sz_x;
+	// int text_y = (int)((1 - c->dist_h / cylinder->height) * texture->sz_y) % texture->sz_y;
+	int text_x = ((int)floor(l_θ * texture->sz_x) + texture->sz_x) % texture->sz_x;
+	int text_y = ((int)floor((1 - c->dist_h / cylinder->height) * texture->sz_y) + texture->sz_y) % texture->sz_y;
 
 	char *pixel = texture->addr + (text_y * texture->ll + text_x * (texture->bpp / 8));
 	int color = *(unsigned int *)pixel;
@@ -128,8 +131,10 @@ t_vect	ft_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_ca
 	double cosθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.up);
 	double sinθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.right);
 	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
-	int text_x = (int)(l_θ * texture->sz_x) % texture->sz_x;
-	int text_y = (int)((c->dist_h / cylinder->height) * texture->sz_y) % texture->sz_y;
+	int text_x = ((int)floor(l_θ * texture->sz_x) + texture->sz_x) % texture->sz_x;
+	int text_y = ((int)floor((1 - c->dist_h / cylinder->height) * texture->sz_y) + texture->sz_y) % texture->sz_y;
+	// int text_x = (int)(l_θ * texture->sz_x) % texture->sz_x;
+	// int text_y = (int)((c->dist_h / cylinder->height) * texture->sz_y) % texture->sz_y;
 
 	char *pixel = texture->addr + (text_y * texture->ll + text_x * (texture->bpp / 8));
 	int color = *(unsigned int *)pixel;

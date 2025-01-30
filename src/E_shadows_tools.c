@@ -15,6 +15,7 @@
 double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
 int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
+t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // calculate angle between camera ray and light source at intersection
@@ -113,4 +114,45 @@ t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal)
 	reflected.dz = incident->dz - dot_pro * normal->dz;
 	ft_normalize_vect(&reflected);
 	return (reflected);
+}
+
+t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
+{
+	t_calcul_px	c;
+	c.c0 = calcul->inter;
+	c.v_view = ft_vect_reflected(&calcul->v_view, &calcul->v_normal);
+	calculate_pixel_color_simple(data, &c);
+	return (c.px_color);
+}
+
+
+t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
+{
+	t_calcul_px	c;
+	c.c0 = calcul->inter;
+
+	double cos_i = -ft_vect_dot_product(&calcul->v_view, &calcul->v_normal);
+	double index = 1.0 / ((t_sphere*)calcul->object)->gamma;
+	double cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
+
+	c.v_view = (t_vect){
+		index * calcul->v_view.dx + (index * cos_i - cos_r) * calcul->v_normal.dx,
+		index * calcul->v_view.dy + (index * cos_i - cos_r) * calcul->v_normal.dy,
+		index * calcul->v_view.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
+	};
+	ft_normalize_vect(&c.v_view);
+	calculate_pixel_color_simple(data, &c);
+	// hopefully, calcul->obj == c.obj
+
+	cos_i = -ft_vect_dot_product(&c.v_view, &c.v_normal);
+	index = ((t_sphere*)calcul->object)->gamma;
+	cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
+	c.v_view = (t_vect){
+		index * calcul->v_view.dx + (index * cos_i - cos_r) * calcul->v_normal.dx,
+		index * calcul->v_view.dy + (index * cos_i - cos_r) * calcul->v_normal.dy,
+		index * calcul->v_view.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
+	};
+	ft_normalize_vect(&c.v_view);
+	calculate_pixel_color_simple(data, &c);
+	return (c.px_color);
 }

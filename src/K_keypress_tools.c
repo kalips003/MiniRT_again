@@ -38,6 +38,12 @@ void	function_1(t_data *data, t_obj *obj)
 {
 	move_point(&obj->c0, &obj->right, 5.0);
 }
+
+void	function_2(t_data *data, t_obj *obj)
+{
+	// move color loop
+	move_point(&obj->c0, &obj->right, 5.0);
+}
 // funcction de transformatioin basee sur un tableau, touches "-" et "+" swap through
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -77,17 +83,17 @@ int	keys_wasd(int keysym, t_data *data)
 		obj = &data->eye.c->O;
 
 	if (keysym == XK_a)
-		rotation_obj(obj, &obj->up, -1);
-	else if (keysym == XK_d)
 		rotation_obj(obj, &obj->up, 1);
+	else if (keysym == XK_d)
+		rotation_obj(obj, &obj->up, -1);
 	else if (keysym == XK_w)
 		rotation_obj(obj, &obj->right, 1);
 	else if (keysym == XK_s)
 		rotation_obj(obj, &obj->right, -1);
 	else if (keysym == XK_q)
-		rotation_obj(obj, &obj->view, -1);
-	else if (keysym == XK_e)
 		rotation_obj(obj, &obj->view, 1);
+	else if (keysym == XK_e)
+		rotation_obj(obj, &obj->view, -1);
 	else if (keysym == XK_n)
 	{
 		data->eye.current_camera++;

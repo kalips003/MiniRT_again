@@ -57,8 +57,8 @@
 # define REFLECTION_BOUNCES 1
 # define TRANSPARENCE_BOUNCES 1
 
-# define SIZE_SCREEN_Y 800
-# define SIZE_SCREEN_X 1000
+# define SIZE_SCREEN_Y 400
+# define SIZE_SCREEN_X 600
 
 
 typedef struct s_rgb			t_rgb;
@@ -133,6 +133,7 @@ t_coor	ft_reflected(t_data *data, t_calcul_px *c);
 double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
 int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
+t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
 // 
 int	in_shadow_of_sphere(t_calcul_px *calcul, t_sphere *sphere);
 int	in_shadow_of_plane(t_calcul_px *calcul, t_plane *p);

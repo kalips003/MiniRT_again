@@ -40,8 +40,16 @@ void	ft_handle_shadows_simple(t_data *data, t_calcul_px *c)
 		diffuse.z += c->px_color.b * (*lights)->color.b / 255.0 * adjusted_intensity;
 	}
 
-	c->px_color.r = fmax(0, fmin(255, round(ambient.x + diffuse.x)));
-	c->px_color.g = fmax(0, fmin(255, round(ambient.y + diffuse.y)));
-	c->px_color.b = fmax(0, fmin(255, round(ambient.z + diffuse.z)));
+	t_rgb	reflected = what_is_reflected(data, c);
+	double mirror_scalar = ((t_sphere*)c->object)->mirror;
+
+	// c->px_color.r = fmax(0, fmin(255, round(ambient.x + diffuse.x)));
+	// c->px_color.g = fmax(0, fmin(255, round(ambient.y + diffuse.y)));
+	// c->px_color.b = fmax(0, fmin(255, round(ambient.z + diffuse.z)));
+
+	c->px_color.r = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.x + diffuse.x) + mirror_scalar * reflected.r)));
+	c->px_color.g = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.y + diffuse.y) + mirror_scalar * reflected.g)));
+	c->px_color.b = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.z + diffuse.z) + mirror_scalar * reflected.b)));
+
 
 }

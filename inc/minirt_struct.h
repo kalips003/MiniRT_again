@@ -345,6 +345,8 @@ typedef struct s_calcul_px
 	void	*object;
 	double	cos_angle;
 
+	t_rgb	px_color_behind;
+
 }	t_calcul_px;
 
 

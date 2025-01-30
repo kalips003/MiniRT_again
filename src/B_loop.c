@@ -120,7 +120,7 @@ int	ft_render_frame_plus(t_data *data)
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-void	calculate_pixel_color_simple(t_data *data, t_calcul_px *c)
+void			calculate_pixel_color_simple(t_data *data, t_calcul_px *c)
 {
 	if (!ft_find_pixel_colision(data, c))
 	{

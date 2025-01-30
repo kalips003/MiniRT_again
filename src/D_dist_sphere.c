@@ -102,15 +102,17 @@ t_rgb	ft_txt_sphere(t_calcul_px *calcul)
 
 	//  [−π,π][−π,π] > [0,1].
 	// double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(local_n.dy, local_n.dz) / (2 * PI) + 0.5));
+	double	l_θ = fmin(1.0, fmax(0.0, atan2(local_n.dz, local_n.dy) / (2 * PI) + 0.5));
 	// [0,π] > [0,1].
 	// double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
 	double	l_ϕ = fmin(1.0, fmax(0.0, acos(local_n.dx) / PI));
 
 	t_img *texture = ((t_sphere*)calcul->object)->texture;
 
-	int text_x = (int)(l_θ * texture->sz_x) % texture->sz_x;
-	int text_y = (int)(l_ϕ * texture->sz_y) % texture->sz_y;
+	// int text_x = (int)(l_θ * texture->sz_x) % texture->sz_x;
+	// int text_y = (int)(l_ϕ * texture->sz_y) % texture->sz_y;
+	int text_x = ((int)floor(l_θ * texture->sz_x) + texture->sz_x) % texture->sz_x;
+	int text_y = ((int)floor(l_ϕ * texture->sz_y) + texture->sz_y) % texture->sz_y;
 	char *pixel = texture->addr + (text_y * texture->ll + text_x * (texture->bpp / 8));
 	int color = *(unsigned int *)pixel;
 	// printf("l_θ = %f, l_ϕ= %f, color = %d\n", l_θ, l_ϕ, color);
@@ -134,14 +136,16 @@ t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 
 	//  [−π,π][−π,π] > [0,1].
 	// double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v_normal.dz, calcul->v_normal.dx) / (2 * PI) + 0.5));
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(normal_map.dy, normal_map.dz) / (2 * PI) + 0.5));
+	double	l_θ = fmin(1.0, fmax(0.0, atan2(normal_map.dz, normal_map.dy) / (2 * PI) + 0.5));
 	// [0,π] > [0,1].
 	// double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v_normal.dy) / PI));
 	double	l_ϕ = fmin(1.0, fmax(0.0, acos(normal_map.dx) / PI));
 
 	t_img *nmap = ((t_sphere*)calcul->object)->normal_map;
-	int text_x = (int)(l_θ * nmap->sz_x) % nmap->sz_x;
-	int text_y = (int)(l_ϕ * nmap->sz_y) % nmap->sz_y;
+	// int text_x = (int)(l_θ * nmap->sz_x) % nmap->sz_x;
+	// int text_y = (int)(l_ϕ * nmap->sz_y) % nmap->sz_y;
+	int text_x = ((int)floor(l_θ * nmap->sz_x) + nmap->sz_x) % nmap->sz_x;
+	int text_y = ((int)floor(l_ϕ * nmap->sz_y) + nmap->sz_y) % nmap->sz_y;
 	char *pixel = nmap->addr + (text_y * nmap->ll + text_x * (nmap->bpp / 8));
 	int color = *(unsigned int *)pixel;
 
@@ -149,17 +153,14 @@ t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
 		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
 		(color & 0xFF) / 255.0};
+	ft_normalize_vect(&normal_map);
 	// normal_map.dz *= -1;// ???
 	// normal_map.dy *= -1;// ???
 	// normal_map.dx *= -1;// ???
-	ft_normalize_vect(&normal_map);
 
 	t_obj	local;
 	local.view = calcul->v_normal;
-	local.right = ft_vect_cross_product(&local.view, &((t_sphere*)calcul->object)->O.view);
-	ft_normalize_vect(&local.right);
-	local.up = ft_vect_cross_product(&local.right, &local.view);
-	ft_normalize_vect(&local.up);
+	h_vector_space(&local);
 
 	t_vect world_normal = {
 		ft_vect_dot_product(&normal_map, &local.up),
@@ -168,18 +169,6 @@ t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 	};
 	ft_normalize_vect(&world_normal);
 
-	// // 	[NTB].[normal_map] WRONG
-	// world_normal.dx = normal_map.dx * x.right.dx + normal_map.dy * x.right.dy + normal_map.dz * x.right.dz;
-	// world_normal.dy = normal_map.dx * x.up.dx + normal_map.dy * x.up.dy + normal_map.dz * x.up.dz;
-	// world_normal.dz = normal_map.dx * x.view.dx + normal_map.dy * x.view.dy + normal_map.dz * x.view.dz;
-
-// 	[NTB].[normal_map] RIGHT
-	// world_normal.dx = normal_map.dx * x.right.dx + normal_map.dy * x.up.dx + normal_map.dz * x.view.dx;
-	// world_normal.dy = normal_map.dx * x.right.dy + normal_map.dy * x.up.dy + normal_map.dz * x.view.dy;
-	// world_normal.dz = normal_map.dx * x.right.dz + normal_map.dy * x.up.dz + normal_map.dz * x.view.dz;
-	// ft_normalize_vect(&world_normal);
-
 	return (world_normal);
-	
 }
 

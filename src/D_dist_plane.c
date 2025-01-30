@@ -79,8 +79,8 @@ t_rgb	ft_textures_plane(t_calcul_px *calcul, t_plane* plane)
 		calcul->inter.y - plane->O.c0.y,
 		calcul->inter.z - plane->O.c0.z
 	};
-	double	u = ft_vect_dot_product(&o_to_inter, &plane->O.right);
-	double	v = ft_vect_dot_product(&o_to_inter, &plane->O.up);
+	double	u = ft_vect_dot_product(&o_to_inter, &plane->O.right) * (1 + plane->gamma);
+	double	v = ft_vect_dot_product(&o_to_inter, &plane->O.up) * (1 + plane->gamma);
 
 	int text_x = ((int)floor(u) % texture->sz_x + texture->sz_x) % texture->sz_x;
 	int text_y = ((int)floor(v) % texture->sz_y + texture->sz_y) % texture->sz_y;
@@ -119,11 +119,11 @@ t_vect	ft_nmap_plane(t_calcul_px *calcul, t_plane* plane)
 		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
 		// (color & 0xFF) / 255.0 * 2.0 - 1.0};
 		(color & 0xFF) / 255.0};
+	ft_normalize_vect(&normal_map);
 	// normal_map.dz *= -1; ???
 	// normal_map.dx *= -1; ???
-	ft_normalize_vect(&normal_map);
-
 	// normal_map.dz *= -1; // Flip depth axis if needed (opengl map)
+
 	t_vect world_normal = {
 		ft_vect_dot_product(&normal_map, &plane->O.up),
 		ft_vect_dot_product(&normal_map, &plane->O.view),
