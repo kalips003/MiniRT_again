@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/24 15:48:41 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	ft_handle_shadows_plus(t_data *data, t_calcul_px *c)
 		diffuse.y += c->px_color.g * (*lights)->color.g / 255.0 * adjusted_intensity;
 		diffuse.z += c->px_color.b * (*lights)->color.b / 255.0 * adjusted_intensity;
 
-		t_vect reflected_view = ft_vect_reflected(&c->v_view, &c->v_normal);
-		double	cos_angle2 = fmax(-1.0, fmin(1.0, ft_vect_dot_product(&c->v_light, &reflected_view)));
+		t_vect reflected_view = ft_vect_reflected(&c->v, &c->v_normal);
+		double	cos_angle2 = fmax(-1.0, fmin(1.0, ft_dot_product(&c->v_light, &reflected_view)));
 		if (cos_angle2 < 0.0)
 			continue ;
 		adjusted_intensity = SCALAR_SPECULAR * (*lights)->ratio * pow(cos_angle2, SCALAR_SHINY);
@@ -120,8 +120,8 @@ void	ft_diffuse_and_reflected(t_data *data, t_calcul_px *c, t_light *light)
 	c->tmp_color.y += c->px_color.g * light->color.g / 255.0 * adjusted_intensity;
 	c->tmp_color.z += c->px_color.b * light->color.b / 255.0 * adjusted_intensity;
 // REFLECTED (SPECULAR)
-	t_vect reflected_view = c->v_view;
-	double	dot_pro = 2.0 * ft_vect_dot_product(&c->v_view, &c->v_normal);
+	t_vect reflected_view = c->v;
+	double	dot_pro = 2.0 * ft_dot_product(&c->v, &c->v_normal);
 	reflected_view.dx -= dot_pro * c->v_normal.dx;
 	reflected_view.dy -= dot_pro * c->v_normal.dy;
 	reflected_view.dz -= dot_pro * c->v_normal.dz;

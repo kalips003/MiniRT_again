@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/29 12:53:22 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/01 20:01:54 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,13 @@
 # include <X11/keysym.h>
 
 # include "libft.h"
+
+# include "minirt_const.h"
 # include "minirt_struct.h"
+# include "minirt_calcul.h"
+# include "minirt_objects.h"
+# include "minirt_general_struct.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////]
 //
@@ -41,40 +47,6 @@
 //			▒█░░▒█ ▒█░▒█ ▒█░░▀█ ▒█▄▄▀ ▒█░▒█ ░▒█░░ ▒█▄▄▄█ ▒█░▒█ ░░▒█░░
 //
 ///////////////////////////////////////////////////////////////////////////////]
-
-# define PI 3.14159265358979323846
-// CONST ROTATION
-# define COS_ROTA 0.99619469809174554520
-# define COS_ROTA2 0.99240387650610406567
-# define SIN_ROTA 0.08715574274765816587
-# define SIN_ROTA2 0.00759612349389596903
-# define COSSIN_ROTA 0.08682408883346516559
-
-# define EPSILON 1e-6
-# define SCALAR_LIGHT_DIST 300.0
-# define SCALAR_SPECULAR 0.04
-# define SCALAR_SHINY 1.0
-# define REFLECTION_BOUNCES 1
-# define TRANSPARENCE_BOUNCES 1
-
-# define SIZE_SCREEN_Y 400
-# define SIZE_SCREEN_X 600
-
-
-typedef struct s_rgb			t_rgb;
-typedef struct s_coor			t_coor;
-typedef struct s_vect		t_vect;
-typedef struct s_ambient_light	t_ambient_light;
-typedef struct s_camera			t_camera;
-typedef struct s_light			t_light;
-typedef struct s_sphere			t_sphere;
-typedef struct s_plane			t_plane;
-typedef struct s_cylinder		t_cylinder;
-typedef struct s_square			t_square;
-typedef struct s_calcul_px			t_calcul_px;
-typedef struct s_img			t_img;
-typedef struct s_eye			t_eye;
-typedef struct s_data			t_data;
 
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -103,7 +75,7 @@ int	ft_find_pixel_colision(t_data *data, t_calcul_px *c);
 		D	Objects
 ********************************/
 // CIRCLE
-double	distance_from_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle);
+double	distance_from_cicle_v2(t_calcul_px *calcul, t_circle circle);
 // CYLINDER
 double	distance_from_cylinder_v2(t_calcul_px *calcul, t_cylinder *cy);
 void	h_dist_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc *c);
@@ -120,6 +92,16 @@ t_vect	ft_nmap_sphere(t_calcul_px *calcul);
 // 	CONE
 double	distance_from_cone(t_calcul_px *calcul, t_cone *cy);
 void	h_dist_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc *c);
+/********************************
+		DDD	Dist Objects
+********************************/
+// CIRCLE
+int	distance_from_cicle(t_calcul_px *calcul, void *obj);
+// CYLINDER
+// PLANE
+// 	SPHERE
+// 	CONE
+
 /********************************
 		E
 ********************************/
@@ -138,7 +120,7 @@ t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
 int	in_shadow_of_sphere(t_calcul_px *calcul, t_sphere *sphere);
 int	in_shadow_of_plane(t_calcul_px *calcul, t_plane *p);
 int	in_shadow_of_cicle(t_calcul_px *calcul, t_circle circle);
-int	in_shadow_of_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle);
+int	in_shadow_of_cicle_v2(t_calcul_px *calcul, t_circle circle);
 int	in_shadow_of_cylinder(t_calcul_px *calcul, t_cylinder *cy);
 int	in_shadow_of_cone(t_calcul_px *calcul, t_cone *cone);
 /********************************
@@ -167,13 +149,16 @@ void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
 void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg);
 // math
 int	ft_normalize_vect(t_vect *vect);
-double	ft_vect_dot_product(t_vect *a, t_vect *b);
-t_vect	ft_vect_cross_product(t_vect *u, t_vect *v);
+double	ft_dot_product(t_vect *a, t_vect *b);
+t_vect	ft_cross_product(t_vect *u, t_vect *v);
+t_vect	ft_cross_product_norm(t_vect *u, t_vect *v);
 double	dist_two_points(t_coor *a, t_coor *b);
 void	f_calculate_combined_quaternion(t_data *data, double angle_α, double angle_β, t_vect *rtrn);
 double h_smalest_Δ(double a, double b);
 void	move_point(t_coor* p, t_vect *v, double incre);
-
+t_coor	new_moved_point(t_coor* p, t_vect *v, double dist);
+t_vect	vect_ab(t_coor* a, t_coor* b);
+t_vect	vect_ab_norm(t_coor* a, t_coor* b);
 /********************************
 		Y
 ********************************/
@@ -190,6 +175,49 @@ int	parse_co(t_data *data, char **raw_split);
 // 
 int	parse_reste(t_data *data, char **raw_split, void *obj);
 int	h_obj_vect_space(t_obj *obj, t_vect *view);
+/********************************
+		TTT	Tools
+********************************/
+// atof
+int		ft_atof_v2(char *string, double *rtrn);
+int		ato_coor_v2(char *str, t_coor *xyz);
+int		ato_rgb_v2(char *str, t_rgb *rgb);
+// vect ope
+int		ft_normalize_vect_v2(t_vect *vect, int print_err);
+double	ft_dot_product(t_vect *a, t_vect *b);
+t_vect	ft_cross_product(t_vect *u, t_vect *v);
+t_vect	ft_cross_product_norm(t_vect *u, t_vect *v);
+double	dist_two_points(t_coor *a, t_coor *b);
+// vect mouv
+void	move_point(t_coor* p, t_vect *v, double incre);
+t_coor	new_moved_point(t_coor* p, t_vect *v, double dist);
+t_vect	vect_ab(t_coor* a, t_coor* b);
+t_vect	vect_ab_norm(t_coor* a, t_coor* b);
+// other
+int		ft_normalize_vect(t_vect *vect);
+void	f_calculate_combined_quaternion(t_data *data, double angle_α, double angle_β, t_vect *rtrn);
+double	h_smalest_Δ(double a, double b);
+/********************************
+		YYY
+********************************/
+int	ft_parse_line(t_data *data, char *line);
+int	parse_reste_v2(t_data *data, char **raw_split, t_param *obj);
+int	h_parse_vect_space(t_obj *obj, t_vect *view);
+// 
+int	parse_A_v2(t_data *data, char **raw_split);
+int	parse_L_v2(t_data *data, char **raw_split);
+int	parse_C_v2(t_data *data, char **raw_split);
+int	parse_ci_v2(t_data *data, char **raw_split);
+int	parse_pl_v2(t_data *data, char **raw_split);
+int	parse_sp_v2(t_data *data, char **raw_split);
+int	parse_cy_v2(t_data *data, char **raw_split);
+int	parse_co_v2(t_data *data, char **raw_split);
+// 
+int	parse_shininess(t_data *data, char *raw, t_param *obj);
+int	parse_transparence(t_data *data, char *raw, t_param *obj);
+int	parse_mirror(t_data *data, char *raw, t_param *obj);
+int	parse_texture(t_data *data, char *path, t_param *obj);
+int	parse_nmap(t_data *data, char *path, t_param *obj);
 /********************************
 		Z
 ********************************/

@@ -6,35 +6,17 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/25 03:12:55 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/01 16:19:19 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-typedef int (*t_ft_object)(t_data *data, char **split);
 
-typedef struct s_dico_pair
-{
-	char		*name;
-	t_ft_object	exe;
-}	t_dico_pair;
-
-static const t_dico_pair	dico[] = {
-	{"A", parse_A},
-	{"C", parse_C},
-	{"L", parse_L},
-	{"pl", parse_pl},
-	{"sp", parse_sp},
-	{"cy", parse_cy},
-	{"co", parse_co},
-	{NULL, NULL}
-};
 
 ///////////////////////////////////////////////////////////////////////////////]
 
 void		initialization(int ac, char **av, t_data *data);
-static int	ft_parse_line(t_data *data, char *line);
 void	read_file(int ac, char **av, t_data *data);
 static void		ini_mlx(t_data *data);
 
@@ -49,13 +31,16 @@ void	initialization(int ac, char **av, t_data *data)
 	ini_mlx(data);
 	read_file(ac, av, data);
 
+	if (tab_size((char **)data->bg_light) != 1)
+		return (put(ERR7"Only ONE background light!\n"), end(data, 1, 1));
+	if (tab_size((char **)data->camera) < 1)
+		return (put(ERR7"Need a Camera\n"), end(data, 1, 1));
 // CHECK GOOD NUMBER OF CAMERA AND SO ON... <----------------------------------------------A FAIRE
 
 	stat(data->av[1], &file_stat);
 	data->last_modif_time = file_stat.st_mtime;
 	data->eye.c = data->camera[0];
 
-	// data->move_camera = 
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -85,52 +70,15 @@ void	read_file(int ac, char **av, t_data *data)
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-// input line = "# C 	0,0,-100		0,0,1	70"
-static int	ft_parse_line(t_data *data, char *line)
-{
-	// put("IN PARSE LINE\n");
-	char **params;
-	int	i;
-// if line empty, skip it
-	if (line[0] == '\n' || line[0] == '#')
-		return (free_s(line), 0);
-// split the raw
-	params = split(line, " \t\n");
-	free_s(line);
-	if (!params)
-		return (put(ERRM"split\n"), 2);
-// find the identifier in the dico, process the object with the appropriate function
-	i = -1;
-	while (dico[++i].name)
-	{
-		if (same_str(params[0], dico[i].name))
-		{
-			if (dico[i].exe(data, params + 1))
-				return (free_tab(params), put(ERR3"parsing error\n"), 1);
-			else
-				break ;
-		}
-	}
-	free_tab(params);
-	if (!dico[i].name)
-		return (put(ERR4"unknown object\n"), 1);
-	return (0);
-}
-
-///////////////////////////////////////////////////////////////////////////////]
 static void		ini_mlx(t_data *data)
 {
 	data->mlx = mlx_init();
 	if (!data->mlx)
 		(put(ERRM"MLX fait de la merde\n"), end(data, 1, 1));
 	data->win = mlx_new_window(data->mlx, SIZE_SCREEN_X, SIZE_SCREEN_Y, "miniRT");
-	// data->buffer.img = mlx_new_image(data->mlx, SIZE_SCREEN_X, SIZE_SCREEN_Y);
-	// if (!data->win || !data->buffer.img)
 	if (!data->win)
 		(put(ERRM"Problem initalisazing mlx (2)\n"), end(data, 1, 1));
-	// data->buffer.addr = mlx_get_data_addr(data->buffer.img, &data->buffer.bpp, &data->buffer.ll, &data->buffer.end);
-	// if (!data->buffer.addr)
-	// 	(put(ERRM"Problem initalisazing mlx (3)\n"), end(data, 1));
+
 	mlx_loop_hook(data->mlx, &ft_loop_empty_v2, data);
 	// mlx_loop_hook(data->mlx, &ft_loop, data);
 	mlx_hook(data->win, KeyPress, KeyPressMask, &key_press, data);

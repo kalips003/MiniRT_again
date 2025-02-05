@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/24 14:53:40 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ double	distance_from_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle)
 // RESOLVE A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
 	c.top = -(circle.v.dx * calcul->c0.x + circle.v.dy * calcul->c0.y + circle.v.dz * calcul->c0.z + d);
-	c.bot = circle.v.dx * calcul->v_view.dx + circle.v.dy * calcul->v_view.dy + circle.v.dz * calcul->v_view.dz;
+	c.bot = circle.v.dx * calcul->v.dx + circle.v.dy * calcul->v.dy + circle.v.dz * calcul->v.dz;
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to d plane
@@ -36,9 +36,9 @@ double	distance_from_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle)
 	if (c.dist <= 0)
 		return (-1.0);
 	inter_temp = (t_coor){
-			calcul->c0.x + calcul->v_view.dx * c.dist,
-			calcul->c0.y + calcul->v_view.dy * c.dist,
-			calcul->c0.z + calcul->v_view.dz * c.dist};
+			calcul->c0.x + calcul->v.dx * c.dist,
+			calcul->c0.y + calcul->v.dy * c.dist,
+			calcul->c0.z + calcul->v.dz * c.dist};
 
 	if (dist_two_points(&inter_temp, &circle.c0) > circle.radius)
 		return (-1.0);
@@ -51,7 +51,7 @@ double	distance_from_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle)
 		calcul->inter = inter_temp;
 
 		calcul->v_normal = circle.v;
-		if (ft_vect_dot_product(&calcul->v_view, &circle.v) > 0.0)
+		if (ft_dot_product(&calcul->v, &circle.v) > 0.0)
 			calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 		// ft_normalize_vect(&calcul->v_normal);
 		calcul->object = circle.obj;

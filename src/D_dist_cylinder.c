@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 16:25:57 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 16:44:53 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ double	distance_from_cylinder_v2(t_calcul_px *calcul, t_cylinder *cy)
 
 	c.radius = cy->diameter / 2;
 	// (P - E).W = At + B
-	c.A = calcul->v_view.dx * cy->O.view.dx + calcul->v_view.dy * cy->O.view.dy + calcul->v_view.dz * cy->O.view.dz;
+	c.A = calcul->v.dx * cy->O.view.dx + calcul->v.dy * cy->O.view.dy + calcul->v.dz * cy->O.view.dz;
 	c.B = cy->O.view.dx * (calcul->c0.x - cy->O.c0.x) + cy->O.view.dy * (calcul->c0.y - cy->O.c0.y) + cy->O.view.dz * (calcul->c0.z - cy->O.c0.z);
 	
 	// (P - E) - ((P - E).W) * W = {X0t + X1, Y0t + Y1, Z0t + Z1};
-	c.x0 = calcul->v_view.dx - c.A * cy->O.view.dx;
-	c.y0 = calcul->v_view.dy - c.A * cy->O.view.dy;
-	c.z0 = calcul->v_view.dz - c.A * cy->O.view.dz;
+	c.x0 = calcul->v.dx - c.A * cy->O.view.dx;
+	c.y0 = calcul->v.dy - c.A * cy->O.view.dy;
+	c.z0 = calcul->v.dz - c.A * cy->O.view.dz;
 	c.x1 = calcul->c0.x - c.B * cy->O.view.dx - cy->O.c0.x;
 	c.y1 = calcul->c0.y - c.B * cy->O.view.dy - cy->O.c0.y;
 	c.z1 = calcul->c0.z - c.B * cy->O.view.dz - cy->O.c0.z;
@@ -69,9 +69,9 @@ void	h_dist_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc 
 	calcul->object = (void *)cylinder;
 
 	calcul->inter = (t_coor){
-		calcul->c0.x + calcul->v_view.dx * c->dist,
-		calcul->c0.y + calcul->v_view.dy * c->dist,
-		calcul->c0.z + calcul->v_view.dz * c->dist};
+		calcul->c0.x + calcul->v.dx * c->dist,
+		calcul->c0.y + calcul->v.dy * c->dist,
+		calcul->c0.z + calcul->v.dz * c->dist};
 
 	c->projec_point = (t_coor){
 		cylinder->O.c0.x + c->dist_h * cylinder->O.view.dx, 
@@ -102,8 +102,8 @@ t_rgb	ft_textures_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder
 {
 	t_img *texture = ((t_cylinder*)calcul->object)->texture;
 
-	double cosθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.up);
-	double sinθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.right);
+	double cosθ = ft_dot_product(&calcul->v_normal, &cylinder->O.up);
+	double sinθ = ft_dot_product(&calcul->v_normal, &cylinder->O.right);
 	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
 
 	// int text_x = (int)(l_θ * texture->sz_x) % texture->sz_x;
@@ -128,8 +128,8 @@ t_vect	ft_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_ca
 {
 	t_img *texture = ((t_cylinder*)calcul->object)->normal_map;
 
-	double cosθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.up);
-	double sinθ = ft_vect_dot_product(&calcul->v_normal, &cylinder->O.right);
+	double cosθ = ft_dot_product(&calcul->v_normal, &cylinder->O.up);
+	double sinθ = ft_dot_product(&calcul->v_normal, &cylinder->O.right);
 	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
 	int text_x = ((int)floor(l_θ * texture->sz_x) + texture->sz_x) % texture->sz_x;
 	int text_y = ((int)floor((1 - c->dist_h / cylinder->height) * texture->sz_y) + texture->sz_y) % texture->sz_y;
@@ -152,13 +152,13 @@ t_vect	ft_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_ca
 	t_obj	local;
 	local.view = calcul->v_normal;
 	local.up = cylinder->O.view;
-	local.right = ft_vect_cross_product(&local.view, &local.up);
+	local.right = ft_cross_product(&local.view, &local.up);
 	ft_normalize_vect(&local.right);
 
 	t_vect world_normal = {
-		ft_vect_dot_product(&normal_map, &local.right),
-		ft_vect_dot_product(&normal_map, &local.up),
-		ft_vect_dot_product(&normal_map, &local.view)
+		ft_dot_product(&normal_map, &local.right),
+		ft_dot_product(&normal_map, &local.up),
+		ft_dot_product(&normal_map, &local.view)
 	};
 	ft_normalize_vect(&world_normal);
 

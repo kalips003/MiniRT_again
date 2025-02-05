@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2024/12/15 13:44:47 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/01 16:19:39 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,7 @@ void	end(t_data *data, int exit_code, int full_clean)
 	data->bg_light = free_tab((char **)data->bg_light);
 	data->camera = free_tab((char **)data->camera);
 	data->light_source = free_tab((char **)data->light_source);
-	data->spheres = free_tab((char **)data->spheres);
-	data->planes = free_tab((char **)data->planes);
-	data->cylinders = free_tab((char **)data->cylinders);
-	data->cones = free_tab((char **)data->cones);
+	data->spheres = free_tab((char **)data->objects);
 	data->eye.c = NULL;
 
 	destroy_textures(data);
@@ -45,12 +42,8 @@ int	end2(t_data *data)
 	free_tab((char **)data->bg_light);
 	free_tab((char **)data->camera);
 	free_tab((char **)data->light_source);
-	free_tab((char **)data->spheres);
-	free_tab((char **)data->planes);
-	free_tab((char **)data->cylinders);
-	free_tab((char **)data->cones);
-	// if (data->buffer.img)
-	// 	mlx_destroy_image(data->mlx, data->buffer.img);
+	free_tab((char **)data->objects);
+
 	destroy_textures(data);
 	if (data->mlx)
 	{

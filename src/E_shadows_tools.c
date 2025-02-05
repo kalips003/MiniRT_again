@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 16:28:17 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,13 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 
 	calcul.c0 = c->inter;
 	calcul.inter = light->xyz;
-	calcul.v_view = (t_vect){calcul.inter.x - calcul.c0.x, calcul.inter.y - calcul.c0.y, calcul.inter.z - calcul.c0.z};
-	calcul.dist = sqrt(calcul.v_view.dx * calcul.v_view.dx + calcul.v_view.dy * calcul.v_view.dy + calcul.v_view.dz * calcul.v_view.dz);
+	calcul.v = (t_vect){calcul.inter.x - calcul.c0.x, calcul.inter.y - calcul.c0.y, calcul.inter.z - calcul.c0.z};
+	calcul.dist = sqrt(calcul.v.dx * calcul.v.dx + calcul.v.dy * calcul.v.dy + calcul.v.dz * calcul.v.dz);
 	
 	c->dist_light = calcul.dist;
 	
-	ft_normalize_vect(&calcul.v_view);
-	c->v_light = calcul.v_view;
+	ft_normalize_vect(&calcul.v);
+	c->v_light = calcul.v;
 
 	sphere_ptr = data->spheres - 1;
 	while (++sphere_ptr && *sphere_ptr)
@@ -108,7 +108,7 @@ t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal)
 	t_vect reflected;
 	double	dot_pro;
 
-	dot_pro = 2.0 * ft_vect_dot_product(incident, normal);
+	dot_pro = 2.0 * ft_dot_product(incident, normal);
 	reflected.dx = incident->dx - dot_pro * normal->dx;
 	reflected.dy = incident->dy - dot_pro * normal->dy;
 	reflected.dz = incident->dz - dot_pro * normal->dz;
@@ -120,7 +120,7 @@ t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
 {
 	t_calcul_px	c;
 	c.c0 = calcul->inter;
-	c.v_view = ft_vect_reflected(&calcul->v_view, &calcul->v_normal);
+	c.v = ft_vect_reflected(&calcul->v, &calcul->v_normal);
 	calculate_pixel_color_simple(data, &c);
 	return (c.px_color);
 }
@@ -131,28 +131,28 @@ t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 	t_calcul_px	c;
 	c.c0 = calcul->inter;
 
-	double cos_i = -ft_vect_dot_product(&calcul->v_view, &calcul->v_normal);
+	double cos_i = -ft_dot_product(&calcul->v, &calcul->v_normal);
 	double index = 1.0 / ((t_sphere*)calcul->object)->gamma;
 	double cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
 
-	c.v_view = (t_vect){
-		index * calcul->v_view.dx + (index * cos_i - cos_r) * calcul->v_normal.dx,
-		index * calcul->v_view.dy + (index * cos_i - cos_r) * calcul->v_normal.dy,
-		index * calcul->v_view.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
+	c.v = (t_vect){
+		index * calcul->v.dx + (index * cos_i - cos_r) * calcul->v_normal.dx,
+		index * calcul->v.dy + (index * cos_i - cos_r) * calcul->v_normal.dy,
+		index * calcul->v.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
 	};
-	ft_normalize_vect(&c.v_view);
+	ft_normalize_vect(&c.v);
 	calculate_pixel_color_simple(data, &c);
 	// hopefully, calcul->obj == c.obj
 
-	cos_i = -ft_vect_dot_product(&c.v_view, &c.v_normal);
+	cos_i = -ft_dot_product(&c.v, &c.v_normal);
 	index = ((t_sphere*)calcul->object)->gamma;
 	cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
-	c.v_view = (t_vect){
-		index * calcul->v_view.dx + (index * cos_i - cos_r) * calcul->v_normal.dx,
-		index * calcul->v_view.dy + (index * cos_i - cos_r) * calcul->v_normal.dy,
-		index * calcul->v_view.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
+	c.v = (t_vect){
+		index * calcul->v.dx + (index * cos_i - cos_r) * calcul->v_normal.dx,
+		index * calcul->v.dy + (index * cos_i - cos_r) * calcul->v_normal.dy,
+		index * calcul->v.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
 	};
-	ft_normalize_vect(&c.v_view);
+	ft_normalize_vect(&c.v);
 	calculate_pixel_color_simple(data, &c);
 	return (c.px_color);
 }

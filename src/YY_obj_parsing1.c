@@ -1,0 +1,194 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   YY_obj_parsing1.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
+/*   Updated: 2025/02/01 19:40:33 by kalipso          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/minirt.h"
+
+int	parse_ci_v2(t_data *data, char **raw_split);
+int	parse_pl_v2(t_data *data, char **raw_split);
+int	parse_sp_v2(t_data *data, char **raw_split);
+int	parse_cy_v2(t_data *data, char **raw_split);
+int	parse_co_v2(t_data *data, char **raw_split);
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			CIRCLE
+// 		XYZ = float
+// 		xyz vector [-1,1] float
+// 		RGB [0, 255] int
+// 		radius	float
+// 
+int	parse_ci_v2(t_data *data, char **raw_split)
+{
+	t_circle	*circle;
+	
+	circle = mem(0, sizeof(t_circle));
+	if (!circle)
+		return (put(ERRM), 2);
+	data->objects = expand_tab(data->objects, circle);
+
+	if (tab_size(raw_split) < 4)
+		return (put(ERR1"bad number of args (CIRCLE OBJECT)\n"), 1);
+	if (raw_split[4])
+		parse_reste(data, &raw_split[3], circle);
+	
+	circle->type = CIRCLE;
+	if (ato_coor_v2(raw_split[0], &circle->O.c0) ||
+		ato_coor_v2(raw_split[1], (t_coor*)&circle->O.view) ||
+		ato_rgb_v2(raw_split[2], &circle->param.color) ||
+		ft_atof_v2(raw_split[3], &circle->radius))
+		return (1);
+	if (circle->radius < EPSILON)
+		return (put(ERR1"(CIRCLE OBJECT) too small\n"), 1);
+	if (h_obj_vect_space(&circle->O, &circle->O.view))
+		return (1);
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			PLANES
+// 		XYZ = float
+// 		xyz vector [-1,1] float
+// 		RGB [0, 255] int
+// 
+//	a.(x-x0) + b(y-y0) + c(z-z0) + d = 0
+// d is dependant of the plane:
+// 		ax + by + cz + d = 0
+// 		d = -(ax + by + cz)
+int	parse_pl_v2(t_data *data, char **raw_split)
+{
+	t_plane	*plane;
+	
+	plane = mem(0, sizeof(t_plane));
+	if (!plane)
+		return (put(ERRM), 2);
+	data->objects = expand_tab(data->objects, plane);
+
+	if (tab_size(raw_split) < 3)
+		return (put(ERR1"bad number of args (PLANES OBJECT)\n"), 1);
+	if (raw_split[3])
+		parse_reste(data, &raw_split[3], plane);
+	
+	plane->type = PLANE;
+	if (ato_coor_v2(raw_split[0], &plane->O.c0) ||
+		ato_coor_v2(raw_split[1], (t_coor*)&plane->O.view) ||
+		ato_rgb_v2(raw_split[2], &plane->param.color))
+		return (1);
+	if (h_obj_vect_space(&plane->O, &plane->O.view))
+		return (1);
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			SPHERE
+// 		XYZ = float
+// 		DIAMETER = float
+// 		RGB [0, 255] int
+int	parse_sp_v2(t_data *data, char **raw_split)
+{
+	t_sphere	*sphere;
+
+	sphere = mem(0, sizeof(t_sphere));
+	if (!sphere)
+		return (put(ERRM), 2);
+	data->objects = expand_tab(data->objects, sphere);
+
+	if (tab_size(raw_split) < 3)
+		return (put(ERR1"bad number of args (SPHERE OBJECT)\n"), 1);
+	if (raw_split[3])
+		parse_reste(data, &raw_split[3], sphere);
+
+	sphere->type = SPHERE;
+	if (ato_coor_v2(raw_split[0], &sphere->O.c0) ||
+		ft_atof_v2(raw_split[1], &sphere->radius) ||
+		ato_rgb_v2(raw_split[2], &sphere->param.color))
+		return (1);
+	if (sphere->radius < EPSILON)
+		return (put(ERR1"(SPHERE OBJECT) too small\n"), 1);
+	sphere->radius /= 2;
+	if (h_obj_vect_space(&sphere->O, NULL))
+		return (1);
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			CYLINDER
+// 		XYZ = float
+// 		xyz vector [-1,1] float
+// 		DIAMETER = float
+// 		HEIGHT = float
+// 		RGB [0, 255] int
+int	parse_cy_v2(t_data *data, char **raw_split)
+{
+	t_cylinder	*cylinder;
+
+	cylinder = mem(0, sizeof(t_cylinder));
+	if (!cylinder)
+		return (put(ERRM), 2);
+	data->objects = expand_tab(data->objects, cylinder);
+
+	if (tab_size(raw_split) < 5)
+		return (put(ERR1"bad number of args (CYLINDER OBJECT)\n"), 1);
+	if (raw_split[5])
+		parse_reste(data, &raw_split[5], (void*)cylinder);
+
+	cylinder->type = CYLINDER;
+	if (ato_coor_v2(raw_split[0], &cylinder->O.c0) ||
+		ato_coor_v2(raw_split[1], (t_coor *)&cylinder->O.view) ||
+		ft_atof_v2(raw_split[2], &cylinder->radius) ||
+		ft_atof_v2(raw_split[3], &cylinder->height) ||
+		ato_rgb_v2(raw_split[4], &cylinder->param.color))
+		return (1);
+	if (cylinder->radius < EPSILON || cylinder->height < EPSILON)
+		return (put(ERR1"(CYLINDER OBJECT) too small\n"), 1);
+	cylinder->radius /= 2;
+
+	if (h_obj_vect_space(&cylinder->O, &cylinder->O.view))
+		return (1);
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			CONE
+// 		XYZ = float
+// 		xyz vector [-1,1] float
+// 		RADIUS = float
+// 		HEIGHT = float
+// 		RGB [0, 255] int
+// 		RGB2 [0, 255] int
+int	parse_co_v2(t_data *data, char **raw_split)
+{
+	t_cone	*cone;
+	
+	cone = mem(0, sizeof(t_cone));
+	if (!cone)
+		return (put(ERRM), 2);
+	data->objects = expand_tab(data->objects, cone);
+
+	if (tab_size(raw_split) < 6)
+		return (put(ERR1"bad number of args (CONE OBJECT)\n"), 1);
+	if (raw_split[6])
+		parse_reste(data, &raw_split[6], (void*)cone);
+
+	cone->type = CYLINDER;
+	if (ato_coor_v2(raw_split[0], &cone->O.c0) ||
+		ato_coor_v2(raw_split[1], (t_coor *)&cone->O.view) ||
+		ft_atof_v2(raw_split[2], &cone->radius) ||
+		ft_atof_v2(raw_split[3], &cone->height) ||
+		ato_rgb_v2(raw_split[4], &cone->param.color) ||
+		ato_rgb_v2(raw_split[5], &cone->param.color))
+		return (1);
+	if (cone->radius < EPSILON || cone->height < EPSILON)
+		return (put(ERR1"(CONE OBJECT) too small\n"), 1);
+
+	if (h_obj_vect_space(&cone->O, &cone->O.view))
+		return (1);
+	return (0);
+}

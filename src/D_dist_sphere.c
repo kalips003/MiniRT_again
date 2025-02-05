@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 14:33:37 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:43:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,46 @@ double	distance_from_sphere_v2(t_calcul_px *calcul, t_sphere *sphere)
 
 // RESOLVE ((t.Vx + EYEx) - x0)² + ((t.Vy + EYEy) - y0)² + ((t.Vz + EYEz) - z0)² = R²
 // ==> At² + Bt + C = 0; 
-	c.a = calcul->v_view.dx * calcul->v_view.dx + calcul->v_view.dy * calcul->v_view.dy + calcul->v_view.dz * calcul->v_view.dz;
-	c.b = 2 * (calcul->v_view.dx * c.x0 + calcul->v_view.dy * c.y0 + calcul->v_view.dz * c.z0);
+	c.a = calcul->v.dx * calcul->v.dx + calcul->v.dy * calcul->v.dy + calcul->v.dz * calcul->v.dz;
+	c.b = 2 * (calcul->v.dx * c.x0 + calcul->v.dy * c.y0 + calcul->v.dz * c.z0);
+	c.c = c.x0 * c.x0 + c.y0 * c.y0 + c.z0 * c.z0 - sphere->radius * sphere->radius;
+
+	c.Δ = c.b * c.b - 4 * c.a * c.c;
+
+// if Δ = 0, the view_vector only touch the sphere
+// if Δ < 0, the view_vector doesnt colide the sphere
+	if (c.Δ < 0.0 || c.a == 0.0)
+		return (-1.0);
+
+	c.det1 = (-c.b + sqrt(c.Δ)) / (2 * c.a);
+	c.det2 = (-c.b - sqrt(c.Δ)) / (2 * c.a);
+
+	c.dist = h_smalest_Δ(c.det1, c.det2);
+// if c.dist < 0, the view_vector touch the sphere but behind
+	if (c.dist < 0.0)
+		return (-1.0);
+
+	if (c.dist < calcul->dist || calcul->dist < 0.0)
+		h_dist_sphere(calcul, sphere, c.dist, (c.det1 < 0.0 || c.det2 < 0.0));
+
+	return (c.dist);
+}
+
+///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
+double	distance_from_sphere_v3(t_calcul_px *calcul, void *s)
+{
+	t_sphere_calc	c;
+	t_sphere		*sphere = (t_sphere*)s;
+
+//	diff center sphere and center camera
+	c.x0 = calcul->c0.x - sphere->O.c0.x;
+	c.y0 = calcul->c0.y - sphere->O.c0.y;
+	c.z0 = calcul->c0.z - sphere->O.c0.z;
+
+// RESOLVE ((t.Vx + EYEx) - x0)² + ((t.Vy + EYEy) - y0)² + ((t.Vz + EYEz) - z0)² = R²
+// ==> At² + Bt + C = 0; 
+	c.a = calcul->v.dx * calcul->v.dx + calcul->v.dy * calcul->v.dy + calcul->v.dz * calcul->v.dz;
+	c.b = 2 * (calcul->v.dx * c.x0 + calcul->v.dy * c.y0 + calcul->v.dz * c.z0);
 	c.c = c.x0 * c.x0 + c.y0 * c.y0 + c.z0 * c.z0 - sphere->radius * sphere->radius;
 
 	c.Δ = c.b * c.b - 4 * c.a * c.c;
@@ -68,9 +106,9 @@ void	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, double dist, int insid
 	calcul->object = (void *)sphere;
 
 	calcul->inter = (t_coor){
-		calcul->c0.x + calcul->v_view.dx * dist, 
-		calcul->c0.y + calcul->v_view.dy * dist, 
-		calcul->c0.z + calcul->v_view.dz * dist};
+		calcul->c0.x + calcul->v.dx * dist, 
+		calcul->c0.y + calcul->v.dy * dist, 
+		calcul->c0.z + calcul->v.dz * dist};
 
 	calcul->v_normal = (t_vect){
 		calcul->inter.x - sphere->O.c0.x, 
@@ -94,9 +132,9 @@ void	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, double dist, int insid
 t_rgb	ft_txt_sphere(t_calcul_px *calcul)
 {
 	t_vect	local_n = {
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),    // X = up
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),  // Y = view
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
+		ft_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),    // X = up
+		ft_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),  // Y = view
+		ft_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
 	};
 	ft_normalize_vect(&local_n);
 
@@ -128,9 +166,9 @@ t_rgb	ft_txt_sphere(t_calcul_px *calcul)
 t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 {
 	t_vect	normal_map = {
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),    // X = up
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),  // Y = view
-		ft_vect_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
+		ft_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.view),    // X = up
+		ft_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.up),  // Y = view
+		ft_dot_product(&calcul->v_normal, &((t_sphere*)calcul->object)->O.right) // Z = right
 	};
 	ft_normalize_vect(&normal_map);
 
@@ -163,9 +201,9 @@ t_vect	ft_nmap_sphere(t_calcul_px *calcul)
 	h_vector_space(&local);
 
 	t_vect world_normal = {
-		ft_vect_dot_product(&normal_map, &local.up),
-		ft_vect_dot_product(&normal_map, &local.view),
-		ft_vect_dot_product(&normal_map, &local.right)
+		ft_dot_product(&normal_map, &local.up),
+		ft_dot_product(&normal_map, &local.view),
+		ft_dot_product(&normal_map, &local.right)
 	};
 	ft_normalize_vect(&world_normal);
 

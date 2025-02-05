@@ -204,6 +204,14 @@ git: fclean
 	git commit -m "$$current_date"; \
 	git push
 
+git2: fclean
+	@$(call random_shmol_cat_blink, 作業を保存してるかな.., いいね、いいねえー , $(CLS), );
+	@read -p "Enter commit message: " msg; \
+	[ -z "$$msg" ] && msg=$$(date); \
+	git add .; \
+	git commit -m "$$msg"; \
+	git push
+
 NORM_FILE = src/ main.c main_bonus.c inc/
 
 norm: fclean

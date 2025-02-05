@@ -53,6 +53,7 @@ void	h_camera_calc_up_right_vect(t_camera *camera)
 	ft_normalize_vect(&camera->O.up);
 }
 
+// takes an obj with a view vector filled, create the vector space
 void	h_vector_space(t_obj *obj)
 {
 // if camera vector is == Y vector
@@ -109,8 +110,8 @@ void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg)
 	obj->up.dx, obj->up.dy, obj->up.dz, \
 	obj->right.dx, obj->right.dy, obj->right.dz);
 	
-	t_vect	cross = ft_vect_cross_product(axis_rota, &obj->view);
-	double	dot = ft_vect_dot_product(axis_rota, &obj->view);
+	t_vect	cross = ft_cross_product(axis_rota, &obj->view);
+	double	dot = ft_dot_product(axis_rota, &obj->view);
 	ft_normalize_vect(&cross);
 	t_vect	new_view = {
 		obj->view.dx * COS_ROTA + cross.dx * (posi_neg) * SIN_ROTA + axis_rota->dx * dot * (1 - COS_ROTA),
@@ -119,8 +120,8 @@ void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg)
 	};
 	ft_normalize_vect(&new_view);
 	
-	cross = ft_vect_cross_product(axis_rota, &obj->up);
-	dot = ft_vect_dot_product(axis_rota, &obj->up);
+	cross = ft_cross_product(axis_rota, &obj->up);
+	dot = ft_dot_product(axis_rota, &obj->up);
 	ft_normalize_vect(&cross);
 
 	t_vect	new_up = {
@@ -130,7 +131,7 @@ void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg)
 	};
 	ft_normalize_vect(&new_up);
 	
-	cross = ft_vect_cross_product(&new_up, &new_view);
+	cross = ft_cross_product(&new_up, &new_view);
 	// cross = ft_vect_cross_product(&new_view, &new_up);
 	ft_normalize_vect(&cross);
 	// cross = (t_vect){-cross.dx, -cross.dy, -cross.dz};

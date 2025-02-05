@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 16:29:53 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ int	in_shadow_of_sphere(t_calcul_px *calcul, t_sphere *sphere)
 
 // RESOLVE ((t.Vx + EYEx) - x0)² + ((t.Vy + EYEy) - y0)² + ((t.Vz + EYEz) - z0)² = R²
 // ==> At² + Bt + C = 0; 
-	c.a = calcul->v_view.dx * calcul->v_view.dx + calcul->v_view.dy * calcul->v_view.dy + calcul->v_view.dz * calcul->v_view.dz;
-	c.b = 2 * (calcul->v_view.dx * c.x0 + calcul->v_view.dy * c.y0 + calcul->v_view.dz * c.z0);
+	c.a = calcul->v.dx * calcul->v.dx + calcul->v.dy * calcul->v.dy + calcul->v.dz * calcul->v.dz;
+	c.b = 2 * (calcul->v.dx * c.x0 + calcul->v.dy * c.y0 + calcul->v.dz * c.z0);
 	c.c = c.x0 * c.x0 + c.y0 * c.y0 + c.z0 * c.z0 - sphere->radius * sphere->radius;
 
 	c.Δ = c.b * c.b - 4 * c.a * c.c;
@@ -68,7 +68,7 @@ int	in_shadow_of_plane(t_calcul_px *calcul, t_plane *p)
 // RESOLVE A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
 	c.top = -(p->O.view.dx * calcul->c0.x + p->O.view.dy * calcul->c0.y + p->O.view.dz * calcul->c0.z + p->d);
-	c.bot = p->O.view.dx * calcul->v_view.dx + p->O.view.dy * calcul->v_view.dy + p->O.view.dz * calcul->v_view.dz;
+	c.bot = p->O.view.dx * calcul->v.dx + p->O.view.dy * calcul->v.dy + p->O.view.dz * calcul->v.dz;
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to the plane
@@ -92,7 +92,7 @@ int	in_shadow_of_cicle(t_calcul_px *calcul, t_circle circle)
 // RESOLVE A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
 	c.top = -(circle.v.dx * calcul->c0.x + circle.v.dy * calcul->c0.y + circle.v.dz * calcul->c0.z + d);
-	c.bot = circle.v.dx * calcul->v_view.dx + circle.v.dy * calcul->v_view.dy + circle.v.dz * calcul->v_view.dz;
+	c.bot = circle.v.dx * calcul->v.dx + circle.v.dy * calcul->v.dy + circle.v.dz * calcul->v.dz;
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to d plane
@@ -104,9 +104,9 @@ int	in_shadow_of_cicle(t_calcul_px *calcul, t_circle circle)
 	if (c.dist < EPSILON || c.dist > calcul->dist)
 		return (0);
 	inter_temp = (t_coor){
-			calcul->c0.x + calcul->v_view.dx * c.dist,
-			calcul->c0.y + calcul->v_view.dy * c.dist,
-			calcul->c0.z + calcul->v_view.dz * c.dist};
+			calcul->c0.x + calcul->v.dx * c.dist,
+			calcul->c0.y + calcul->v.dy * c.dist,
+			calcul->c0.z + calcul->v.dz * c.dist};
 
 	if (dist_two_points(&inter_temp, &circle.O.c0) > circle.radius)
 		return (0);
@@ -122,7 +122,7 @@ int	in_shadow_of_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle)
 // RESOLVE A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
 	c.top = -(circle.v.dx * calcul->c0.x + circle.v.dy * calcul->c0.y + circle.v.dz * calcul->c0.z + d);
-	c.bot = circle.v.dx * calcul->v_view.dx + circle.v.dy * calcul->v_view.dy + circle.v.dz * calcul->v_view.dz;
+	c.bot = circle.v.dx * calcul->v.dx + circle.v.dy * calcul->v.dy + circle.v.dz * calcul->v.dz;
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to d plane
@@ -134,9 +134,9 @@ int	in_shadow_of_cicle_v2(t_calcul_px *calcul, t_circle_v2 circle)
 	if (c.dist < EPSILON || c.dist > calcul->dist)
 		return (0);
 	inter_temp = (t_coor){
-			calcul->c0.x + calcul->v_view.dx * c.dist,
-			calcul->c0.y + calcul->v_view.dy * c.dist,
-			calcul->c0.z + calcul->v_view.dz * c.dist};
+			calcul->c0.x + calcul->v.dx * c.dist,
+			calcul->c0.y + calcul->v.dy * c.dist,
+			calcul->c0.z + calcul->v.dz * c.dist};
 
 	if (dist_two_points(&inter_temp, &circle.c0) > circle.radius)
 		return (0);
@@ -150,13 +150,13 @@ int	in_shadow_of_cylinder(t_calcul_px *calcul, t_cylinder *cy)
 
 	c.radius = cy->diameter / 2;
 	// (P - E).W = At + B
-	c.A = calcul->v_view.dx * cy->O.view.dx + calcul->v_view.dy * cy->O.view.dy + calcul->v_view.dz * cy->O.view.dz;
+	c.A = calcul->v.dx * cy->O.view.dx + calcul->v.dy * cy->O.view.dy + calcul->v.dz * cy->O.view.dz;
 	c.B = cy->O.view.dx * (calcul->c0.x - cy->O.c0.x) + cy->O.view.dy * (calcul->c0.y - cy->O.c0.y) + cy->O.view.dz * (calcul->c0.z - cy->O.c0.z);
 	
 	// (P - E) - ((P - E).W) * W = {X0t + X1, Y0t + Y1, Z0t + Z1};
-	c.x0 = calcul->v_view.dx - c.A * cy->O.view.dx;
-	c.y0 = calcul->v_view.dy - c.A * cy->O.view.dy;
-	c.z0 = calcul->v_view.dz - c.A * cy->O.view.dz;
+	c.x0 = calcul->v.dx - c.A * cy->O.view.dx;
+	c.y0 = calcul->v.dy - c.A * cy->O.view.dy;
+	c.z0 = calcul->v.dz - c.A * cy->O.view.dz;
 	c.x1 = calcul->c0.x - c.B * cy->O.view.dx - cy->O.c0.x;
 	c.y1 = calcul->c0.y - c.B * cy->O.view.dy - cy->O.c0.y;
 	c.z1 = calcul->c0.z - c.B * cy->O.view.dz - cy->O.c0.z;
@@ -183,13 +183,13 @@ int	in_shadow_of_cone(t_calcul_px *calcul, t_cone *cone)
 {
 	t_cone_calc	c;
 
-	c.φ = calcul->v_view.dx * cone->O.view.dx + calcul->v_view.dy * cone->O.view.dy + calcul->v_view.dz * cone->O.view.dz;
+	c.φ = calcul->v.dx * cone->O.view.dx + calcul->v.dy * cone->O.view.dy + calcul->v.dz * cone->O.view.dz;
 	c.Φ = cone->O.view.dx * (calcul->c0.x - cone->apex.x) + cone->O.view.dy * (calcul->c0.y - cone->apex.y) + cone->O.view.dz * (calcul->c0.z - cone->apex.z);
 	c.slope = (cone->radius * cone->radius) / (cone->height * cone->height);
 
-	c.a1 = calcul->v_view.dx - c.φ * cone->O.view.dx;
-	c.a2 = calcul->v_view.dy - c.φ * cone->O.view.dy;
-	c.a3 = calcul->v_view.dz - c.φ * cone->O.view.dz;
+	c.a1 = calcul->v.dx - c.φ * cone->O.view.dx;
+	c.a2 = calcul->v.dy - c.φ * cone->O.view.dy;
+	c.a3 = calcul->v.dz - c.φ * cone->O.view.dz;
 
 	c.b1 = calcul->c0.x - cone->apex.x - c.Φ * cone->O.view.dx;
 	c.b2 = calcul->c0.y - cone->apex.y - c.Φ * cone->O.view.dy;
@@ -206,9 +206,9 @@ int	in_shadow_of_cone(t_calcul_px *calcul, t_cone *cone)
 	c.det1 = (-c.B + sqrt(c.Δ)) / (2 * c.A);
 	c.det2 = (-c.B - sqrt(c.Δ)) / (2 * c.A);
 	c.dist = h_smalest_Δ(c.det1, c.det2);
-	c.dist_h = -c.Φ + -c.φ * c.dist;// height from apex
+	c.dist_apex = -c.Φ + -c.φ * c.dist;// height from apex
 
-	if (c.dist < EPSILON || c.dist_h > cone->height || c.dist_h < EPSILON)
+	if (c.dist < EPSILON || c.dist_apex > cone->height || c.dist_apex < EPSILON)
 		return (0);
 	return (1);
 }

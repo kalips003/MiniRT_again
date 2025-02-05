@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 13:01:16 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,10 @@ void	print_clic(t_data *data, int x, int y)
 	double angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst);
 	double angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
 
-	f_calculate_combined_quaternion(data, angleA, angleB, &c.v_view);
+	f_calculate_combined_quaternion(data, angleA, angleB, &c.v);
 	calculate_pixel_color_simple(data, &c);
 
-	printf("Camera = [%f,%f,%f\t%f,%f,%f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v_view.dx, c.v_view.dy, c.v_view.dz);
+	printf("Camera = [%f,%f,%f\t%f,%f,%f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v.dx, c.v.dy, c.v.dz);
 	printf("Mouse clicked at position (%d, %d)\n", x, y);
 	if (c.object)
 	{
@@ -148,12 +148,12 @@ void	print_clic(t_data *data, int x, int y)
 	c.c0 = c.inter;
 	t_sphere	**sphere_ptr;
 	sphere_ptr = data->spheres - 1;
-	double dist_from_light = sqrt(c.v_view.dx * c.v_view.dx + c.v_view.dy * c.v_view.dy + c.v_view.dz * c.v_view.dz);
+	double dist_from_light = sqrt(c.v.dx * c.v.dx + c.v.dy * c.v.dy + c.v.dz * c.v.dz);
 	while (++sphere_ptr && *sphere_ptr)
 		if (distance_from_sphere_v2(&c, *sphere_ptr) >= 0.0 && c.dist < dist_from_light)
 		{
 			printf("AAA%f\n", c.dist);
-			printf("Vector view = [%f, %f, %f]\n", c.v_view.dx, c.v_view.dy, c.v_view.dz);
+			printf("Vector view = [%f, %f, %f]\n", c.v.dx, c.v.dy, c.v.dz);
 
 		}
 }

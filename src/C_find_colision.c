@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 16:28:01 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/01 20:02:26 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
 	while (++cyl_ptr && *cyl_ptr)
 	{
 		distance_from_cylinder_v2(c, *cyl_ptr);
-		distance_from_cicle_v2(c, (t_circle_v2){
+		distance_from_cicle_v2(c, (t_circle_v2){0,
 			*cyl_ptr, (*cyl_ptr)->O.c0, (*cyl_ptr)->radius, (*cyl_ptr)->O.view});
-		distance_from_cicle_v2(c, (t_circle_v2){
+		distance_from_cicle_v2(c, (t_circle_v2){0,
 			*cyl_ptr, (*cyl_ptr)->xyz_other, (*cyl_ptr)->radius, (*cyl_ptr)->O.view});
 	}
 
@@ -51,8 +51,33 @@ int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
 	while (++cone_ptr && *cone_ptr)
 	{
 		distance_from_cone(c, *cone_ptr);
-		distance_from_cicle_v2(c, (t_circle_v2){
+		distance_from_cicle_v2(c, (t_circle_v2){0,
 			*cone_ptr, (*cone_ptr)->O.c0, (*cone_ptr)->radius, (*cone_ptr)->O.view});
+	}
+	return (c->dist != -1.0);
+}
+
+
+typedef int (*t_dist_of)(t_calcul_px*, void*);
+
+static const t_dist_of g_ft_dist_of[] = {
+	distance_from_circle,
+	distance_from_sphere,
+	distance_from_plane,
+	distance_from_cylinder,
+	distance_from_cone,
+
+};
+
+
+int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
+{
+	void	**obj_ptr;
+
+	obj_ptr = data->objects - 1;
+	while (++obj_ptr && *obj_ptr)
+	{
+		g_ft_dist_of[((t_obj2*)*obj_ptr)->type](c, *obj_ptr);
 	}
 	return (c->dist != -1.0);
 }

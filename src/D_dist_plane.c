@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 15:03:32 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ double	distance_from_plane_v2(t_calcul_px *calcul, t_plane *p)
 // RESOLVE A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
 	c.top = -(p->O.view.dx * calcul->c0.x + p->O.view.dy * calcul->c0.y + p->O.view.dz * calcul->c0.z + p->d);
-	c.bot = p->O.view.dx * calcul->v_view.dx + p->O.view.dy * calcul->v_view.dy + p->O.view.dz * calcul->v_view.dz;
+	c.bot = p->O.view.dx * calcul->v.dx + p->O.view.dy * calcul->v.dy + p->O.view.dz * calcul->v.dz;
 
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to the plane
@@ -38,7 +38,7 @@ double	distance_from_plane_v2(t_calcul_px *calcul, t_plane *p)
 
 	c.dist = c.top / c.bot;
 // if dist < 0, the view_vector touch the sphere but behind
-	if (c.dist <= 0)
+	if (c.dist < EPSILON)
 		return (-1.0);
 
 	if (c.dist < calcul->dist || calcul->dist < 0.0)
@@ -53,9 +53,9 @@ void	h_dist_plane(t_calcul_px *calcul, t_plane *plane, t_plane_calc* c)
 	calcul->object = (void *)plane;
 
 	calcul->inter = (t_coor){
-		calcul->c0.x + calcul->v_view.dx * c->dist,
-		calcul->c0.y + calcul->v_view.dy * c->dist,
-		calcul->c0.z + calcul->v_view.dz * c->dist};
+		calcul->c0.x + calcul->v.dx * c->dist,
+		calcul->c0.y + calcul->v.dy * c->dist,
+		calcul->c0.z + calcul->v.dz * c->dist};
 
 	calcul->v_normal = plane->O.view;
 
@@ -67,7 +67,7 @@ void	h_dist_plane(t_calcul_px *calcul, t_plane *plane, t_plane_calc* c)
 	if (plane->normal_map)
 		calcul->v_normal = ft_nmap_plane(calcul, plane);
 	
-	if (ft_vect_dot_product(&calcul->v_view, &plane->O.view) > 0.0)
+	if (ft_dot_product(&calcul->v, &plane->O.view) > 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 }
 
@@ -79,8 +79,8 @@ t_rgb	ft_textures_plane(t_calcul_px *calcul, t_plane* plane)
 		calcul->inter.y - plane->O.c0.y,
 		calcul->inter.z - plane->O.c0.z
 	};
-	double	u = ft_vect_dot_product(&o_to_inter, &plane->O.right) * (1 + plane->gamma);
-	double	v = ft_vect_dot_product(&o_to_inter, &plane->O.up) * (1 + plane->gamma);
+	double	u = ft_dot_product(&o_to_inter, &plane->O.right) * (1 + plane->gamma);
+	double	v = ft_dot_product(&o_to_inter, &plane->O.up) * (1 + plane->gamma);
 
 	int text_x = ((int)floor(u) % texture->sz_x + texture->sz_x) % texture->sz_x;
 	int text_y = ((int)floor(v) % texture->sz_y + texture->sz_y) % texture->sz_y;
@@ -105,8 +105,8 @@ t_vect	ft_nmap_plane(t_calcul_px *calcul, t_plane* plane)
 		calcul->inter.y - plane->O.c0.y,
 		calcul->inter.z - plane->O.c0.z
 	};
-	double	u = ft_vect_dot_product(&o_to_inter, &plane->O.right);
-	double	v = ft_vect_dot_product(&o_to_inter, &plane->O.up);
+	double	u = ft_dot_product(&o_to_inter, &plane->O.right);
+	double	v = ft_dot_product(&o_to_inter, &plane->O.up);
 
 	int text_x = ((int)floor(u) % texture->sz_x + texture->sz_x) % texture->sz_x;
 	int text_y = ((int)floor(v) % texture->sz_y + texture->sz_y) % texture->sz_y;
@@ -125,9 +125,9 @@ t_vect	ft_nmap_plane(t_calcul_px *calcul, t_plane* plane)
 	// normal_map.dz *= -1; // Flip depth axis if needed (opengl map)
 
 	t_vect world_normal = {
-		ft_vect_dot_product(&normal_map, &plane->O.up),
-		ft_vect_dot_product(&normal_map, &plane->O.view),
-		ft_vect_dot_product(&normal_map, &plane->O.right)
+		ft_dot_product(&normal_map, &plane->O.up),
+		ft_dot_product(&normal_map, &plane->O.view),
+		ft_dot_product(&normal_map, &plane->O.right)
 	};
 	ft_normalize_vect(&world_normal);
 	
