@@ -6,13 +6,13 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 15:40:41 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/09 14:05:17 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int	parse_reste_v2(t_data *data, char **raw_split, t_param *obj);
+int	parse_reste(t_data *data, char **raw_split, t_param *obj);
 
 #define	PARAM_DICO "STMXN"
 
@@ -30,7 +30,7 @@ static const t_ft_param_parsing g_ft_param_parsing[] = {
 	parse_nmap
 };
 
-int	parse_reste_v2(t_data *data, char **raw_split, t_param *obj)
+int	parse_reste(t_data *data, char **raw_split, t_param *obj)
 {
 	int	index;
 	

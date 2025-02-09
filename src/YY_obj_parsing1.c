@@ -6,17 +6,17 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 19:40:33 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/09 14:32:40 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int	parse_ci_v2(t_data *data, char **raw_split);
-int	parse_pl_v2(t_data *data, char **raw_split);
-int	parse_sp_v2(t_data *data, char **raw_split);
-int	parse_cy_v2(t_data *data, char **raw_split);
-int	parse_co_v2(t_data *data, char **raw_split);
+int	parse_ci(t_data *data, char **raw_split);
+int	parse_pl(t_data *data, char **raw_split);
+int	parse_sp(t_data *data, char **raw_split);
+int	parse_cy(t_data *data, char **raw_split);
+int	parse_co(t_data *data, char **raw_split);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 			CIRCLE
@@ -25,7 +25,7 @@ int	parse_co_v2(t_data *data, char **raw_split);
 // 		RGB [0, 255] int
 // 		radius	float
 // 
-int	parse_ci_v2(t_data *data, char **raw_split)
+int	parse_ci(t_data *data, char **raw_split)
 {
 	t_circle	*circle;
 	
@@ -37,7 +37,7 @@ int	parse_ci_v2(t_data *data, char **raw_split)
 	if (tab_size(raw_split) < 4)
 		return (put(ERR1"bad number of args (CIRCLE OBJECT)\n"), 1);
 	if (raw_split[4])
-		parse_reste(data, &raw_split[3], circle);
+		parse_reste(data, &raw_split[3], &circle->param);
 	
 	circle->type = CIRCLE;
 	if (ato_coor_v2(raw_split[0], &circle->O.c0) ||
@@ -47,7 +47,7 @@ int	parse_ci_v2(t_data *data, char **raw_split)
 		return (1);
 	if (circle->radius < EPSILON)
 		return (put(ERR1"(CIRCLE OBJECT) too small\n"), 1);
-	if (h_obj_vect_space(&circle->O, &circle->O.view))
+	if (h_parse_vect_space(&circle->O, &circle->O.view))
 		return (1);
 	return (0);
 }
@@ -62,7 +62,7 @@ int	parse_ci_v2(t_data *data, char **raw_split)
 // d is dependant of the plane:
 // 		ax + by + cz + d = 0
 // 		d = -(ax + by + cz)
-int	parse_pl_v2(t_data *data, char **raw_split)
+int	parse_pl(t_data *data, char **raw_split)
 {
 	t_plane	*plane;
 	
@@ -74,15 +74,16 @@ int	parse_pl_v2(t_data *data, char **raw_split)
 	if (tab_size(raw_split) < 3)
 		return (put(ERR1"bad number of args (PLANES OBJECT)\n"), 1);
 	if (raw_split[3])
-		parse_reste(data, &raw_split[3], plane);
+		parse_reste(data, &raw_split[3], &plane->param);
 	
 	plane->type = PLANE;
 	if (ato_coor_v2(raw_split[0], &plane->O.c0) ||
 		ato_coor_v2(raw_split[1], (t_coor*)&plane->O.view) ||
 		ato_rgb_v2(raw_split[2], &plane->param.color))
 		return (1);
-	if (h_obj_vect_space(&plane->O, &plane->O.view))
+	if (h_parse_vect_space(&plane->O, &plane->O.view))
 		return (1);
+	plane->d = -(plane->O.view.dx * plane->O.c0.x + plane->O.view.dy * plane->O.c0.y + plane->O.view.dz * plane->O.c0.z);
 	return (0);
 }
 
@@ -91,7 +92,7 @@ int	parse_pl_v2(t_data *data, char **raw_split)
 // 		XYZ = float
 // 		DIAMETER = float
 // 		RGB [0, 255] int
-int	parse_sp_v2(t_data *data, char **raw_split)
+int	parse_sp(t_data *data, char **raw_split)
 {
 	t_sphere	*sphere;
 
@@ -103,7 +104,7 @@ int	parse_sp_v2(t_data *data, char **raw_split)
 	if (tab_size(raw_split) < 3)
 		return (put(ERR1"bad number of args (SPHERE OBJECT)\n"), 1);
 	if (raw_split[3])
-		parse_reste(data, &raw_split[3], sphere);
+		parse_reste(data, &raw_split[3], &sphere->param);
 
 	sphere->type = SPHERE;
 	if (ato_coor_v2(raw_split[0], &sphere->O.c0) ||
@@ -113,7 +114,7 @@ int	parse_sp_v2(t_data *data, char **raw_split)
 	if (sphere->radius < EPSILON)
 		return (put(ERR1"(SPHERE OBJECT) too small\n"), 1);
 	sphere->radius /= 2;
-	if (h_obj_vect_space(&sphere->O, NULL))
+	if (h_parse_vect_space(&sphere->O, NULL))
 		return (1);
 	return (0);
 }
@@ -125,7 +126,7 @@ int	parse_sp_v2(t_data *data, char **raw_split)
 // 		DIAMETER = float
 // 		HEIGHT = float
 // 		RGB [0, 255] int
-int	parse_cy_v2(t_data *data, char **raw_split)
+int	parse_cy(t_data *data, char **raw_split)
 {
 	t_cylinder	*cylinder;
 
@@ -137,7 +138,7 @@ int	parse_cy_v2(t_data *data, char **raw_split)
 	if (tab_size(raw_split) < 5)
 		return (put(ERR1"bad number of args (CYLINDER OBJECT)\n"), 1);
 	if (raw_split[5])
-		parse_reste(data, &raw_split[5], (void*)cylinder);
+		parse_reste(data, &raw_split[5], &cylinder->param);
 
 	cylinder->type = CYLINDER;
 	if (ato_coor_v2(raw_split[0], &cylinder->O.c0) ||
@@ -150,8 +151,9 @@ int	parse_cy_v2(t_data *data, char **raw_split)
 		return (put(ERR1"(CYLINDER OBJECT) too small\n"), 1);
 	cylinder->radius /= 2;
 
-	if (h_obj_vect_space(&cylinder->O, &cylinder->O.view))
+	if (h_parse_vect_space(&cylinder->O, &cylinder->O.view))
 		return (1);
+	cylinder->xyz_other = new_moved_point(&cylinder->O.c0, &cylinder->O.view, cylinder->height);
 	return (0);
 }
 
@@ -163,7 +165,7 @@ int	parse_cy_v2(t_data *data, char **raw_split)
 // 		HEIGHT = float
 // 		RGB [0, 255] int
 // 		RGB2 [0, 255] int
-int	parse_co_v2(t_data *data, char **raw_split)
+int	parse_co(t_data *data, char **raw_split)
 {
 	t_cone	*cone;
 	
@@ -175,7 +177,7 @@ int	parse_co_v2(t_data *data, char **raw_split)
 	if (tab_size(raw_split) < 6)
 		return (put(ERR1"bad number of args (CONE OBJECT)\n"), 1);
 	if (raw_split[6])
-		parse_reste(data, &raw_split[6], (void*)cone);
+		parse_reste(data, &raw_split[6], &cone->param);
 
 	cone->type = CYLINDER;
 	if (ato_coor_v2(raw_split[0], &cone->O.c0) ||
@@ -188,7 +190,9 @@ int	parse_co_v2(t_data *data, char **raw_split)
 	if (cone->radius < EPSILON || cone->height < EPSILON)
 		return (put(ERR1"(CONE OBJECT) too small\n"), 1);
 
-	if (h_obj_vect_space(&cone->O, &cone->O.view))
+	if (h_parse_vect_space(&cone->O, &cone->O.view))
 		return (1);
+	cone->apex = new_moved_point(&cone->O.c0, &cone->O.view, cone->height);
+	cone->slope = (cone->radius * cone->radius) / (cone->height * cone->height);
 	return (0);
 }

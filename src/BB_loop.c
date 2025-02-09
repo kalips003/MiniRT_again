@@ -6,13 +6,15 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 19:42:24 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/09 16:56:19 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int 	ft_loop(t_data *data);
+int		ft_loop(t_data *data);
+int		ft_render_frame(t_data *data, int sublim);
+void	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // main loop refresh if file is changed
@@ -44,6 +46,16 @@ int 	ft_loop(t_data *data)
 	return (0);
 }
 
+// void	ft_change(t_data *data)
+// {
+// 	if (data->change_obj)
+// 		// ((t_sphere *)(data->change_obj))->color.r = (((t_sphere *)(data->change_obj))->color.r + CHANGE) % 256;
+// 		data->change_obj->O.c0.x += CHANGE;
+// 	ft_render_frame(data);
+// 	usleep(100);
+// }
+
+
 ///////////////////////////////////////////////////////////////////////////////]
 // render simple shadows, uses adjusted by tan angle
 // used to render while moving
@@ -66,8 +78,9 @@ int	ft_render_frame(t_data *data, int sublim)
 		while (++x < SIZE_SCREEN_X)
 		{
 			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
-			f_calculate_combined_quaternion(data, angleA, angleB, &c.v);
-			calculate_pixel_color(data, &c,sublim);
+			// f_calculate_combined_quaternion(data, angleA, angleB, &c.v);
+			f_calculate_combined_quaternion_better(&data->eye.c->O, angleA, angleB, &c.v);
+			calculate_pixel_color(data, &c, sublim);
 			mlx_pixel_put(data->mlx, data->win, x, y, c.px_color.r << 16 | c.px_color.g << 8 | c.px_color.b);
 		}
 	}
@@ -84,8 +97,7 @@ void	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
 		c->px_color.b = (int)(round(data->bg_light[0]->color.b * data->bg_light[0]->ratio));
 	}
 	else if (sublim)
-		ft_handle_shadows_sublim(data, c);
+		ft_lighting_sublim(data, c);
 	else
-		ft_handle_shadows_simple(data, c);
-
+		ft_lighting_simple(data, c);
 }

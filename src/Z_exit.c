@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 16:19:39 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/08 20:33:29 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	end(t_data *data, int exit_code, int full_clean)
 	data->bg_light = free_tab((char **)data->bg_light);
 	data->camera = free_tab((char **)data->camera);
 	data->light_source = free_tab((char **)data->light_source);
-	data->spheres = free_tab((char **)data->objects);
+	data->objects = free_tab((char **)data->objects);
 	data->eye.c = NULL;
 
 	destroy_textures(data);

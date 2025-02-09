@@ -24,7 +24,7 @@ int	ft_normalize_vect(t_vect *vect)
 
 	normal_magnitude = sqrt(vect->dx * vect->dx + vect->dy * vect->dy + vect->dz * vect->dz);
 	if (normal_magnitude == 0.0)
-		return (put("VECTOR = [%f, %f, %f]\n", vect->dx, vect->dy, vect->dz), 1);
+		return (printf("VECTOR = [%f, %f, %f]\n", vect->dx, vect->dy, vect->dz), 1);
 	vect->dx = vect->dx / normal_magnitude;
 	vect->dy = vect->dy / normal_magnitude;
 	vect->dz = vect->dz / normal_magnitude;
@@ -55,6 +55,7 @@ void	f_calculate_combined_quaternion(t_data *data, double angle_α, double angle
 
 	ft_normalize_vect(rtrn);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 	return smalest positive

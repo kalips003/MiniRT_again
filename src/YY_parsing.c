@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 16:13:22 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/09 14:04:57 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 int	ft_parse_line(t_data *data, char *line);
 int	h_parse_vect_space(t_obj *obj, t_vect *view);
-int	parse_A_v2(t_data *data, char **raw_split);
-int	parse_L_v2(t_data *data, char **raw_split);
-int	parse_C_v2(t_data *data, char **raw_split);
+int	parse_A(t_data *data, char **raw_split);
+int	parse_L(t_data *data, char **raw_split);
+int	parse_C(t_data *data, char **raw_split);
 
 static const t_dico_pair	dico[] = {
-	{"A", parse_A_v2},
-	{"L", parse_L_v2},
-	{"C", parse_C_v2},
-	{"ci", parse_ci_v2},
-	{"pl", parse_pl_v2},
-	{"sp", parse_sp_v2},
-	{"cy", parse_cy_v2},
-	{"co", parse_co_v2},
+	{"A", parse_A},
+	{"L", parse_L},
+	{"C", parse_C},
+	{"ci", parse_ci},
+	{"pl", parse_pl},
+	{"sp", parse_sp},
+	{"cy", parse_cy},
+	{"co", parse_co},
 	{NULL, NULL}
 };
 
@@ -84,7 +84,7 @@ int	h_parse_vect_space(t_obj *obj, t_vect *view)
 // 			AMBIENT LIGHT
 // 		ambient lighting ratio [0.0,1.0] float
 // 		RGB [0, 255] int
-int	parse_A_v2(t_data *data, char **raw_split)
+int	parse_A(t_data *data, char **raw_split)
 {
 	t_ambient_light	*light;
 
@@ -108,7 +108,7 @@ int	parse_A_v2(t_data *data, char **raw_split)
 // 		XYZ = float
 // 		BRIGHTNESS [0.0,1.0] float
 // 		RGB [0, 255] int
-int	parse_L_v2(t_data *data, char **raw_split)
+int	parse_L(t_data *data, char **raw_split)
 {
 	t_light	*light;
 
@@ -134,7 +134,7 @@ int	parse_L_v2(t_data *data, char **raw_split)
 // 		position XYZ = float
 // 		vector camera [-1,1] float
 // 		FOV [0, 180] int
-int	parse_C_v2(t_data *data, char **raw_split)
+int	parse_C(t_data *data, char **raw_split)
 {
 	t_camera	*camera;
 	int			err;
@@ -152,7 +152,7 @@ int	parse_C_v2(t_data *data, char **raw_split)
 		return (1);
 	if (camera->fov < 0 || camera->fov > 180)
 		return (put(ERR1"(%s) camera fov should be [0, 180]\n", raw_split[0]), 1);
-	if(h_obj_vect_space(&camera->O, &camera->O.view))
+	if(h_parse_vect_space(&camera->O, &camera->O.view))
 		return (1);
 	camera->fov_cst = tan(camera->fov / 2) / SIZE_SCREEN_X;
 	return (0);

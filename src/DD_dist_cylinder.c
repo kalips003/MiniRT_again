@@ -6,71 +6,39 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 17:07:55 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/31 23:41:17 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/08 19:50:13 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int		distance_from_cylinder_v3(t_calcul_px *calcul, void *obj);
+int		distance_from_cylinder(t_calcul_px *calcul, void *obj, int simple);
 int		h_dist_cylinder_1(t_calcul_px *c1, t_cylinder *cy, t_cylinder_calc_v2 *c2);
-void	h_dist_cylinder_2(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c);
+int		h_dist_cylinder_2(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c, int simple);
 void	h_txt_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c);
 void	h_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c);
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
-
-void	recalculate_cylinder(t_cylinder *cy)
-{
-	cy->xyz_other = new_moved_point(&cy->O.c0, &cy->O.view, cy->height);
-}
-
-typedef struct s_cylinder_calc_v1 {
-
-	double	A;
-	double	B;
-	
-	double x0;
-	double y0;
-	double z0;
-	double x1;
-	double y1;
-	double z1;
-
-	double a;
-	double b;
-	double c;
-
-	double Δ;
-} t_cylinder_calc_v1;
-
-typedef struct s_cylinder_calc_v2 {
-	double	det1;
-	double	det2;
-
-	double	dist_h;
-	double	dist;
-	t_coor	projec_point;
-	t_circle_v2	circle;
-} t_cylinder_calc_v2;
-
-int	distance_from_cylinder_v3(t_calcul_px *calcul, void *obj)
+int	distance_from_cylinder(t_calcul_px *calcul, void *obj, int simple)
 {
 	t_cylinder_calc_v2	c;
 	t_cylinder *cy = (t_cylinder*)obj;
 	int	rtrn;
 
+	c.circle = (t_circle_shell){CIRCLE, &cy->O, &cy->param, cy->radius};
+	rtrn = distance_from_circle(calcul, &c.circle, simple);
+	c.circle.O->c0 = new_moved_point(&cy->O.c0, &cy->O.view, cy->height);
+	rtrn &= distance_from_circle(calcul, &c.circle, simple);
 
-	c.circle = (t_circle_v2){0, obj, cy->O.c0, cy->radius, cy->O.view};
-	rtrn = distance_from_cicle_v3(calcul, &c.circle);
-	c.circle = (t_circle_v2){0, obj, cy->xyz_other, cy->radius, cy->O.view};
-	rtrn &= distance_from_cicle_v3(calcul, &c.circle);
-
+	if (rtrn && simple)
+		return (1);
+	if (rtrn)
+		calcul->object = obj;
 	if (!h_dist_cylinder_1(calcul, cy, &c))
 		return (rtrn);
 	if (c.dist < calcul->dist || calcul->dist < 0.0)
-		h_dist_cylinder_2(calcul, cy, &c);
-	return (1);
+		return (h_dist_cylinder_2(calcul, cy, &c, simple));
+	return (rtrn);
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -104,29 +72,32 @@ int	h_dist_cylinder_1(t_calcul_px *c1, t_cylinder *cy, t_cylinder_calc_v2 *c2)
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-void	h_dist_cylinder_2(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c)
+int	h_dist_cylinder_2(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c, int simple)
 {
+	if (simple)
+		return (1);
 	calcul->dist = c->dist;
 	calcul->object = cylinder;
 
 	calcul->inter = new_moved_point(&calcul->c0, &calcul->v, c->dist);
 	c->projec_point = new_moved_point(&cylinder->O.c0, &cylinder->O.view, c->dist_h);
 	calcul->v_normal = vect_ab_norm(&c->projec_point, &calcul->inter);
-	calcul->px_color = cylinder->color;
+	calcul->px_color = cylinder->param.color;
 
-	if (cylinder->texture)
+	if (cylinder->param.texture)
 		h_txt_cylinder(calcul, cylinder, c);
-	if (cylinder->normal_map)
+	if (cylinder->param.normal_map)
 		h_nmap_cylinder(calcul, cylinder, c);
 
 	if (c->det1 < 0.0 || c->det2 < 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
-
+	return (1);
 }
 
+///////////////////////////////////////////////////////////////////////////////]
 void	h_txt_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c)
 {
-	t_img *txt = cylinder->texture;
+	t_img *txt = cylinder->param.texture;
 
 	double cosθ = ft_dot_product(&calcul->v_normal, &cylinder->O.up);
 	double sinθ = ft_dot_product(&calcul->v_normal, &cylinder->O.right);
@@ -146,7 +117,7 @@ void	h_txt_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v
 
 void	h_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c)
 {
-	t_img *txt = cylinder->normal_map;
+	t_img *txt = cylinder->param.normal_map;
 
 	double cosθ = ft_dot_product(&calcul->v_normal, &cylinder->O.up);
 	double sinθ = ft_dot_product(&calcul->v_normal, &cylinder->O.right);

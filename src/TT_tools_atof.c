@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 16:36:02 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/08 20:35:31 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ int	ato_coor_v2(char *str, t_coor *xyz)
 	if (tab_size(spl) != 3)
 		return (put(ERR8"(%s) bad coordonates xyz\n", str), free_tab(spl), 1);
 	err = 0;
-	err += ft_atof(spl[0], &xyz->x);
-	err += ft_atof(spl[1], &xyz->y);
-	err += ft_atof(spl[2], &xyz->z);
+	err += ft_atof_v2(spl[0], &xyz->x);
+	err += ft_atof_v2(spl[1], &xyz->y);
+	err += ft_atof_v2(spl[2], &xyz->z);
 	free_tab(spl);
 	if (err)
 		return (put(ERR8"(%s) bad coordonates xyz\n", str), 1);

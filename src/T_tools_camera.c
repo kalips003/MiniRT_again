@@ -12,47 +12,12 @@
 
 #include "../inc/minirt.h"
 
-void	h_camera_calc_up_right_vect(t_camera *camera);
 void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
 void	h_vector_space(t_obj *obj);
 void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg);
 void	rotation_obj(t_obj *obj, t_vect *axis_rota, int posi_neg);
 
 ///////////////////////////////////////////////////////////////////////////////]
-// 	Compute the Up and Right vector for each camera
-// recalculate everytime the camera is rotated
-void	h_camera_calc_up_right_vect(t_camera *camera)
-{
-// if camera vector is == Y vector
-	if (fabs(camera->O.view.dx) < EPSILON && fabs(camera->O.view.dz) < EPSILON)
-	{
-		if (camera->O.view.dy > 0)
-		{
-			camera->O.up = (t_vect){0.0, 0.0, -1.0};
-			camera->O.right = (t_vect){1.0, 0.0, 0.0};
-			return ;
-		}
-		else
-		{
-			camera->O.up = (t_vect){0.0, 0.0, 1.0};
-			camera->O.right = (t_vect){-1.0, 0.0, 0.0};
-			return ;
-		}
-	}
-
-// Right = Camera x Y = {-Cz, 0, Cx}
-	camera->O.right.dx = -camera->O.view.dz;
-	camera->O.right.dy = 0;
-	camera->O.right.dz = camera->O.view.dx;
-	ft_normalize_vect(&camera->O.right);
-
-// Up = Right x Camera = {-CxCy, Cx²+Cz², -CyCz}
-	camera->O.up.dx = -camera->O.view.dx * camera->O.view.dy;
-	camera->O.up.dy = camera->O.view.dx * camera->O.view.dx + camera->O.view.dz * camera->O.view.dz;
-	camera->O.up.dz = -camera->O.view.dy * camera->O.view.dz;
-	ft_normalize_vect(&camera->O.up);
-}
-
 // takes an obj with a view vector filled, create the vector space
 void	h_vector_space(t_obj *obj)
 {
@@ -98,7 +63,7 @@ void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg)
 	c->dz = resultz;
 
 	ft_normalize_vect(c);
-	h_camera_calc_up_right_vect(data->eye.c);
+	h_vector_space(&data->eye.c->O);
 }
 
 ///////////////////////////////////////////////////////////////////////////////]

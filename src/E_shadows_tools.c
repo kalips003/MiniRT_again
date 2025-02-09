@@ -6,102 +6,16 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/09 14:49:40 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
-int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
 t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
+t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul);
 
-///////////////////////////////////////////////////////////////////////////////]
-// calculate angle between camera ray and light source at intersection
-double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal)
-{
-	t_vect	l;
-	double cos_theta;
-
-// Calculate Light Direction vector
-	l.dx = light->x - intersection->x;
-	l.dy = light->y - intersection->y;
-	l.dz = light->z - intersection->z;
-
-	// ft_normalize_vect(&l);
-	// ft_normalize_vect(normal);
-	if(ft_normalize_vect(&l) || ft_normalize_vect(normal))
-		return (put(ERR9 "vector NULL?\n"), -1.0);
-	// if(ft_normalize_vect(&l))
-	// 	return (put(ERR9 "vector NULL?\n"), -1.0);
-	// if(ft_normalize_vect(normal))
-	// 	return (put(ERR9 "vector NULL2?\n"), -1.0);
-
-// Dot product of Light Direction and Normal
-	cos_theta = l.dx * normal->dx + l.dy * normal->dy + l.dz * normal->dz;
-	cos_theta = fmax(-1.0, fmin(1.0, cos_theta));
-
-// Return the angle in radians
-	return (cos_theta);
-}
-
-///////////////////////////////////////////////////////////////////////////////]
-int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
-{
-	t_sphere	**sphere_ptr;
-	t_plane		**plane_ptr;
-	t_cylinder	**cyl_ptr;
-	t_cone	**cone_ptr;
-	t_calcul_px	calcul;
-
-	calcul.c0 = c->inter;
-	calcul.inter = light->xyz;
-	calcul.v = (t_vect){calcul.inter.x - calcul.c0.x, calcul.inter.y - calcul.c0.y, calcul.inter.z - calcul.c0.z};
-	calcul.dist = sqrt(calcul.v.dx * calcul.v.dx + calcul.v.dy * calcul.v.dy + calcul.v.dz * calcul.v.dz);
-	
-	c->dist_light = calcul.dist;
-	
-	ft_normalize_vect(&calcul.v);
-	c->v_light = calcul.v;
-
-	sphere_ptr = data->spheres - 1;
-	while (++sphere_ptr && *sphere_ptr)
-	{
-		// if (*sphere_ptr == c->object)
-		// 	continue;
-		if (in_shadow_of_sphere(&calcul, *sphere_ptr))
-			return (1);
-	}
-
-	plane_ptr = data->planes - 1;
-	while (++plane_ptr && *plane_ptr)
-	{
-		// if (*plane_ptr == c->object)
-		// 	continue;
-		if (in_shadow_of_plane(&calcul, *plane_ptr))
-			return (1);
-	}
-
-	cyl_ptr = data->cylinders - 1;
-	while (++cyl_ptr && *cyl_ptr)
-	{
-		if (in_shadow_of_cylinder(&calcul, *cyl_ptr) ||
-				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){*cyl_ptr, (*cyl_ptr)->O.c0, (*cyl_ptr)->radius, (*cyl_ptr)->O.view}) ||
-				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){*cyl_ptr, (*cyl_ptr)->xyz_other, (*cyl_ptr)->radius, (*cyl_ptr)->O.view}))
-			return (1);
-	}
-
-	cone_ptr = data->cones - 1;
-	while (++cone_ptr && *cone_ptr)
-	{
-		if (in_shadow_of_cone(&calcul, *cone_ptr) ||
-				in_shadow_of_cicle_v2(&calcul, (t_circle_v2){
-			*cone_ptr, (*cone_ptr)->O.c0, (*cone_ptr)->radius, (*cone_ptr)->O.view}))
-			return (1);
-	}
-	return (0);
-}
 
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal)
 {
@@ -121,7 +35,8 @@ t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
 	t_calcul_px	c;
 	c.c0 = calcul->inter;
 	c.v = ft_vect_reflected(&calcul->v, &calcul->v_normal);
-	calculate_pixel_color_simple(data, &c);
+	c.dist = -1;
+	calculate_pixel_color(data, &c, 0);
 	return (c.px_color);
 }
 
@@ -132,7 +47,7 @@ t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 	c.c0 = calcul->inter;
 
 	double cos_i = -ft_dot_product(&calcul->v, &calcul->v_normal);
-	double index = 1.0 / ((t_sphere*)calcul->object)->gamma;
+	double index = 1.0 / ((t_obj2*)calcul->object)->param.gamma;
 	double cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
 
 	c.v = (t_vect){
@@ -141,11 +56,11 @@ t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 		index * calcul->v.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
 	};
 	ft_normalize_vect(&c.v);
-	calculate_pixel_color_simple(data, &c);
+	calculate_pixel_color(data, &c, 0);
 	// hopefully, calcul->obj == c.obj
 
 	cos_i = -ft_dot_product(&c.v, &c.v_normal);
-	index = ((t_sphere*)calcul->object)->gamma;
+	index = ((t_obj2*)calcul->object)->param.gamma;
 	cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
 	c.v = (t_vect){
 		index * calcul->v.dx + (index * cos_i - cos_r) * calcul->v_normal.dx,
@@ -153,6 +68,6 @@ t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 		index * calcul->v.dz + (index * cos_i - cos_r) * calcul->v_normal.dz
 	};
 	ft_normalize_vect(&c.v);
-	calculate_pixel_color_simple(data, &c);
+	calculate_pixel_color(data, &c, 0);
 	return (c.px_color);
 }

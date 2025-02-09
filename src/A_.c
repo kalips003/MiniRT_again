@@ -12,113 +12,18 @@
 
 #include "../inc/minirt.h"
 
-void	ft_handle_shadows_simple(t_data *data, t_calcul_px *c);
-///////////////////////////////////////////////////////////////////////////////]
-void	ft_handle_shadows_simple(t_data *data, t_calcul_px *c)
-{
-	t_coor ambient;
-	t_coor	diffuse;
-	t_light	**lights;
-	double adjusted_intensity;
-	
-	ambient = ft_ambient(data, c);
-	memset(&diffuse, 0 , sizeof(t_coor));
 
-	lights = data->light_source - 1;
-	while (++lights && *lights)
-	{
-		c->cos_angle = calculate_light_angle(&c->inter, &(*lights)->xyz, &c->v_normal);
-		if (c->cos_angle < 0.0 || something_block_the_light(data, c, *lights))
-			continue ;
-		adjusted_intensity = (*lights)->ratio * c->cos_angle;
-		adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light * c->dist_light);
-		diffuse.x += c->px_color.r * (*lights)->color.r / 255.0 * adjusted_intensity;
-		diffuse.y += c->px_color.g * (*lights)->color.g / 255.0 * adjusted_intensity;
-		diffuse.z += c->px_color.b * (*lights)->color.b / 255.0 * adjusted_intensity;
-	}
-
-	t_rgb	reflected = what_is_reflected(data, c);
-	double mirror_scalar = ((t_sphere*)c->object)->mirror;
-
-	// c->px_color.r = fmax(0, fmin(255, round(ambient.x + diffuse.x)));
-	// c->px_color.g = fmax(0, fmin(255, round(ambient.y + diffuse.y)));
-	// c->px_color.b = fmax(0, fmin(255, round(ambient.z + diffuse.z)));
-
-	c->px_color.r = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.x + diffuse.x) + mirror_scalar * reflected.r)));
-	c->px_color.g = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.y + diffuse.y) + mirror_scalar * reflected.g)));
-	c->px_color.b = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.z + diffuse.z) + mirror_scalar * reflected.b)));
-}
-
-
-// block try: single void**
-
-#define CIRCLE 0
-#define SPHERE 1
-#define PLANE 2
-#define CYLINDER 3
-#define CONE 4
-
-typedef void* (*t_in_shadow_of)(t_calcul_px*, void*);
-t_in_shadow_of g_ft_in_shadow_of[] = {
-	in_shadow_of_sphere_void,
-	in_shadow_of_plane_void,
-	in_shadow_of_cicle_void,
-	in_shadow_of_cylinder_void,
-	in_shadow_of_cone_void
-};
-
-typedef double (*t_dist_of)(t_calcul_px *calcul, void *obj);
-t_dist_of g_ft_dist_of[] = {
-	in_shadow_of_sphere_void,
-	in_shadow_of_plane_void,
-	in_shadow_of_cicle_void,
-	in_shadow_of_cylinder_void,
-	in_shadow_of_cone_void
-};
-
-int	in_shadow_of_sphere_void(t_calcul_px *calcul, void *sphere);
-int	in_shadow_of_plane_void(t_calcul_px *calcul, void *p);
-int	in_shadow_of_cicle_void(t_calcul_px *calcul, void *circle);
-int	in_shadow_of_cylinder_void(t_calcul_px *calcul, void *cy);
-int	in_shadow_of_cone_void(t_calcul_px *calcul, void *cone);
-
-// {
-// 	while (i < )
-// 		if (g_f_in_shadow_of[obj->type](t_data, t_calcul_px) == 1)
+// typedef void* (*t_in_shadow_of)(t_calcul_px*, void*);
+// t_in_shadow_of g_ft_in_shadow_of[] = {
+// 	in_shadow_of_sphere_void,
+// 	in_shadow_of_plane_void,
+// 	in_shadow_of_cicle_void,
+// 	in_shadow_of_cylinder_void,
+// 	in_shadow_of_cone_void
 // };
 
-
-int	ft_find_pixel_colision_v2(t_data *data, t_calcul_px *c)
-{
-	void	**obj_ptr;
-
-	obj_ptr = data->objects - 1;
-	while (++obj_ptr && *obj_ptr)
-	{
-		
-	}
-}
-
-
-
-typedef int (*t_ft_parse_object)(t_data *data, char **split);
-
-typedef struct s_parsing_dico_pair
-{
-	char		*name;
-	t_ft_parse_object	exe;
-}	t_dico_pair;
-
-static const t_dico_pair	dico[] = {
-	{"A", parse_A},
-	{"L", parse_L},
-	{"C", parse_C},
-	{"pl", parse_pl},
-	{"sp", parse_sp},
-	{"cy", parse_cy},
-	{"co", parse_co},
-	{NULL, NULL}
-};
+void	create_vector_space(t_obj *obj);
+void	f_calculate_combined_quaternion_better(t_obj *obj, double angle_α, double angle_β, t_vect *rotated);
 
 typedef double (*t_dist_of)(t_calcul_px *calcul, void *obj);
 
@@ -128,7 +33,6 @@ typedef struct s_ft_obj
 	t_dist_of	ft_dist_of;
 }	t_ft_obj;
 
-
 static const t_ft_obj	dico_ft[] = {
 	{"Circle", parse_pl},
 	{"Plane", parse_pl},
@@ -137,8 +41,6 @@ static const t_ft_obj	dico_ft[] = {
 	{"Cone", parse_co},
 	{NULL, NULL}
 };
-
-
 
 
 
@@ -169,19 +71,45 @@ void	create_vector_space(t_obj *obj)
 	ft_normalize_vect(&obj->up);
 }
 
+///////////////////////////////////////////////////////////////////////////////]
 void	recalculate_cone(t_cone *cone)
 {
 	cone->apex = new_moved_point(&cone->O.c0, &cone->O.view, cone->height);
+	cone->slope = (cone->radius * cone->radius) / (cone->height * cone->height);
 }
-
 
 void	recalculate_cylinder(t_cylinder *cylinder)
 {
 	cylinder->xyz_other = new_moved_point(&cylinder->O.c0, &cylinder->O.view, cylinder->height);
 }
 
-
 void	recalculate_plane(t_plane *plane)
 {
 	plane->d = -(plane->O.view.dx * plane->O.c0.x + plane->O.view.dy * plane->O.c0.y + plane->O.view.dz * plane->O.c0.z);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// fills rtrn with the coordonates of the rotated vector view object, around
+// 		angle_α ~ UP then around angle_β ~ RIGHT
+// Q rotation combined = qβ.qα
+void	f_calculate_combined_quaternion_better(t_obj *obj, double angle_α, double angle_β, t_vect *rotated)
+{
+	t_camera_calc	calc;
+
+	calc.cosA = cos(angle_α / 2);
+	calc.sinA = sin(angle_α / 2);
+	calc.cosB = cos(-angle_β / 2);
+	calc.sinB = sin(-angle_β / 2);
+
+	calc.Qw = calc.cosA*calc.cosB - calc.sinA*calc.sinB * (obj->right.dx * obj->up.dx + obj->right.dy * obj->up.dy + obj->right.dz * obj->up.dz);
+	calc.Qi = calc.cosB*calc.sinA * obj->up.dx + calc.cosA*calc.sinB * obj->right.dx + calc.sinA*calc.sinB*(obj->right.dy * obj->up.dz - obj->right.dz * obj->up.dy);
+	calc.Qj = calc.cosB*calc.sinA * obj->up.dy + calc.cosA*calc.sinB * obj->right.dy + calc.sinA*calc.sinB*(obj->right.dz * obj->up.dx - obj->right.dx * obj->up.dz);
+	calc.Qk = calc.cosB*calc.sinA * obj->up.dz + calc.cosA*calc.sinB * obj->right.dz + calc.sinA*calc.sinB*(obj->right.dx * obj->up.dy - obj->right.dy * obj->up.dx);
+
+	rotated->dx = obj->view.dx * (calc.Qw * calc.Qw + calc.Qi * calc.Qi - calc.Qj * calc.Qj - calc.Qk * calc.Qk) + 2*obj->view.dy * (calc.Qi*calc.Qj - calc.Qw*calc.Qk) + 2*obj->view.dz * (calc.Qi*calc.Qk + calc.Qw*calc.Qj);
+	rotated->dy = obj->view.dy * (calc.Qw * calc.Qw + calc.Qj * calc.Qj - calc.Qi * calc.Qi - calc.Qk * calc.Qk) + 2*obj->view.dz * (calc.Qj*calc.Qk - calc.Qw*calc.Qi) + 2*obj->view.dx * (calc.Qi*calc.Qj + calc.Qw*calc.Qk);
+	rotated->dz = obj->view.dz * (calc.Qw * calc.Qw + calc.Qk * calc.Qk - calc.Qi * calc.Qi - calc.Qj * calc.Qj) + 2*obj->view.dx * (calc.Qi*calc.Qk - calc.Qw*calc.Qj) + 2*obj->view.dy * (calc.Qj*calc.Qk + calc.Qw*calc.Qi);
+
+	ft_normalize_vect(rotated);
+	// multi touche fluid rotation !!!!
 }

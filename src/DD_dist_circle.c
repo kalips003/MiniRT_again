@@ -6,20 +6,20 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 20:01:24 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/08 19:48:14 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int			distance_from_cicle(t_calcul_px *calcul, void *obj);
-static void	h_dist_circle(t_calcul_px *calcul, t_circle_calc *c, t_circle *circle);
+int			distance_from_circle(t_calcul_px *calcul, void *obj, int simple);
+static int	h_dist_circle(t_calcul_px *calcul, t_circle_calc *c, t_circle *circle, int simple);
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 // RESOLVE PLANE EQUATION: A(t.Vx + EYEx) + B(t.Vy + EYEy) + C(t.Vz + EYEz) + D = 0
 // ==> t = top / bot;
 // if top = 0, the camera is on the plane
 // if bot = 0, the view_vector is parallele to d plane
-int	distance_from_cicle(t_calcul_px *calcul, void *obj)
+int	distance_from_circle(t_calcul_px *calcul, void *obj, int simple)
 {
 	t_circle_calc	c;
 	t_circle *circle;
@@ -32,7 +32,7 @@ int	distance_from_cicle(t_calcul_px *calcul, void *obj)
 	if (fabs(c.top) < EPSILON || fabs(c.bot) < EPSILON)
 		return (0);
 	c.dist = c.top / c.bot;
-	if (c.dist <= 0)
+	if (c.dist <= 0.0)
 		return (0);
 
 	c.inter_temp = new_moved_point(&calcul->c0, &calcul->v, c.dist);
@@ -40,12 +40,15 @@ int	distance_from_cicle(t_calcul_px *calcul, void *obj)
 		return (0);
 
 	if (c.dist < calcul->dist || calcul->dist < 0.0)
-		h_dist_circle(calcul, &c, circle);
-	return (1);
+		return (h_dist_circle(calcul, &c, circle, simple));
+
+	return (0);
 }
 
-static void	h_dist_circle(t_calcul_px *calcul, t_circle_calc *c, t_circle *circle)
+static int	h_dist_circle(t_calcul_px *calcul, t_circle_calc *c, t_circle *circle, int simple)
 {
+	if (simple)
+		return (1);
 	calcul->object = circle;
 	calcul->dist = c->dist;
 	calcul->inter = c->inter_temp;
@@ -54,4 +57,5 @@ static void	h_dist_circle(t_calcul_px *calcul, t_circle_calc *c, t_circle *circl
 	calcul->v_normal = circle->O.view;
 	if (ft_dot_product(&calcul->v, &circle->O.view) > 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
+	return (1);
 }

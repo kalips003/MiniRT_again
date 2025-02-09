@@ -6,14 +6,13 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/31 15:25:51 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/09 14:14:56 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
 int	key_press(int keysym, t_data *data);
-int	key_release(int keysym, t_data *data);
 int	mouse_clic(int button, int x, int y, void *data);
 void	print_clic(t_data *data, int x, int y);
 
@@ -22,85 +21,21 @@ int	key_press(int keysym, t_data *data)
 {
 	if (keysym == XK_Escape)
 		end2(data);
-	if (keysym == XK_p)
-	// if (keysym == XK_KP_Enter)
-	{
-		data->is_not_moving = 1;
-		ft_render_frame_plus(data);
-		return (0);
-	}
-	else
-		data->is_not_moving = 0;
+	if (keysym == XK_KP_Enter)
+		return (ft_render_frame(data, 1));
 
 	if (direction_pad(keysym, data))
-		return (ft_render_frame(data));
-	// if (keysym == XK_Up)
-	// {
-	// 	data->eye.c->xyz.x += 5.0 * data->eye.c->view.dx;
-	// 	data->eye.c->xyz.y += 5.0 * data->eye.c->view.dy;
-	// 	data->eye.c->xyz.z += 5.0 * data->eye.c->view.dz;
-	// }
-	// else if (keysym == XK_Down)
-	// {
-	// 	data->eye.c->xyz.x -= 5.0 * data->eye.c->view.dx;
-	// 	data->eye.c->xyz.y -= 5.0 * data->eye.c->view.dy;
-	// 	data->eye.c->xyz.z -= 5.0 * data->eye.c->view.dz;
-	// }
-	// else if (keysym == XK_Right)
-	// {
-	// 	data->eye.c->xyz.x -= 5.0 * data->eye.c->right.dx;
-	// 	data->eye.c->xyz.y -= 5.0 * data->eye.c->right.dy;
-	// 	data->eye.c->xyz.z -= 5.0 * data->eye.c->right.dz;
-	// }
-	// else if (keysym == XK_Left)
-	// {
-	// 	data->eye.c->xyz.x += 5.0 * data->eye.c->right.dx;
-	// 	data->eye.c->xyz.y += 5.0 * data->eye.c->right.dy;
-	// 	data->eye.c->xyz.z += 5.0 * data->eye.c->right.dz;
-	// }
-	// else if (keysym == XK_a)
-	// 	rotation_camera(data, &data->eye.c->up, -1);
-	// else if (keysym == XK_d)
-	// 	rotation_camera(data, &data->eye.c->up, 1);
-	// else if (keysym == XK_w)
-	// 	rotation_camera(data, &data->eye.c->right, 1);
-	// else if (keysym == XK_s)
-	// 	rotation_camera(data, &data->eye.c->right, -1);
-	// else if (keysym == XK_n)
-	// {
-	// 	data->eye.current_camera++;
-	// 	data->eye.c = data->camera[data->eye.current_camera];
-	// 	if (!data->eye.c)
-	// 	{
-	// 		data->eye.c = data->camera[0];
-	// 		data->eye.current_camera = 0;
-	// 	}
-	// }
+		return (ft_render_frame(data, 0));
 	else if (keys_wasd(keysym, data))
-		return (ft_render_frame(data));
+		return (ft_render_frame(data, 0));
 	else if (keysym == XK_space)
 		data->change ^= 1;
 	else
 		return (0);
-	ft_render_frame(data);
+	ft_render_frame(data, 0);
 	return (0);
 }
 
-int	key_release(int keysym, t_data *data)
-{
-	// if (keysym == XK_d || keysym == XK_Right || 
-	// keysym == XK_s || keysym == XK_Down || 
-	// keysym == XK_a || keysym == XK_Left ||
-	// keysym == XK_w || keysym == XK_Up || keysym == XK_n)
-	// 	ft_render_rt(data);
-	// if (keysym == XK_Control_L && !data->player.time)
-	// 	data->running ^= 1;
-	// if (keysym == XK_e)
-	// 	print_data(data);
-	// if (keysym == XK_space)
-	// 	data->running = 0;
-	return (0);
-}
 
 // int mlx_mouse_hook(void *win_ptr, int (*funct_ptr)(), void *param);
 // int mlx_hook(void *win_ptr, int x_event, int x_mask, int (*funct_ptr)(), void *param);
@@ -115,16 +50,14 @@ int mouse_clic(int button, int x, int y, void *data)
 
 void	print_clic(t_data *data, int x, int y)
 {
-	printf(CLEAR);
 	t_calcul_px c;
+
 	ft_memset(&c, 0, sizeof(t_calcul_px));
 	c.c0 = data->eye.c->O.c0;
-	double angleB = atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst);
-	double angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
+	f_calculate_combined_quaternion(data, atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst), atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst), &c.v);
+	calculate_pixel_color(data, &c, 0);
 
-	f_calculate_combined_quaternion(data, angleA, angleB, &c.v);
-	calculate_pixel_color_simple(data, &c);
-
+	printf(CLEAR);
 	printf("Camera = [%f,%f,%f\t%f,%f,%f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v.dx, c.v.dy, c.v.dz);
 	printf("Mouse clicked at position (%d, %d)\n", x, y);
 	if (c.object)
@@ -139,23 +72,14 @@ void	print_clic(t_data *data, int x, int y)
 	printf("Intersection point = [%f, %f, %f]\n", c.inter.x, c.inter.y, c.inter.z);
 
 // set the object thats gonna change
-	if ((t_sphere*)c.object == data->change_obj)
+	if (c.object == data->change_obj)
 		data->change_obj = NULL;
 	else
 		data->change_obj = c.object;
 	printf("\tOBJECT.1 = %p;OBJECT.2 = %p\n", c.object, data->change_obj);
 	c.dist = -1.0;
 	c.c0 = c.inter;
-	t_sphere	**sphere_ptr;
-	sphere_ptr = data->spheres - 1;
-	double dist_from_light = sqrt(c.v.dx * c.v.dx + c.v.dy * c.v.dy + c.v.dz * c.v.dz);
-	while (++sphere_ptr && *sphere_ptr)
-		if (distance_from_sphere_v2(&c, *sphere_ptr) >= 0.0 && c.dist < dist_from_light)
-		{
-			printf("AAA%f\n", c.dist);
-			printf("Vector view = [%f, %f, %f]\n", c.v.dx, c.v.dy, c.v.dz);
 
-		}
 }
 
 

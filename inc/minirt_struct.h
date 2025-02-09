@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/01 19:20:20 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/08 00:58:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_eye
 
 }	t_eye;
 
+////////////////////////////////////////////]
 typedef struct s_data
 {
 	void	*mlx;
@@ -50,27 +51,22 @@ typedef struct s_data
 	// t_img	buffer; <---- buffer not used, all buffer lines commented
 
 	t_ambient_light	**bg_light;
-	t_camera	**camera;
-	t_light		**light_source;
-	
-	// t_sphere	**spheres;
-	// t_plane		**planes;
-	// t_cylinder	**cylinders;
-	// t_cone	**cones;
+	t_camera		**camera;
+	t_light			**light_source;
 
-	void	**objects;
+	void		**objects;
 	t_img		**textures;
+
 // shortcut to the vector camera
 	t_eye	eye;
-	int			current_camera;
-	int		is_not_moving;
+	int		current_camera;
 
-	char **av;
-	time_t last_modif_time;
+	char	**av;
+	time_t	last_modif_time;
+
 
 	t_sphere	*change_obj;
 	int		change;
-	double	move_camera;
 
 }	t_data;
 ////////////////////////////////////////////]

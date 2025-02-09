@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/01/29 12:52:30 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/08 12:27:11 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ typedef struct s_dico_pair2
 
 ///////////////////////////////////////////////////////////////////////////////]
 void	function_1(t_data *data, t_obj *obj);
-int	direction_pad(int keysym, t_data *data);
-int	keys_wasd(int keysym, t_data *data);
+int		direction_pad(int keysym, t_data *data);
+int		keys_wasd(int keysym, t_data *data);
 ///////////////////////////////////////////////////////////////////////////////]
 
 static const t_dico_pair2	dico[] = {
