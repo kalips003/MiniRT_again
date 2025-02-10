@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Y_init.c                                           :+:      :+:    :+:   */
+/*   Y0_init.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/08 20:42:56 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 15:08:49 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,6 @@ static void		ini_mlx(t_data *data)
 	// mlx_loop_hook(data->mlx, &ft_loop, data);
 	mlx_hook(data->win, KeyPress, KeyPressMask, &key_press, data);
 	mlx_hook(data->win, ButtonPress, ButtonPressMask, &mouse_clic, data);
+	mlx_hook(data->win, ButtonRelease, ButtonReleaseMask, &mouse_release, data);
 	mlx_hook(data->win, 17, 0, &end2, data);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DD_dist_cone.c                                     :+:      :+:    :+:   */
+/*   D4_dist_cone.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/08 19:50:08 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 00:17:20 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	distance_from_cone(t_calcul_px *calcul, void *obj, int simple)
 	t_cone	*cone = (t_cone*)obj;
 	int	rtrn;
 
-	c.circle = (t_circle_shell){CIRCLE, &cone->O, &cone->param, cone->radius};
+	c.circle = (t_circle){CIRCLE, cone->O, cone->param, cone->radius};
 	rtrn = distance_from_circle(calcul, &c.circle, simple);
 	
 	if (rtrn && simple)

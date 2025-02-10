@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DD_dist_cylinder.c                                 :+:      :+:    :+:   */
+/*   D3_dist_cylinder.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 17:07:55 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/08 19:50:13 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 00:14:18 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ int	distance_from_cylinder(t_calcul_px *calcul, void *obj, int simple)
 	t_cylinder *cy = (t_cylinder*)obj;
 	int	rtrn;
 
-	c.circle = (t_circle_shell){CIRCLE, &cy->O, &cy->param, cy->radius};
+	c.circle = (t_circle){CIRCLE, cy->O, cy->param, cy->radius};
 	rtrn = distance_from_circle(calcul, &c.circle, simple);
-	c.circle.O->c0 = new_moved_point(&cy->O.c0, &cy->O.view, cy->height);
-	rtrn &= distance_from_circle(calcul, &c.circle, simple);
+	c.circle.O.c0 = new_moved_point(&cy->O.c0, &cy->O.view, cy->height);
+	rtrn |= distance_from_circle(calcul, &c.circle, simple);
 
 	if (rtrn && simple)
 		return (1);

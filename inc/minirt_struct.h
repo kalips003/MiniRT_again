@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/08 00:58:44 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 15:35:43 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,14 @@ typedef struct s_eye
 {
 	t_camera	*c;
 // unit angle in radians per pixel
-	double		px;
-// position of upper-left screen (rotation in radian)
-	double		px0;
-	double		py0;
+// 	double		px;
+// // position of upper-left screen (rotation in radian)
+// 	double		px0;
+// 	double		py0;
 
 	int			current_camera;
+	int			clic_px_x;
+	int			clic_px_y;
 
 }	t_eye;
 
@@ -65,7 +67,7 @@ typedef struct s_data
 	time_t	last_modif_time;
 
 
-	t_sphere	*change_obj;
+	t_obj2	*change_obj;
 	int		change;
 
 }	t_data;

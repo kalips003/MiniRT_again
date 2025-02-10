@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   TT_tools_math1_vect_ope.c                          :+:      :+:    :+:   */
+/*   T_tools_vect_ope.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 16:36:56 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:20:55 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int		ft_normalize_vect_v2(t_vect *vect, int print_err);
+int		ft_normalize_vect(t_vect *vect);
 double	ft_dot_product(t_vect *a, t_vect *b);
 t_vect	ft_cross_product(t_vect *u, t_vect *v);
 t_vect	ft_cross_product_norm(t_vect *u, t_vect *v);
@@ -20,13 +20,14 @@ double	dist_two_points(t_coor *a, t_coor *b);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // Normalize vector
-int	ft_normalize_vect_v2(t_vect *vect, int print_err)
+int	ft_normalize_vect(t_vect *vect)
 {
 	double normal_magnitude;
 
 	normal_magnitude = sqrt(vect->dx * vect->dx + vect->dy * vect->dy + vect->dz * vect->dz);
-	if (normal_magnitude == 0.0 && print_err)
-		return (put("VECTOR = [%f, %f, %f]\n", vect->dx, vect->dy, vect->dz), 1);
+	if (normal_magnitude == 0.0)
+		// return (1);
+		return (printf("VECTOR = [%f, %f, %f]\n", vect->dx, vect->dy, vect->dz), 1);
 	vect->dx = vect->dx / normal_magnitude;
 	vect->dy = vect->dy / normal_magnitude;
 	vect->dz = vect->dz / normal_magnitude;

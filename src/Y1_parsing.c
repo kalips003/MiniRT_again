@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   YY_parsing.c                                       :+:      :+:    :+:   */
+/*   Y1_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/09 14:04:57 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:17:39 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static const t_dico_pair	dico[] = {
 	{"sp", parse_sp},
 	{"cy", parse_cy},
 	{"co", parse_co},
+	{"ar", parse_ar},
 	{NULL, NULL}
 };
 
@@ -95,8 +96,8 @@ int	parse_A(t_data *data, char **raw_split)
 	
 	if (tab_size(raw_split) != 2)
 		return (put(ERR1"bad number of args (AMBIENT LIGHT)\n"), 1);
-	if (ft_atof_v2(raw_split[0], &light->ratio) ||
-		ato_rgb_v2(raw_split[1], &light->color))
+	if (ft_atof(raw_split[0], &light->ratio) ||
+		ato_rgb(raw_split[1], &light->color))
 		return (1);
 	if (light->ratio < 0.0 || light->ratio > 1.0)
 		return (put(ERR1"(%s) ambient lighting ratio should be [0.0,1.0]\n", raw_split[0]), 1);
@@ -119,9 +120,9 @@ int	parse_L(t_data *data, char **raw_split)
 	if (tab_size(raw_split) != 3)
 		return (put(ERR1"bad number of args (LIGHT SOURCE)\n"), 1);
 
-	if (ato_coor_v2(raw_split[0], &light->xyz) || 
-		ft_atof_v2(raw_split[1], &light->ratio) || 
-		ato_rgb_v2(raw_split[2], &light->color))
+	if (ato_coor(raw_split[0], &light->xyz) || 
+		ft_atof(raw_split[1], &light->ratio) || 
+		ato_rgb(raw_split[2], &light->color))
 		return (1);
 	if (light->ratio < 0.0 || light->ratio > 1.0)
 		return (put(ERR1"(%s) light source ratio should be [0.0,1.0]\n", raw_split[1]), 1);
@@ -147,8 +148,8 @@ int	parse_C(t_data *data, char **raw_split)
 		return (put(ERR1"bad number of args (CAMERA)\n"), 1);
 	err = 0;
 	camera->fov = ft_atoi(raw_split[2], &err);
-	if (err || ato_coor_v2(raw_split[0], &camera->O.c0) || 
-		ato_coor_v2(raw_split[1], (t_coor*)&camera->O.view))
+	if (err || ato_coor(raw_split[0], &camera->O.c0) || 
+		ato_coor(raw_split[1], (t_coor*)&camera->O.view))
 		return (1);
 	if (camera->fov < 0 || camera->fov > 180)
 		return (put(ERR1"(%s) camera fov should be [0, 180]\n", raw_split[0]), 1);

@@ -6,14 +6,15 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/09 14:14:56 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:37:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int	key_press(int keysym, t_data *data);
-int	mouse_clic(int button, int x, int y, void *data);
+int		key_press(int keysym, t_data *data);
+int		mouse_clic(int button, int x, int y, void *data);
+int		mouse_release(int button, int x, int y, void *data);
 void	print_clic(t_data *data, int x, int y);
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -36,17 +37,45 @@ int	key_press(int keysym, t_data *data)
 	return (0);
 }
 
-
-// int mlx_mouse_hook(void *win_ptr, int (*funct_ptr)(), void *param);
-// int mlx_hook(void *win_ptr, int x_event, int x_mask, int (*funct_ptr)(), void *param);
-// ButtonPress = 4, ButtonRelease = 5, MotionNotify = 6
 // Left Button: 1, Middle Button: 2, Right Button: 3, Scroll Up: 4, Scroll Down: 5
 int mouse_clic(int button, int x, int y, void *data)
 {
 	if (button == 3) // Right mouse button
 		print_clic((t_data *)data, x, y);
+	else if (button == 1)
+	{
+		((t_data*)data)->eye.clic_px_x = x;
+		((t_data*)data)->eye.clic_px_y = y;
+	}
 	return (0);
 }
+
+int mouse_release(int button, int x, int y, void *data)
+{
+	double angleA;
+	double angleB;
+
+	if (button == 1)
+	{
+		angleA = (((t_data*)data)->eye.clic_px_x - x) * ((t_data*)data)->eye.c->fov_cst;
+		angleB = (((t_data*)data)->eye.clic_px_y - y) * ((t_data*)data)->eye.c->fov_cst;
+		((t_data*)data)->eye.c->O.view = combined_quaternion_rotation(&((t_data*)data)->eye.c->O, angleA, angleB);
+		create_vector_space(&((t_data*)data)->eye.c->O);
+		ft_render_frame((t_data *)data, 0);
+	}
+	return (0);
+}
+
+static const char* g_obj_names[] = {
+	"Circle",
+	"Sphere",
+	"Plane",
+	"Cylinder",
+	"Cone",
+	NULL,
+	"Arrow",
+	NULL
+};
 
 void	print_clic(t_data *data, int x, int y)
 {
@@ -54,32 +83,36 @@ void	print_clic(t_data *data, int x, int y)
 
 	ft_memset(&c, 0, sizeof(t_calcul_px));
 	c.c0 = data->eye.c->O.c0;
+	c.print = 1;
 	f_calculate_combined_quaternion(data, atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst), atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst), &c.v);
-	calculate_pixel_color(data, &c, 0);
-
 	printf(CLEAR);
-	printf("Camera = [%f,%f,%f\t%f,%f,%f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v.dx, c.v.dy, c.v.dz);
-	printf("Mouse clicked at position (%d, %d)\n", x, y);
+	printf(C_512"Camera\t[%.1f,%.1f,%.1f\t\t%.3f,%.3f,%.3f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v.dx, c.v.dy, c.v.dz);
+	printf("\tview \t[% .2f,% .2f,% .2f]\n", data->eye.c->O.view.dx, data->eye.c->O.view.dy, data->eye.c->O.view.dz);
+	printf("\tup \t[% .2f,% .2f,% .2f]\n", data->eye.c->O.up.dx, data->eye.c->O.up.dy, data->eye.c->O.up.dz);
+	printf("\tright \t[% .2f,% .2f,% .2f]\n", data->eye.c->O.right.dx, data->eye.c->O.right.dy, data->eye.c->O.right.dz);
+	printf(C_323"\nMouse clicked at pixel (%d, %d)\n", x, y);
+	
+	printf(C_244"\n-------------------[INSIDE PRINT DATA]-------------------\n");
+	calculate_pixel_color(data, &c, 0);
+	printf(C_244"---------------------------------------------------------\n");
+
 	if (c.object)
 	{
-		t_obj *obj = &((t_sphere*)c.object)->O;
-		printf("\tOBJECT: view= %f,%f,%f\nup= %f,%f,%f\nright= %f,%f,%f\n", \
-		obj->view.dx, obj->view.dy, obj->view.dz,\
-		obj->up.dx, obj->up.dy, obj->up.dz, \
-		obj->right.dx, obj->right.dy, obj->right.dz);
+		t_obj2 *obj = c.object;
+		printf(C_142"\nOBJECT:\t\t%s", g_obj_names[obj->type]);
+		printf(C_533"\n\n\txyz \t[% .1f,% .1f,% .1f]\n", obj->O.c0.x, obj->O.c0.y, obj->O.c0.z);
+		printf(C_455"\n\tview \t[% .2f,% .2f,% .2f]\n", obj->O.view.dx, obj->O.view.dy, obj->O.view.dz);
+		printf("\tup \t[% .2f,% .2f,% .2f]\n", obj->O.up.dx, obj->O.up.dy, obj->O.up.dz);
+		printf("\tright \t[% .2f,% .2f,% .2f]\n", obj->O.right.dx, obj->O.right.dy, obj->O.right.dz);
+		printf(C_433"\n\tcolor obj\t[%d,%d,%d]\n", obj->param.color.r, obj->param.color.g, obj->param.color.b);
+		printf(C_433"\tpx color\t[%d,%d,%d]\n\n", c.px_color.r, c.px_color.g, c.px_color.b);
 	}
-	printf("Vector normal surface = [%f, %f, %f]\n", c.v_normal.dx, c.v_normal.dy, c.v_normal.dz);
-	printf("Intersection point = [%f, %f, %f]\n", c.inter.x, c.inter.y, c.inter.z);
+	printf(C_134"Vector normal surface\t[%.3f, %.3f, %.3f]\n", c.v_normal.dx, c.v_normal.dy, c.v_normal.dz);
+	printf("Intersection point\t[%.2f, %.2f, %.2f]\n\n", c.inter.x, c.inter.y, c.inter.z);
 
-// set the object thats gonna change
 	if (c.object == data->change_obj)
 		data->change_obj = NULL;
 	else
 		data->change_obj = c.object;
-	printf("\tOBJECT.1 = %p;OBJECT.2 = %p\n", c.object, data->change_obj);
-	c.dist = -1.0;
-	c.c0 = c.inter;
-
+	printf(C_440"OBJECT SELECTED %p\n", data->change_obj);
 }
-
-

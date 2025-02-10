@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DD_dist_circle.c                                   :+:      :+:    :+:   */
+/*   D0_dist_circle.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/08 19:48:14 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 00:14:29 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int	distance_from_circle(t_calcul_px *calcul, void *obj, int simple)
 
 	if (c.dist < calcul->dist || calcul->dist < 0.0)
 		return (h_dist_circle(calcul, &c, circle, simple));
-
 	return (0);
 }
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DD_dist_sphere.c                                   :+:      :+:    :+:   */
+/*   D1_dist_sphere.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/09 16:56:13 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 00:05:33 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	distance_from_sphere(t_calcul_px *calcul, void *obj, int simple)
 	t_sphere		*sphere;
 
 	sphere = (t_sphere*)obj;
+
 	c.x0 = calcul->c0.x - sphere->O.c0.x;
 	c.y0 = calcul->c0.y - sphere->O.c0.y;
 	c.z0 = calcul->c0.z - sphere->O.c0.z;

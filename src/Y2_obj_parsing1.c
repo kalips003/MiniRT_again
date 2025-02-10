@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   YY_obj_parsing1.c                                  :+:      :+:    :+:   */
+/*   Y2_obj_parsing1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/09 14:32:40 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:17:39 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	parse_pl(t_data *data, char **raw_split);
 int	parse_sp(t_data *data, char **raw_split);
 int	parse_cy(t_data *data, char **raw_split);
 int	parse_co(t_data *data, char **raw_split);
+int	parse_ar(t_data *data, char **raw_split);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 			CIRCLE
@@ -40,10 +41,10 @@ int	parse_ci(t_data *data, char **raw_split)
 		parse_reste(data, &raw_split[3], &circle->param);
 	
 	circle->type = CIRCLE;
-	if (ato_coor_v2(raw_split[0], &circle->O.c0) ||
-		ato_coor_v2(raw_split[1], (t_coor*)&circle->O.view) ||
-		ato_rgb_v2(raw_split[2], &circle->param.color) ||
-		ft_atof_v2(raw_split[3], &circle->radius))
+	if (ato_coor(raw_split[0], &circle->O.c0) ||
+		ato_coor(raw_split[1], (t_coor*)&circle->O.view) ||
+		ato_rgb(raw_split[2], &circle->param.color) ||
+		ft_atof(raw_split[3], &circle->radius))
 		return (1);
 	if (circle->radius < EPSILON)
 		return (put(ERR1"(CIRCLE OBJECT) too small\n"), 1);
@@ -77,9 +78,9 @@ int	parse_pl(t_data *data, char **raw_split)
 		parse_reste(data, &raw_split[3], &plane->param);
 	
 	plane->type = PLANE;
-	if (ato_coor_v2(raw_split[0], &plane->O.c0) ||
-		ato_coor_v2(raw_split[1], (t_coor*)&plane->O.view) ||
-		ato_rgb_v2(raw_split[2], &plane->param.color))
+	if (ato_coor(raw_split[0], &plane->O.c0) ||
+		ato_coor(raw_split[1], (t_coor*)&plane->O.view) ||
+		ato_rgb(raw_split[2], &plane->param.color))
 		return (1);
 	if (h_parse_vect_space(&plane->O, &plane->O.view))
 		return (1);
@@ -107,9 +108,9 @@ int	parse_sp(t_data *data, char **raw_split)
 		parse_reste(data, &raw_split[3], &sphere->param);
 
 	sphere->type = SPHERE;
-	if (ato_coor_v2(raw_split[0], &sphere->O.c0) ||
-		ft_atof_v2(raw_split[1], &sphere->radius) ||
-		ato_rgb_v2(raw_split[2], &sphere->param.color))
+	if (ato_coor(raw_split[0], &sphere->O.c0) ||
+		ft_atof(raw_split[1], &sphere->radius) ||
+		ato_rgb(raw_split[2], &sphere->param.color))
 		return (1);
 	if (sphere->radius < EPSILON)
 		return (put(ERR1"(SPHERE OBJECT) too small\n"), 1);
@@ -141,11 +142,11 @@ int	parse_cy(t_data *data, char **raw_split)
 		parse_reste(data, &raw_split[5], &cylinder->param);
 
 	cylinder->type = CYLINDER;
-	if (ato_coor_v2(raw_split[0], &cylinder->O.c0) ||
-		ato_coor_v2(raw_split[1], (t_coor *)&cylinder->O.view) ||
-		ft_atof_v2(raw_split[2], &cylinder->radius) ||
-		ft_atof_v2(raw_split[3], &cylinder->height) ||
-		ato_rgb_v2(raw_split[4], &cylinder->param.color))
+	if (ato_coor(raw_split[0], &cylinder->O.c0) ||
+		ato_coor(raw_split[1], (t_coor *)&cylinder->O.view) ||
+		ft_atof(raw_split[2], &cylinder->radius) ||
+		ft_atof(raw_split[3], &cylinder->height) ||
+		ato_rgb(raw_split[4], &cylinder->param.color))
 		return (1);
 	if (cylinder->radius < EPSILON || cylinder->height < EPSILON)
 		return (put(ERR1"(CYLINDER OBJECT) too small\n"), 1);
@@ -179,13 +180,13 @@ int	parse_co(t_data *data, char **raw_split)
 	if (raw_split[6])
 		parse_reste(data, &raw_split[6], &cone->param);
 
-	cone->type = CYLINDER;
-	if (ato_coor_v2(raw_split[0], &cone->O.c0) ||
-		ato_coor_v2(raw_split[1], (t_coor *)&cone->O.view) ||
-		ft_atof_v2(raw_split[2], &cone->radius) ||
-		ft_atof_v2(raw_split[3], &cone->height) ||
-		ato_rgb_v2(raw_split[4], &cone->param.color) ||
-		ato_rgb_v2(raw_split[5], &cone->param.color))
+	cone->type = CONE;
+	if (ato_coor(raw_split[0], &cone->O.c0) ||
+		ato_coor(raw_split[1], (t_coor *)&cone->O.view) ||
+		ft_atof(raw_split[2], &cone->radius) ||
+		ft_atof(raw_split[3], &cone->height) ||
+		ato_rgb(raw_split[4], &cone->param.color) ||
+		ato_rgb(raw_split[5], &cone->param.color))
 		return (1);
 	if (cone->radius < EPSILON || cone->height < EPSILON)
 		return (put(ERR1"(CONE OBJECT) too small\n"), 1);
@@ -194,5 +195,44 @@ int	parse_co(t_data *data, char **raw_split)
 		return (1);
 	cone->apex = new_moved_point(&cone->O.c0, &cone->O.view, cone->height);
 	cone->slope = (cone->radius * cone->radius) / (cone->height * cone->height);
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			ARROW
+// 		XYZ = float
+// 		xyz vector [-1,1] float
+// 		RADIUS = float
+// 		HEIGHT = float
+// 		RGB [0, 255] int
+int	parse_ar(t_data *data, char **raw_split)
+{
+	t_arrow	*arrow;
+	
+	arrow = mem(0, sizeof(t_arrow));
+	if (!arrow)
+		return (put(ERRM), 2);
+	data->objects = expand_tab(data->objects, arrow);
+
+	if (tab_size(raw_split) < 5)
+		return (put(ERR1"bad number of args (ARROW OBJECT)\n"), 1);
+	if (raw_split[5])
+		parse_reste(data, &raw_split[5], &arrow->param);
+
+	arrow->type = ARROW;
+	if (ato_coor(raw_split[0], &arrow->O.c0) ||
+		ato_coor(raw_split[1], (t_coor *)&arrow->O.view) ||
+		ft_atof(raw_split[2], &arrow->radius) ||
+		ft_atof(raw_split[3], &arrow->height) ||
+		ato_rgb(raw_split[4], &arrow->param.color))
+		return (1);
+	if (arrow->radius < EPSILON || arrow->height < EPSILON)
+		return (put(ERR1"(ARROW OBJECT) too small\n"), 1);
+
+	if (h_parse_vect_space(&arrow->O, &arrow->O.view))
+		return (1);
+	arrow->xyz_other = new_moved_point(&arrow->O.c0, &arrow->O.view, arrow->height * 2 / 3);
+	arrow->apex = new_moved_point(&arrow->O.c0, &arrow->O.view, arrow->height);
+	arrow->slope = (9 * arrow->radius * arrow->radius) / (arrow->height * arrow->height);
 	return (0);
 }

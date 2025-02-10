@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/08 20:21:28 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 01:41:18 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ typedef struct s_calcul_px
 
 
 	t_rgb	px_color_behind;
+
+// bit for printing info
+	int	print;
 
 }	t_calcul_px;
 
@@ -166,7 +169,7 @@ typedef struct s_cylinder_calc_v2 {
 	double	dist_h;
 	double	dist;
 	t_coor	projec_point;
-	t_circle_shell	circle;
+	t_circle	circle;
 } t_cylinder_calc_v2;
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -197,8 +200,21 @@ typedef struct s_cone_calc_v2 {
 	double	dist_apex;
 	double	dist;
 	t_coor	projec_point;
-	t_circle_shell	circle;
+	t_circle	circle;
 } t_cone_calc_v2;
+
+///////////////////////////////////////////////////////////////////////////////]
+// 	ARROW
+typedef struct s_arrow_calc {
+	double	det1;
+	double	det2;
+
+	double	dist_h;
+	double	dist;
+	t_coor	projec_point;
+	t_cone		co;
+	t_cylinder	cy;
+} t_arrow_calc;
 
 ///////////////////////////////////////////////////////////////////////////////]
 ///////////////////////////////////////////////////////////////////////////////]

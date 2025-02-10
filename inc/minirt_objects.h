@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/01 16:43:50 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 01:34:34 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ typedef struct s_cylinder
 	t_param	param;
 
 	t_coor	xyz_other;
-	double	diameter;
 	double	height;
 	double	radius;
 }	t_cylinder;
@@ -105,6 +104,21 @@ typedef struct s_cone
 	double	slope;
 	t_rgb	color2;
 }	t_cone;
+
+// ARROW = co
+typedef struct s_arrow
+{
+	int		type;
+	t_obj	O;
+	t_param	param;
+
+	double	height;
+	double	radius;
+
+	t_coor	xyz_other;
+	t_coor	apex;
+	double	slope;
+}	t_arrow;
 
 // SQUARE = sq
 typedef struct s_square

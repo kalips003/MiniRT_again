@@ -21,40 +21,36 @@ all: $(NAME)
 # │─────██████─────██████████████─██████████████─────██████─────██████████─██████──────────██████─██████████████─│
 # ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
-
-NAMEE = minirt
-
-
 MAP = map/scene1.rt
-map: $(NAMEE)
+map: $(NAME)
 	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
 	./$(word 1, $^) $(MAP)
 
 # RUN MAPS
-a: $(NAMEE)
+a: $(NAME)
 	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
 	./$(word 1, $^) map/scene1.rt
 
-b: $(NAMEE)
+b: $(NAME)
 	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
 	./$(word 1, $^) map/scene2.rt
 
-c: $(NAMEE)
+c: $(NAME)
 	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
 	./$(word 1, $^) map/scene3.rt
 
-d: $(NAMEE)
+d: $(NAME)
 	@$(call random_shmol_cat, teshting ... $@: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), );
 	./$(word 1, $^) map/scene4.rt
 
 # RUN MINISHELL & VALGRING 2> out/valgrind
-v: $(NAMEE)
+v: $(NAME)
 	@$(call random_shmol_cat, "vlgrininnng ... $(word 1, $^)!", "$(ARG2)", $(CLS), );
 	-$(VALGRIND) ./$(word 1, $^) $(MAP)
 
 # RUN TESTS IN data/TESTS UNTIL EMPTY LINE
 # RUN MINISHELL & VALGRING 2> out/valgrind
-m: $(NAMEE)
+m: $(NAME)
 	@while IFS= read -r line; do \
 		if [ -z "$$line" ]; then break; fi; \
 		$(call random_shmol_cat, "teshiing ... $(word 1, $^)!", "$$line", $(CLS), ); \
@@ -66,7 +62,7 @@ m: $(NAMEE)
 	done < data/TESTS
 
 ULIMIT = 3000
-m2: $(NAMEE)
+m2: $(NAME)
 	@$(call random_shmol_cat, "\'trying to make shit crash", "try n break it.. にゃ?", $(CLS), );
 	@(ulimit -s $(ULIMIT); ./$(word 1, $^) $(ARG))
 	ulimit -s 8192

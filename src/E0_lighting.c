@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EE_lighting.c                                      :+:      :+:    :+:   */
+/*   E0_lighting.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/09 14:20:51 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/09 23:36:38 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	ft_lighting_simple(t_data *data, t_calcul_px *c)
 	lights = data->light_source - 1;
 	while (++lights && *lights)
 	{
+		c->dist_light = dist_two_points(&c->inter, &(*lights)->xyz);
 		c->cos_angle = calculate_light_angle(&c->inter, &(*lights)->xyz, &c->v_normal);
 		if (c->cos_angle < 0.0 || something_block_the_light(data, c, *lights))
 			continue ;
@@ -67,16 +68,21 @@ void	ft_lighting_simple(t_data *data, t_calcul_px *c)
 		diffuse.z += c->px_color.b * (*lights)->color.b / 255.0 * adjusted_intensity;
 	}
 
-	t_rgb	reflected = what_is_reflected(data, c);
-	double mirror_scalar = ((t_obj2*)c->object)->param.mirror;
+	if (c->print == 1)
+	{
+		printf("cos_angle = %f\n", c->cos_angle);
+		printf("adjusted_intensity = %f\n", adjusted_intensity);
+	}
+	// t_rgb	reflected = what_is_reflected(data, c);
+	// double mirror_scalar = ((t_obj2*)c->object)->param.mirror;
 
-	// c->px_color.r = fmax(0, fmin(255, round(ambient.x + diffuse.x)));
-	// c->px_color.g = fmax(0, fmin(255, round(ambient.y + diffuse.y)));
-	// c->px_color.b = fmax(0, fmin(255, round(ambient.z + diffuse.z)));
+	c->px_color.r = fmax(0, fmin(255, round(ambient.x + diffuse.x)));
+	c->px_color.g = fmax(0, fmin(255, round(ambient.y + diffuse.y)));
+	c->px_color.b = fmax(0, fmin(255, round(ambient.z + diffuse.z)));
 
-	c->px_color.r = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.x + diffuse.x) + mirror_scalar * reflected.r)));
-	c->px_color.g = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.y + diffuse.y) + mirror_scalar * reflected.g)));
-	c->px_color.b = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.z + diffuse.z) + mirror_scalar * reflected.b)));
+	// c->px_color.r = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.x + diffuse.x) + mirror_scalar * reflected.r)));
+	// c->px_color.g = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.y + diffuse.y) + mirror_scalar * reflected.g)));
+	// c->px_color.b = fmax(0, fmin(255, round((1 - mirror_scalar) * (ambient.z + diffuse.z) + mirror_scalar * reflected.b)));
 }
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]

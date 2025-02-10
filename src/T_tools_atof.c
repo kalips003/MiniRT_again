@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   TT_tools_atof.c                                    :+:      :+:    :+:   */
+/*   T_tools_atof.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/08 20:35:31 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:17:39 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int			ft_atof_v2(char *string, double *rtrn);
+int			ft_atof(char *string, double *rtrn);
 static int	h_atof(char **tab, double *rtrn, int *err);
-int			ato_coor_v2(char *str, t_coor *xyz);
-int			ato_rgb_v2(char *str, t_rgb *rgb);
+int			ato_coor(char *str, t_coor *xyz);
+int			ato_rgb(char *str, t_rgb *rgb);
 
 ///////////////////////////////////////////////////////////////////////////////]
 
-int	ft_atof_v2(char *string, double *rtrn)
+int	ft_atof(char *string, double *rtrn)
 {
 	char	**tab;
 	int		err;
@@ -56,7 +56,7 @@ static int	h_atof(char **tab, double *rtrn, int *err)
 
 ///////////////////////////////////////////////////////////////////////////////]
 // A.0,B,C.0
-int	ato_coor_v2(char *str, t_coor *xyz)
+int	ato_coor(char *str, t_coor *xyz)
 {
 	char	**spl;
 	int		err;
@@ -65,9 +65,9 @@ int	ato_coor_v2(char *str, t_coor *xyz)
 	if (tab_size(spl) != 3)
 		return (put(ERR8"(%s) bad coordonates xyz\n", str), free_tab(spl), 1);
 	err = 0;
-	err += ft_atof_v2(spl[0], &xyz->x);
-	err += ft_atof_v2(spl[1], &xyz->y);
-	err += ft_atof_v2(spl[2], &xyz->z);
+	err += ft_atof(spl[0], &xyz->x);
+	err += ft_atof(spl[1], &xyz->y);
+	err += ft_atof(spl[2], &xyz->z);
 	free_tab(spl);
 	if (err)
 		return (put(ERR8"(%s) bad coordonates xyz\n", str), 1);
@@ -76,7 +76,7 @@ int	ato_coor_v2(char *str, t_coor *xyz)
 
 ///////////////////////////////////////////////////////////////////////////////]
 // a,b,c [0-255]
-int	ato_rgb_v2(char *str, t_rgb *rgb)
+int	ato_rgb(char *str, t_rgb *rgb)
 {
 	char	**spl;
 	int err;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   YY_param_parsing2.c                                :+:      :+:    :+:   */
+/*   Y6_param_parsing.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/01 15:38:15 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:17:23 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	parse_nmap(t_data *data, char *path, t_param *obj);
 int	parse_shininess(t_data *data, char *raw, t_param *obj)
 {
 	(void)data;
-	if (ft_atof_v2(raw, &obj->shiny))
+	if (ft_atof(raw, &obj->shiny))
 		return (1);
 	if (obj->shiny < 1.0)
 		return (put(ERR1"(%s) material shininess should be superior to 1.0\n", raw), 1);
@@ -40,8 +40,8 @@ int	parse_transparence(t_data *data, char *raw, t_param *obj)
 	split_tg = split(raw, ",");
 	if (tab_size(split_tg) != 2)
 		return (put(ERR1"bad number of args (TRANSPARENCE - GAMMA)\n"), free_tab(split_tg), 1);
-	if (ft_atof_v2(split_tg[0], &obj->transparence) ||
-		ft_atof_v2(split_tg[1], &obj->gamma))
+	if (ft_atof(split_tg[0], &obj->transparence) ||
+		ft_atof(split_tg[1], &obj->gamma))
 		return (1);
 	if (obj->transparence < 0.0 || obj->transparence > 1.0)
 		return (put(ERR1"(%s) transparence should be [0.0,1.0]\n", split_tg[0]), free_tab(split_tg), 1);
@@ -56,7 +56,7 @@ int	parse_transparence(t_data *data, char *raw, t_param *obj)
 int	parse_mirror(t_data *data, char *raw, t_param *obj)
 {
 	(void)data;
-	if (ft_atof_v2(raw, &obj->mirror))
+	if (ft_atof(raw, &obj->mirror))
 		return (1);
 	if (obj->mirror < 0.0 || obj->mirror > 1.0)
 		return (put(ERR1"(%s) reflection should be [0.0,1.0]\n", raw), 1);
