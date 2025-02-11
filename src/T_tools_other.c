@@ -15,6 +15,7 @@
 void	create_vector_space(t_obj *obj);
 double	h_smalest_Δ(double a, double b);
 void	recalculate_obj_const(t_obj2 *obj);
+t_rgb	dual_color_render(t_rgb *color1, t_rgb *color2, double dist);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // takes an obj with a view vector filled, create the vector space
@@ -76,4 +77,16 @@ void	recalculate_obj_const(t_obj2 *obj)
 		((t_arrow*)obj)->apex = new_moved_point(&obj->O.c0, &obj->O.view, ((t_arrow*)obj)->height);
 		((t_arrow*)obj)->slope = (9.0 * pow(((t_arrow*)obj)->radius, 2.0)) / pow(((t_arrow*)obj)->height, 2.0);
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// scale color based on a [0,1] distance
+t_rgb	dual_color_render(t_rgb *color1, t_rgb *color2, double dist)
+{
+	t_rgb	rtrn;
+
+	rtrn.r = (int)((color2->r - color1->r) * dist + color1->r);
+	rtrn.g = (int)((color2->g - color1->g) * dist + color1->g);
+	rtrn.b = (int)((color2->b - color1->b) * dist + color1->b);
+	return (rtrn);
 }

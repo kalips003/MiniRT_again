@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 17:39:29 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:11:04 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,17 @@ int	keys_wasd(int keysym, t_data *data)
 		obj = &data->eye.c->O;
 
 	if (keysym == XK_a)
-		rotation_obj(obj, &obj->up, PI / 8, 1);
+		rotation_obj(obj, &obj->up, DELTA_ROTA, 1);
 	else if (keysym == XK_d)
-		rotation_obj(obj, &obj->up, PI / 8, -1);
+		rotation_obj(obj, &obj->up, DELTA_ROTA, -1);
 	else if (keysym == XK_w)
-		rotation_obj(obj, &obj->right, PI / 8, 1);
+		rotation_obj(obj, &obj->right, DELTA_ROTA, 1);
 	else if (keysym == XK_s)
-		rotation_obj(obj, &obj->right, PI / 8, -1);
+		rotation_obj(obj, &obj->right, DELTA_ROTA, -1);
 	else if (keysym == XK_q)
-		rotation_obj(obj, &obj->view, PI / 8, 1);
+		rotation_obj(obj, &obj->view, DELTA_ROTA, 1);
 	else if (keysym == XK_e)
-		rotation_obj(obj, &obj->view, PI / 8, -1);
+		rotation_obj(obj, &obj->view, DELTA_ROTA, -1);
 	else if (keysym == XK_n)
 	{
 		data->eye.current_camera++;

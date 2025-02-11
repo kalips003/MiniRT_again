@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/10 17:38:06 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 19:23:35 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int		ato_rgb(char *str, t_rgb *rgb);
 void	create_vector_space(t_obj *obj);
 double	h_smalest_Δ(double a, double b);
 void	recalculate_obj_const(t_obj2 *obj);
+t_rgb	dual_color_render(t_rgb *color1, t_rgb *color2, double dist);
 // rotation
 t_vect	combined_quaternion_rotation(t_obj *obj, double angle_α, double angle_β);
 t_vect	quaternion_rotation(t_vect *v, t_vect *axis_rota, double angle_α, int posi_neg);
@@ -153,6 +154,7 @@ int	parse_transparence(t_data *data, char *raw, t_param *obj);
 int	parse_mirror(t_data *data, char *raw, t_param *obj);
 int	parse_texture(t_data *data, char *path, t_param *obj);
 int	parse_nmap(t_data *data, char *path, t_param *obj);
+int	parse_color2(t_data *data, char *raw, t_param *obj);
 /********************************
 		Z
 ********************************/

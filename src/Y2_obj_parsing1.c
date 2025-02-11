@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 17:17:39 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:59:27 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ int	parse_ci(t_data *data, char **raw_split)
 
 	if (tab_size(raw_split) < 4)
 		return (put(ERR1"bad number of args (CIRCLE OBJECT)\n"), 1);
-	if (raw_split[4])
-		parse_reste(data, &raw_split[3], &circle->param);
+	parse_reste(data, &raw_split[4], &circle->param);
 	
 	circle->type = CIRCLE;
 	if (ato_coor(raw_split[0], &circle->O.c0) ||
@@ -74,8 +73,7 @@ int	parse_pl(t_data *data, char **raw_split)
 
 	if (tab_size(raw_split) < 3)
 		return (put(ERR1"bad number of args (PLANES OBJECT)\n"), 1);
-	if (raw_split[3])
-		parse_reste(data, &raw_split[3], &plane->param);
+	parse_reste(data, &raw_split[3], &plane->param);
 	
 	plane->type = PLANE;
 	if (ato_coor(raw_split[0], &plane->O.c0) ||
@@ -104,8 +102,7 @@ int	parse_sp(t_data *data, char **raw_split)
 
 	if (tab_size(raw_split) < 3)
 		return (put(ERR1"bad number of args (SPHERE OBJECT)\n"), 1);
-	if (raw_split[3])
-		parse_reste(data, &raw_split[3], &sphere->param);
+	parse_reste(data, &raw_split[3], &sphere->param);
 
 	sphere->type = SPHERE;
 	if (ato_coor(raw_split[0], &sphere->O.c0) ||
@@ -138,8 +135,7 @@ int	parse_cy(t_data *data, char **raw_split)
 
 	if (tab_size(raw_split) < 5)
 		return (put(ERR1"bad number of args (CYLINDER OBJECT)\n"), 1);
-	if (raw_split[5])
-		parse_reste(data, &raw_split[5], &cylinder->param);
+	parse_reste(data, &raw_split[5], &cylinder->param);
 
 	cylinder->type = CYLINDER;
 	if (ato_coor(raw_split[0], &cylinder->O.c0) ||
@@ -177,8 +173,7 @@ int	parse_co(t_data *data, char **raw_split)
 
 	if (tab_size(raw_split) < 6)
 		return (put(ERR1"bad number of args (CONE OBJECT)\n"), 1);
-	if (raw_split[6])
-		parse_reste(data, &raw_split[6], &cone->param);
+	parse_reste(data, &raw_split[6], &cone->param);
 
 	cone->type = CONE;
 	if (ato_coor(raw_split[0], &cone->O.c0) ||
@@ -216,8 +211,7 @@ int	parse_ar(t_data *data, char **raw_split)
 
 	if (tab_size(raw_split) < 5)
 		return (put(ERR1"bad number of args (ARROW OBJECT)\n"), 1);
-	if (raw_split[5])
-		parse_reste(data, &raw_split[5], &arrow->param);
+	parse_reste(data, &raw_split[5], &arrow->param);
 
 	arrow->type = ARROW;
 	if (ato_coor(raw_split[0], &arrow->O.c0) ||

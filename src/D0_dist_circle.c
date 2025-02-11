@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 00:14:29 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 19:25:37 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ int	distance_from_circle(t_calcul_px *calcul, void *obj, int simple)
 		return (0);
 
 	c.inter_temp = new_moved_point(&calcul->c0, &calcul->v, c.dist);
-	if (dist_two_points(&c.inter_temp, &circle->O.c0) > circle->radius)
+	c.dist_center = dist_two_points(&c.inter_temp, &circle->O.c0);
+	if (c.dist_center > circle->radius)
 		return (0);
 
 	if (c.dist < calcul->dist || calcul->dist < 0.0)
@@ -52,6 +53,9 @@ static int	h_dist_circle(t_calcul_px *calcul, t_circle_calc *c, t_circle *circle
 	calcul->dist = c->dist;
 	calcul->inter = c->inter_temp;
 	calcul->px_color = circle->param.color;
+
+	if (circle->param.color2.r >= 0)
+		calcul->px_color = dual_color_render(&circle->param.color, &circle->param.color2, c->dist_center / circle->radius);
 
 	calcul->v_normal = circle->O.view;
 	if (ft_dot_product(&calcul->v, &circle->O.view) > 0.0)

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   YY_param_parsing1.c                                :+:      :+:    :+:   */
+/*   Y5_param_parsing.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/09 14:05:17 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:43:35 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	parse_reste(t_data *data, char **raw_split, t_param *obj);
 
-#define	PARAM_DICO "STMXN"
+#define	PARAM_DICO "STMXNC"
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 // (Shininess) S=[1.0, +]
@@ -27,7 +27,8 @@ static const t_ft_param_parsing g_ft_param_parsing[] = {
 	parse_transparence,
 	parse_mirror,
 	parse_texture,
-	parse_nmap
+	parse_nmap,
+	parse_color2
 };
 
 int	parse_reste(t_data *data, char **raw_split, t_param *obj)
@@ -36,6 +37,7 @@ int	parse_reste(t_data *data, char **raw_split, t_param *obj)
 	
 	obj->gamma = 1.0;
 	obj->shiny = 1.0;
+	obj->color2.r = -1;
 	while (raw_split && *raw_split)
 	{
 		index = wii(**raw_split, PARAM_DICO);

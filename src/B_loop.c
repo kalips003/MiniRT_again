@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 17:31:37 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:08:53 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ int	ft_render_frame(t_data *data, int sublim)
 		while (++x < SIZE_SCREEN_X)
 		{
 			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
-			// f_calculate_combined_quaternion(data, angleA, angleB, &c.v);
 			c.v = combined_quaternion_rotation(&data->eye.c->O, angleA, angleB);
 			calculate_pixel_color(data, &c, sublim);
 			mlx_pixel_put(data->mlx, data->win, x, y, c.px_color.r << 16 | c.px_color.g << 8 | c.px_color.b);

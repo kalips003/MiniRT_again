@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 01:49:24 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:37:03 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,15 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	dist_light = dist_two_points(&calcul.c0, &light->xyz);
 	calcul.dist = dist_light;
 
+
 	obj_ptr = data->objects - 1;
 	while (++obj_ptr && *obj_ptr)
 	{
-		if (g_in_shadow_of[((t_obj2*)*obj_ptr)->type](c, *obj_ptr, 1))
+		if (g_in_shadow_of[((t_obj2*)*obj_ptr)->type](&calcul, *obj_ptr, 1))
 		{
 			if (((t_obj2*)*obj_ptr)->param.transparence < EPSILON)
 				return (1);
-		} 
+		}
 	}
 	
 

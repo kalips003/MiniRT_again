@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 17:17:23 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:40:49 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	parse_transparence(t_data *data, char *raw, t_param *obj);
 int	parse_mirror(t_data *data, char *raw, t_param *obj);
 int	parse_texture(t_data *data, char *path, t_param *obj);
 int	parse_nmap(t_data *data, char *path, t_param *obj);
+int	parse_color2(t_data *data, char *raw, t_param *obj);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // (Shininess) S=20.0
@@ -100,5 +101,15 @@ int	parse_nmap(t_data *data, char *path, t_param *obj)
 		return(put(ERR8"Cant open sprite: %s\n", path), perror(RED"mlx_xpm_file_to_image"), 1);
 	nmap->addr = mlx_get_data_addr(nmap->img, &nmap->bpp, &nmap->ll, &nmap->end);
 	obj->normal_map = nmap;
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// (Color2) C=255,0,112
+int	parse_color2(t_data *data, char *raw, t_param *obj)
+{
+	(void)data;
+	if (ato_rgb(raw, &obj->color2))
+		return (1);
 	return (0);
 }

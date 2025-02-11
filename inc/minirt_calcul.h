@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/10 01:41:18 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/11 00:41:42 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,18 +97,9 @@ typedef struct s_circle_calc {
 	t_coor	inter_temp;
 
 	double	dist;
+	double	dist_center;
 } t_circle_calc;
-// CIRCLE = ci
 
-// shell version with pointer to mother object 
-typedef struct s_cicle_shell
-{
-	int		type;
-	t_obj	*O;
-	t_param	*param;
-
-	double	radius;
-}	t_circle_shell;
 ///////////////////////////////////////////////////////////////////////////////]
 // 	SPHERE
 typedef struct s_sphere_calc {
@@ -138,6 +129,10 @@ typedef struct s_plane_calc {
 	double	bot;
 
 	double	dist;
+
+	t_vect	o_to_inter;
+	double	u;
+	double	v;
 } t_plane_calc;
 
 

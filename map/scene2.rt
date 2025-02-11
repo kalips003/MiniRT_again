@@ -1,22 +1,60 @@
-# (Shininess) S=20.0		(Transparence, gamma) T=[0,1],[-PI/2, PI/2]		(Mirroir) M=[0,1]	(Texture) X="sphere_texture.xpm"		(Normal Map) N="sphere_normal.xpm"
+# (Shininess) S=20.0
+# (Color2) C=[0,255],[0,255],[0,255]
+# (Transparence, gamma) T=[0,1],[-PI/2, PI/2]
+# (Mirroir) M=[0,1]
+# (Texture) X=sphere_texture.xpm
+# (Normal Map) N=sphere_normal.xpm
+
+# TEXTURES:		X=texture/earthmap4k.xpm	N=txt/brique_n.xpm	X=texture/rock2.xpm 
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+# (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
+C 						0,1,50		    	0,0,-1				70
+C 						1.2,8.5,1.2            -0.135,-0.970,-0.204					70
+# C 						50,10,-50		    	-1,0,-1					70
 
 # (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
 A 						0.2 					255,255,255
 
-# (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
-C 						0,10,-50 			0,0,1 					70
-C	-61.138539,28.552648,-44.166311	0.751561,-0.275639,0.599315	70
 # (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
-L 						10,30,-30 			0.7 					255,255,255
+L 						0,15,0 			0.99 					255,255,255
 
-# (pl) Plane:			POSITION (xyz)		VECTOR [-1.0, 1.0]		COLOR_rgb [0, 255]
-pl 						0,0,0 				0,1,0 					55,66,22
+# -------------------------------------------------------------------------------------------------------------------------------------------
+# (ci) Circle:			POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]		RADIUS
+# ci						0,0,0				0,1,0					0,0,255					10	C=255,0,0
 
-# (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255]
-sp 						0,0,0 				200 					255,0,0 X=texture/football_texture.xpm
-sp 						0,0,0 				200 					255,0,0 X=texture/football_texture.xpm
-# (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER		HEIGHT		COLOR_rgb [0, 255]
-# cy 						0,0,0 				0,1,0 					8.0 			21.42 		10,96,12	X=texture/big_ball.xpm M=0.1 N=texture/football_vector_map.xpm T=0.3,1.1 S=30
-cy 						10,0,0 				0,1,0 					8.0 			21.42 		120,12,212
-cy 						-10,0,0 			0,1,0 					8.0 			21.42 		12,120,212
-cy 						-20,0,0 			0,1,0 					8.0 			21.42 		212,120,12
+# (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255] 
+# sp 						0,0,0 				3 						255,50,50 N=txt/brique_n.xpm
+# N=texture/blue_map.xpm
+# N=txt/brique_t.xpm
+
+# (pl) Plane:			POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
+# pl 						0,-5,0 				0,1,0 				0,0,255 C=255,0,0 T=0,0.1
+# pl 						0,-5,0 				0,1,0 				155,155,25 N=txt/brique_n.xpm X=txt/brique_t.xpm T=0,25
+
+# (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER	HEIGHT		COLOR_rgb [0, 255]
+cy 						0,0,0 				0,1,0					3 			9.42 		255,00,0	N=txt/brique_n.xpm X=txt/brique_t.xpm T=0,25
+# (co) Cone:	    	POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]		COLOR_2 [0, 255]
+# co 						0,0,0 				0,0,1					5 			10 		185,8,96	12,203,156
+
+# (ar) Arrow:	    	POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]
+# ar 						0,0,0 				1,0,0					0.5 		5 		255,0,0
+
+
+
+
+# VECTOR AXIS
+# ar 						0,0,0 				1,0,0					0.5 		5 		255,0,0
+# ar 						0,0,0 				0,1,0					0.5 		5 		0,255,0
+# ar 						0,0,0 				0,0,1					0.5 		5 		0,0,255
+
+# 9 BALLS
+# sp			-10,10,0		10			255,50,50
+# sp			0,10,0			10			50,255,50
+# sp			10,10,0			10			50,50,255
+# sp			-10,0,0			10			255,255,50
+# sp			0,0,0			10			255,50,255
+# sp			10,0,0			10			50,255,255
+# sp			-10,-10,0		10			255,150,50
+# sp			0,-10,0			10			150,50,255
+# sp			10,-10,0		10			50,150,255

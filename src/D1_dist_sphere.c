@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 00:05:33 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/11 01:01:30 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ int	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c, int s
 	calcul->v_normal = vect_ab_norm(&sphere->O.c0, &calcul->inter);
 	calcul->px_color = sphere->param.color;
 
+	if (!sphere->param.texture && sphere->param.color2.r >= 0)
+		calcul->px_color = dual_color_render(&sphere->param.color, &sphere->param.color2, ft_dot_product(&calcul->v_normal, &sphere->O.view) / 2 + 0.5);
 
 	if (sphere->param.texture)
 		h_txt_sphere(calcul, sphere);
@@ -115,22 +117,21 @@ void	h_nmap_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c)
 	t_vect normal_map = (t_vect){
 		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
 		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
-		(color & 0xFF) / 255.0};
+		(color & 0xFF) / 255.0 * 2.0 - 1.0};
 	ft_normalize_vect(&normal_map);
-	// normal_map.dz *= -1;// ???
+	normal_map.dx *= -1;// ???
 	// normal_map.dy *= -1;// ???
-	// normal_map.dx *= -1;// ???
+	// normal_map.dz *= -1;// ???
 
 	t_obj	local;// ! if both aligned, cross product not defined?
 	local.view = calcul->v_normal;
 	local.right = ft_cross_product_norm(&local.view, &sphere->O.view);
 	local.up = ft_cross_product_norm(&local.right, &local.view);
 
-	
 	calcul->v_normal = (t_vect){
-		ft_dot_product(&normal_map, &local.right),
-		ft_dot_product(&normal_map, &local.up),
-		ft_dot_product(&normal_map, &local.view)
+		local.right.dx * normal_map.dx + local.up.dx * normal_map.dy + local.view.dx * normal_map.dz,
+		local.right.dy * normal_map.dx + local.up.dy * normal_map.dy + local.view.dy * normal_map.dz,
+		local.right.dz * normal_map.dx + local.up.dz * normal_map.dy + local.view.dz * normal_map.dz,
 	};
 	ft_normalize_vect(&calcul->v_normal);
 }

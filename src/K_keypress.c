@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 17:37:44 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:54:46 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	print_clic(t_data *data, int x, int y)
 	ft_memset(&c, 0, sizeof(t_calcul_px));
 	c.c0 = data->eye.c->O.c0;
 	c.print = 1;
-	f_calculate_combined_quaternion(data, atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst), atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst), &c.v);
+	c.v = combined_quaternion_rotation(&data->eye.c->O, atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst), atan((y - SIZE_SCREEN_Y / 2) * data->eye.c->fov_cst));
 	printf(CLEAR);
 	printf(C_512"Camera\t[%.1f,%.1f,%.1f\t\t%.3f,%.3f,%.3f]\n\n", data->eye.c->O.c0.x, data->eye.c->O.c0.y, data->eye.c->O.c0.z, c.v.dx, c.v.dy, c.v.dz);
 	printf("\tview \t[% .2f,% .2f,% .2f]\n", data->eye.c->O.view.dx, data->eye.c->O.view.dy, data->eye.c->O.view.dz);
