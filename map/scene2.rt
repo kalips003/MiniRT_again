@@ -18,24 +18,26 @@ A 						0.2 					255,255,255
 
 # (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
 L 						0,15,0 			0.99 					255,255,255
+L 						10,10,10 			0.99 					255,255,255
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 # (ci) Circle:			POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]		RADIUS
 # ci						0,0,0				0,1,0					0,0,255					10	C=255,0,0
 
 # (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255] 
-# sp 						0,0,0 				3 						255,50,50 N=txt/brique_n.xpm
+sp 						0,0,0 				3 						255,50,50 N=txt/brique_n.xpm M=0.5
+sp 						10,-1,0 				3 						100,50,150  M=0.9
 # N=texture/blue_map.xpm
 # N=txt/brique_t.xpm
 
 # (pl) Plane:			POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
-# pl 						0,-5,0 				0,1,0 				0,0,255 C=255,0,0 T=0,0.1
+pl 						0,-5,0 				0,1,0 				122,156,28 C=201,0,198 M=0.5
 # pl 						0,-5,0 				0,1,0 				155,155,25 N=txt/brique_n.xpm X=txt/brique_t.xpm T=0,25
 
 # (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER	HEIGHT		COLOR_rgb [0, 255]
-cy 						0,0,0 				0,1,0					3 			9.42 		255,00,0	N=txt/brique_n.xpm X=txt/brique_t.xpm T=0,25
+# cy 						0,0,0 				0,1,0					3 			9.42 		255,00,0	N=txt/brique_n.xpm X=txt/brique_t.xpm T=0,25
 # (co) Cone:	    	POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]		COLOR_2 [0, 255]
-# co 						0,0,0 				0,0,1					5 			10 		185,8,96	12,203,156
+# co 						0,0,0 				0,0,1					5 			10 		255,0,0 N=txt/brique_n.xpm C=0,0,255
 
 # (ar) Arrow:	    	POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]
 # ar 						0,0,0 				1,0,0					0.5 		5 		255,0,0

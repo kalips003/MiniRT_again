@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/10 01:34:34 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/11 11:03:31 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,6 @@ typedef struct s_cone
 
 	t_coor	apex;
 	double	slope;
-	t_rgb	color2;
 }	t_cone;
 
 // ARROW = co

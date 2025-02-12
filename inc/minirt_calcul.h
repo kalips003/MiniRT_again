@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/11 00:41:42 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 00:02:57 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,12 @@ typedef struct s_calcul_px
 	// t_coor	point_temp;
 	// t_coor	tmp_color;
 	// double	tmp_dist;
-
-
 	t_rgb	px_color_behind;
-
+// 
+	int	reflected_depth;
+// transparence
+	int	transparence_depth;
+	double	current_gamma;
 // bit for printing info
 	int	print;
 
@@ -192,8 +194,13 @@ typedef struct s_cone_calc_v2 {
 	double	det1;
 	double	det2;
 
+	double	dist_apex1;
+	double	dist_apex2;
 	double	dist_apex;
 	double	dist;
+
+	double	color_height;
+
 	t_coor	projec_point;
 	t_circle	circle;
 } t_cone_calc_v2;

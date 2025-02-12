@@ -6,13 +6,15 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 18:37:03 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/11 15:17:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
 int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
+double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
+t_coor	ft_ambient(t_data *data, t_calcul_px *c);
 
 ///////////////////////////////////////////////////////////////////////////////]
 typedef int (*t_in_shadow_of)(t_calcul_px*, void*, int);
@@ -37,10 +39,8 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	double	dist_light;
 
 	calcul.c0 = c->inter;
-	calcul.v = vect_ab_norm(&calcul.c0, &light->xyz);
-	dist_light = dist_two_points(&calcul.c0, &light->xyz);
-	calcul.dist = dist_light;
-
+	calcul.v = c->v_light;
+	calcul.dist = c->dist_light;
 
 	obj_ptr = data->objects - 1;
 	while (++obj_ptr && *obj_ptr)
@@ -51,7 +51,31 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 				return (1);
 		}
 	}
-	
-
 	return (0);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////]
+// calculate angle between camera ray and light source at intersection
+double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal)
+{
+	t_vect	l;
+	double	cos_theta;
+
+	l = vect_ab_norm(intersection, light);
+	cos_theta = ft_dot_product(&l, normal);
+
+	return (cos_theta);
+}
+
+t_coor	ft_ambient(t_data *data, t_calcul_px *c)
+{
+	t_coor	color_ambient;
+
+// HANDLE HERE PARTIAL OCCLUSION
+	color_ambient.x = c->px_color.r * data->bg_light[0]->color.r / 255.0 * data->bg_light[0]->ratio;
+	color_ambient.y = c->px_color.g * data->bg_light[0]->color.g / 255.0 * data->bg_light[0]->ratio;
+	color_ambient.z = c->px_color.b * data->bg_light[0]->color.b / 255.0 * data->bg_light[0]->ratio;
+
+	return (color_ambient);
 }

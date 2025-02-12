@@ -1,13 +1,23 @@
 # (Shininess) S=20.0		(Transparence, gamma) T=[0,1],[-PI/2, PI/2]		(Mirroir) M=[0,1]	(Texture) X="sphere_texture.xpm"		(Normal Map) N="sphere_normal.xpm"
+# -------------------------------------------------------------------------------------------------------------------------------------------
+# (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
+C 						0,1,50		    	0,0,-1				70
+C 						1.2,8.5,1.2            -0.135,-0.970,-0.204					70
+# C 						50,10,-50		    	-1,0,-1					70
 
 # (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
 A 						0.2 					255,255,255
 
-# (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
-C 						0,10,-50 			0,0,1 					70
-
 # (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
-L 						10,30,-30 			0.7 					255,255,255
-
+L 						0,15,0 			0.99 					255,255,255
+L 						10,10,10 			0.99 					255,255,255
+# -------------------------------------------------------------------------------------------------------------------------------------------
 # (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255]
-sp 						0,0,0 				10 					200,200,0 X=texture/football_texture.xpm N=texture/football_vector_map.xpm
+# sp 						0,0,-10 				10 					200,200,0
+sp 						0,0,0 				10 					0,0,255 T=0.5,2.5 S=5
+
+# (co) Cone:	    	POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]
+# co 						0,0,0 				0,0,1					5 			10 		185,8,96 T=0.5,1.5
+
+# (pl) Plane:			POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
+pl 						0,-5,0 				0,1,0 				122,156,28 C=201,0,198 T=0,0.1 S=500

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/10 18:10:48 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 01:01:09 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@
 
 # define EPSILON 1e-6
 # define SCALAR_LIGHT_DIST 300.0
-# define SCALAR_SPECULAR 0.04
+# define SCALAR_SPECULAR 1.0
 # define SCALAR_SHINY 1.0
 # define REFLECTION_BOUNCES 1
-# define TRANSPARENCE_BOUNCES 1
+# define TRANSPARENCE_BOUNCES 4
 
 # define SIZE_SCREEN_Y 400
 # define SIZE_SCREEN_X 600

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 18:59:27 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/11 11:03:06 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ int	parse_cy(t_data *data, char **raw_split)
 // 		RADIUS = float
 // 		HEIGHT = float
 // 		RGB [0, 255] int
-// 		RGB2 [0, 255] int
 int	parse_co(t_data *data, char **raw_split)
 {
 	t_cone	*cone;
@@ -171,17 +170,16 @@ int	parse_co(t_data *data, char **raw_split)
 		return (put(ERRM), 2);
 	data->objects = expand_tab(data->objects, cone);
 
-	if (tab_size(raw_split) < 6)
+	if (tab_size(raw_split) < 5)
 		return (put(ERR1"bad number of args (CONE OBJECT)\n"), 1);
-	parse_reste(data, &raw_split[6], &cone->param);
+	parse_reste(data, &raw_split[5], &cone->param);
 
 	cone->type = CONE;
 	if (ato_coor(raw_split[0], &cone->O.c0) ||
 		ato_coor(raw_split[1], (t_coor *)&cone->O.view) ||
 		ft_atof(raw_split[2], &cone->radius) ||
 		ft_atof(raw_split[3], &cone->height) ||
-		ato_rgb(raw_split[4], &cone->param.color) ||
-		ato_rgb(raw_split[5], &cone->param.color))
+		ato_rgb(raw_split[4], &cone->param.color))
 		return (1);
 	if (cone->radius < EPSILON || cone->height < EPSILON)
 		return (put(ERR1"(CONE OBJECT) too small\n"), 1);

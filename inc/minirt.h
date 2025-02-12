@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/10 19:23:35 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 00:19:48 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@
 ********************************/
 int		ft_loop(t_data *data);
 int		ft_render_frame(t_data *data, int sublim);
-void	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
+int		calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
 /********************************
 		C
 ********************************/

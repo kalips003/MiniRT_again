@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 18:08:53 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 00:20:16 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		ft_loop(t_data *data);
 int		ft_render_frame(t_data *data, int sublim);
-void	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
+int		calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // main loop refresh if file is changed
@@ -79,6 +79,7 @@ int	ft_render_frame(t_data *data, int sublim)
 		{
 			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
 			c.v = combined_quaternion_rotation(&data->eye.c->O, angleA, angleB);
+			c.current_gamma = 1.0;
 			calculate_pixel_color(data, &c, sublim);
 			mlx_pixel_put(data->mlx, data->win, x, y, c.px_color.r << 16 | c.px_color.g << 8 | c.px_color.b);
 		}
@@ -87,16 +88,18 @@ int	ft_render_frame(t_data *data, int sublim)
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-void	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
+int	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
 {
 	if (!ft_find_pixel_colision(data, c))
 	{
 		c->px_color.r = (int)(round(data->bg_light[0]->color.r * data->bg_light[0]->ratio));
 		c->px_color.g = (int)(round(data->bg_light[0]->color.g * data->bg_light[0]->ratio));
 		c->px_color.b = (int)(round(data->bg_light[0]->color.b * data->bg_light[0]->ratio));
+		return (0);
 	}
 	else if (sublim)
 		ft_lighting_sublim(data, c);
 	else
 		ft_lighting_simple(data, c);
+	return (1);
 }
