@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 18:43:35 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 12:06:45 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ int	parse_reste(t_data *data, char **raw_split, t_param *obj)
 	int	index;
 	
 	obj->gamma = 1.0;
-	obj->shiny = 1.0;
+	obj->specular = 0.5;
+	obj->shiny = 32.0;
 	obj->color2.r = -1;
 	while (raw_split && *raw_split)
 	{

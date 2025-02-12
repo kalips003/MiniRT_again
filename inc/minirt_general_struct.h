@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/10 18:38:43 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 11:58:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_param
 	t_rgb	color2;
 
 	double	shiny;
+	double	specular;
 	double	mirror;
 	double	transparence;
 	double	gamma;

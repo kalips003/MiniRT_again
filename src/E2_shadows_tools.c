@@ -6,17 +6,78 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 00:57:09 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 15:25:00 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
+int		something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
+double	calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
 t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
+t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj);
 t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul);
 
+///////////////////////////////////////////////////////////////////////////////]
+typedef int (*t_in_shadow_of)(t_calcul_px*, void*, int);
 
+static const t_in_shadow_of g_in_shadow_of[] = {
+	distance_from_circle,
+	distance_from_sphere,
+	distance_from_plane,
+	distance_from_cylinder,
+	distance_from_cone,
+	NULL,
+	distance_from_arrow,
+	NULL
+};
+///////////////////////////////////////////////////////////////////////////////]
+
+///////////////////////////////////////////////////////////////////////////////]
+int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
+{
+	void	**obj_ptr;
+	t_calcul_px	calcul;
+	double	transp;
+
+	calcul.c0 = c->inter;
+	calcul.v = c->v_light;
+	calcul.dist = c->dist_light;
+
+	c->transp_light = *light;
+	obj_ptr = data->objects - 1;
+	while (++obj_ptr && *obj_ptr)
+	{
+		transp = ((t_obj2*)*obj_ptr)->param.transparence;
+		if (g_in_shadow_of[((t_obj2*)*obj_ptr)->type](&calcul, *obj_ptr, 1))
+		{
+			if (transp < EPSILON)
+				return (1);
+			transp = 1.0 - transp;
+			c->transp_light.ratio *= transp;
+			c->transp_light.color.r *= ((t_obj2*)*obj_ptr)->param.color.r / 255.0 * transp;
+			c->transp_light.color.g *= ((t_obj2*)*obj_ptr)->param.color.g / 255.0 * transp;
+			c->transp_light.color.b *= ((t_obj2*)*obj_ptr)->param.color.b / 255.0 * transp;
+		}
+	}
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// calculate angle between camera ray and light source at intersection
+double calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal)
+{
+	t_vect	l;
+	double	cos_theta;
+
+	l = vect_ab_norm(intersection, light);
+	cos_theta = ft_dot_product(&l, normal);
+
+	return (cos_theta);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal)
 {
 	t_vect reflected;
@@ -30,6 +91,7 @@ t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal)
 	return (reflected);
 }
 
+///////////////////////////////////////////////////////////////////////////////]
 t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
 {
 	t_calcul_px	c;
@@ -44,50 +106,7 @@ t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
 	return (c.px_color);
 }
 
-t_vect	ft_vect_refracted(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj)
-{
-	t_vect refracted;
-	t_vect	Ipara;
-	t_vect	Iortho;
-	double	dot = ft_dot_product(incident, normal);
-
-// Incident_∥​
-	Ipara = (t_vect){
-		dot * normal->dx,
-		dot * normal->dy,
-		dot * normal->dz
-	};
-// Incident_⊥
-	Iortho = (t_vect){
-		incident->dx - Ipara.dx,
-		incident->dy - Ipara.dy,
-		incident->dz - Ipara.dz
-	};
-	double sinθ1 = sqrt(Iortho.dx * Iortho.dx + Iortho.dy *Iortho.dy + Iortho.dz * Iortho.dz);
-	double sinθ2 = gamma_incident / gamma_obj * sinθ1;
-	if (sinθ2 > 1.0)
-		printf("error reflection");
-	t_vect	Rortho = (t_vect){
-		gamma_incident / gamma_obj * Iortho.dx,
-		gamma_incident / gamma_obj * Iortho.dy,
-		gamma_incident / gamma_obj * Iortho.dz
-	};
-	double s = -sqrt(1 - sinθ2 * sinθ2);
-	t_vect	Rpara = (t_vect){
-		s * normal->dx,
-		s * normal->dy,
-		s * normal->dz
-	};
-	refracted = (t_vect){
-		Rortho.dx + Rpara.dx,
-		Rortho.dy + Rpara.dy,
-		Rortho.dz + Rpara.dz
-	};
-
-	return (refracted);
-}
-
-
+///////////////////////////////////////////////////////////////////////////////]
 t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj)
 {
 	t_vect refracted;
@@ -97,7 +116,6 @@ t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incid
 	double sinθ2 = η * sqrt(1 - dot * dot);
 	if (sinθ2 > 1.0)
 		return (ft_vect_reflected(incident, normal));
-		// return (printf("error reflection\n"), ft_vect_reflected(incident, normal));
 	double s = -sqrt(1 - sinθ2 * sinθ2);
 	refracted = (t_vect){
 		η * (incident->dx - dot * normal->dx) + s * normal->dx,
@@ -107,19 +125,7 @@ t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incid
 	return (refracted);
 }
 
-t_vect	ft_vect_refracted_v3(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj)
-{
-	double cos_i = -ft_dot_product(incident, normal);
-	double index = 1.0 / gamma_obj;
-	double cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
-
-	t_vect refracted = (t_vect){
-		index * incident->dx + (index * cos_i - cos_r) * normal->dx,
-		index * incident->dy + (index * cos_i - cos_r) * normal->dy,
-		index * incident->dz + (index * cos_i - cos_r) * normal->dz
-	};
-}
-
+///////////////////////////////////////////////////////////////////////////////]
 t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 {
 	t_calcul_px	c;
@@ -134,14 +140,17 @@ t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 	else
 		c.v = ft_vect_refracted_v2(&calcul->v, &calcul->v_normal, calcul->current_gamma, ((t_obj2*)calcul->object)->param.gamma);
 	c.dist = -1.0;
-	// calculate_pixel_color(data, &c, 0);
-
-	if (!calculate_pixel_color(data, &c, 0) || ((t_obj2*)calcul->object)->type == PLANE)
-		return (c.px_color);
-	c.c0 = new_moved_point(&c.inter, &c.v, EPSILON);
-	c.v = ft_vect_refracted_v2(&c.v, &c.v_normal, ((t_obj2*)calcul->object)->param.gamma, calcul->current_gamma);
-	c.dist = -1.0;
+	c.current_gamma = 1.0;
 	calculate_pixel_color(data, &c, 0);
 	return (c.px_color);
-
 }
+
+
+
+
+
+
+
+
+
+

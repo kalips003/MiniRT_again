@@ -122,3 +122,97 @@ void	rotation_obj_v2(t_obj *obj, t_vect *axis_rota, int posi_neg)
 	// cross = (t_vect){-cross.dx, -cross.dy, -cross.dz};
 	*obj = (t_obj){obj->c0, new_view, new_up, cross};
 }
+
+t_vect	ft_vect_refracted(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj)
+{
+	t_vect refracted;
+	t_vect	Ipara;
+	t_vect	Iortho;
+	double	dot = ft_dot_product(incident, normal);
+
+// Incident_∥​
+	Ipara = (t_vect){
+		dot * normal->dx,
+		dot * normal->dy,
+		dot * normal->dz
+	};
+// Incident_⊥
+	Iortho = (t_vect){
+		incident->dx - Ipara.dx,
+		incident->dy - Ipara.dy,
+		incident->dz - Ipara.dz
+	};
+	double sinθ1 = sqrt(Iortho.dx * Iortho.dx + Iortho.dy *Iortho.dy + Iortho.dz * Iortho.dz);
+	double sinθ2 = gamma_incident / gamma_obj * sinθ1;
+	if (sinθ2 > 1.0)
+		printf("error reflection");
+	t_vect	Rortho = (t_vect){
+		gamma_incident / gamma_obj * Iortho.dx,
+		gamma_incident / gamma_obj * Iortho.dy,
+		gamma_incident / gamma_obj * Iortho.dz
+	};
+	double s = -sqrt(1 - sinθ2 * sinθ2);
+	t_vect	Rpara = (t_vect){
+		s * normal->dx,
+		s * normal->dy,
+		s * normal->dz
+	};
+	refracted = (t_vect){
+		Rortho.dx + Rpara.dx,
+		Rortho.dy + Rpara.dy,
+		Rortho.dz + Rpara.dz
+	};
+
+	return (refracted);
+}
+
+t_vect	ft_vect_refracted_v3(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj)
+{
+	double cos_i = -ft_dot_product(incident, normal);
+	double index = 1.0 / gamma_obj;
+	double cos_r = sqrt(1.0 - index * index * (1 - cos_i * cos_i));
+
+	t_vect refracted = (t_vect){
+		index * incident->dx + (index * cos_i - cos_r) * normal->dx,
+		index * incident->dy + (index * cos_i - cos_r) * normal->dy,
+		index * incident->dz + (index * cos_i - cos_r) * normal->dz
+	};
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+void	ft_specular_v1(t_data *data, t_calcul_px *c, t_light *lights)
+{
+	t_vect reflected_light;
+	double	cos_angle;
+	double	adjusted_intensity;
+
+	reflected_light = ft_vect_reflected(&c->v_light, &c->v_normal);
+	cos_angle = fmin(1.0, ft_dot_product(&c->v, &reflected_light));
+	if (cos_angle < 0.0)
+		return ;
+	adjusted_intensity = ((t_obj2*)c->object)->param.specular * lights->ratio * pow(cos_angle, ((t_obj2*)c->object)->param.shiny);
+
+	c->diffuse.x += lights->color.r * adjusted_intensity;
+	c->diffuse.y += lights->color.g * adjusted_intensity;
+	c->diffuse.z += lights->color.b * adjusted_intensity;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////]
+int	ft_diffuse_v1(t_data *data, t_calcul_px *c, t_light *lights)
+{
+	double adjusted_intensity;
+	
+	c->dist_light = dist_two_points(&c->inter, &lights->xyz);
+	c->v_light = vect_ab_norm(&c->inter, &lights->xyz);
+	c->cos_angle = ft_dot_product(&c->v_light, &c->v_normal);
+	if (c->cos_angle < EPSILON || something_block_the_light(data, c, lights))
+		return (0);
+	adjusted_intensity = lights->ratio * c->cos_angle;
+	adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light * c->dist_light);
+
+	c->diffuse.x += c->px_color.r * lights->color.r / 255.0 * adjusted_intensity;
+	c->diffuse.y += c->px_color.g * lights->color.g / 255.0 * adjusted_intensity;
+	c->diffuse.z += c->px_color.b * lights->color.b / 255.0 * adjusted_intensity;
+	return (1);
+}

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/12 00:19:48 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 12:34:17 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,17 @@ t_coor	ft_ambient(t_data *data, t_calcul_px *c);
 void	ft_lighting_simple(t_data *data, t_calcul_px *c);
 void	ft_lighting_sublim(t_data *data, t_calcul_px *c);
 // 
-int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
+t_coor	ft_ambient(t_data *data, t_calcul_px *c);
+int		ft_diffuse(t_data *data, t_calcul_px *c, t_light *lights);
+void	ft_reflected(t_data *data, t_calcul_px *c);
+void	ft_refracted(t_data *data, t_calcul_px *c);
+void	ft_specular(t_data *data, t_calcul_px *c, t_light *lights);
 // 
+int		something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
+double	calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
 t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
+t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj);
 t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul);
 /********************************
 		K

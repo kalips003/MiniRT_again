@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/12 01:01:09 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 14:30:52 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define SCALAR_SPECULAR 1.0
 # define SCALAR_SHINY 1.0
 # define REFLECTION_BOUNCES 1
-# define TRANSPARENCE_BOUNCES 4
+# define TRANSPARENCE_BOUNCES 8
 
 # define SIZE_SCREEN_Y 400
 # define SIZE_SCREEN_X 600

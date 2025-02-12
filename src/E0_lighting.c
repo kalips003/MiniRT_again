@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 01:15:38 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 15:26:47 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,38 @@ void	ft_lighting_sublim(t_data *data, t_calcul_px *c);
 
 ///////////////////////////////////////////////////////////////////////////////]
 void	ft_lighting_simple(t_data *data, t_calcul_px *c)
+{
+	t_light	**lights;
+	t_coor	final;
+	double	obj_scalar;
+
+	c->diffuse = ft_ambient(data, c);
+
+	if (c->print == 1)
+		printf("heleelelelelelelel\n");
+	lights = data->light_source - 1;
+	while (++lights && *lights)
+	{
+		if (!ft_diffuse(data, c, *lights))
+			continue ;
+		ft_specular(data, c, *lights);
+	}
+
+	ft_reflected(data, c);
+	ft_refracted(data, c);
+
+	obj_scalar = 1.0 - ((t_obj2*)c->object)->param.mirror - ((t_obj2*)c->object)->param.transparence;
+	final = (t_coor){
+		obj_scalar * c->diffuse.x + c->reflected.x + c->behind.x,
+		obj_scalar * c->diffuse.y + c->reflected.y + c->behind.y,
+		obj_scalar * c->diffuse.z + c->reflected.z + c->behind.z
+	};
+	c->px_color.r = fmax(0, fmin(255, round(final.x)));
+	c->px_color.g = fmax(0, fmin(255, round(final.y)));
+	c->px_color.b = fmax(0, fmin(255, round(final.z)));
+}
+
+void	ft_lighting_simple_v1(t_data *data, t_calcul_px *c)
 {
 	t_coor	ambient;
 	t_coor	diffuse;
@@ -65,7 +97,6 @@ void	ft_lighting_simple(t_data *data, t_calcul_px *c)
 	c->px_color.g = fmax(0, fmin(255, round(final.y)));
 	c->px_color.b = fmax(0, fmin(255, round(final.z)));
 }
-
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 void	ft_lighting_sublim(t_data *data, t_calcul_px *c)
 {

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/12 00:02:57 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/12 15:24:57 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,17 +45,19 @@ typedef struct s_calcul_px
 	t_vect	v_light;
 	double	cos_angle;
 
-	// double	dist_temp;
-	// int		inside;
-	// t_coor	point_temp;
-	// t_coor	tmp_color;
-	// double	tmp_dist;
-	t_rgb	px_color_behind;
 // 
 	int	reflected_depth;
 // transparence
 	int	transparence_depth;
 	double	current_gamma;
+	// double	transp_l_ratio;
+	// t_coor	transp_light;
+	t_light	transp_light;
+// 
+	t_coor	diffuse;
+	t_coor	reflected;
+	t_coor	behind;
+
 // bit for printing info
 	int	print;
 
