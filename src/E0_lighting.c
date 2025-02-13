@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 15:26:47 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 14:19:17 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ void	ft_lighting_simple(t_data *data, t_calcul_px *c)
 
 	c->diffuse = ft_ambient(data, c);
 
-	if (c->print == 1)
-		printf("heleelelelelelelel\n");
 	lights = data->light_source - 1;
 	while (++lights && *lights)
 	{

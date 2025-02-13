@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 17:17:39 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 11:29:07 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ static const t_dico_pair	dico[] = {
 	{"cy", parse_cy},
 	{"co", parse_co},
 	{"ar", parse_ar},
+	{"cu", parse_cu},
+	{"dp", parse_dp},
 	{NULL, NULL}
 };
 

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/12 12:34:17 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 13:48:33 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,18 @@ int		distance_from_circle(t_calcul_px *calcul, void *obj, int simple);
 int		distance_from_sphere(t_calcul_px *calcul, void *obj, int simple);
 // PLANE
 int		distance_from_plane(t_calcul_px *calcul, void *obj, int simple);
+void	h_txt_plane(t_calcul_px *calcul, t_plane_calc* c, t_plane *plane);
+void	h_nmap_plane(t_calcul_px *calcul, t_plane_calc* c, t_plane* plane);
 // CYLINDER
 int		distance_from_cylinder(t_calcul_px *calcul, void *obj, int simple);
 // 	CONE
 int		distance_from_cone(t_calcul_px *calcul, void *obj, int simple);
 // 	ARROW
 int		distance_from_arrow(t_calcul_px *calcul, void *obj, int simple);
+// 	CUBE
+int	distance_from_cube(t_calcul_px *calcul, void *obj, int simple);
+// 	BIPLANE
+int	distance_from_dblplane(t_calcul_px *calcul, void *obj, int simple);
 /********************************
 		E
 ********************************/
@@ -154,6 +160,8 @@ int	parse_sp(t_data *data, char **raw_split);
 int	parse_cy(t_data *data, char **raw_split);
 int	parse_co(t_data *data, char **raw_split);
 int	parse_ar(t_data *data, char **raw_split);
+int	parse_cu(t_data *data, char **raw_split);
+int	parse_dp(t_data *data, char **raw_split);
 // 
 int	parse_reste(t_data *data, char **raw_split, t_param *obj);
 int	parse_shininess(t_data *data, char *raw, t_param *obj);

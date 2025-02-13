@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 18:11:04 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 14:00:37 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	direction_pad(int keysym, t_data *data)
 {
 	t_coor	*xyz;
 
-	if (!data->change && data->change_obj)
+	if (data->change_obj)
 		xyz = &data->change_obj->O.c0;
 	else
 		xyz = &data->eye.c->O.c0;
@@ -46,7 +46,7 @@ int	keys_wasd(int keysym, t_data *data)
 {
 	t_obj	*obj;
 
-	if (!data->change && data->change_obj)
+	if (data->change_obj)
 		obj = &data->change_obj->O;
 	else
 		obj = &data->eye.c->O;

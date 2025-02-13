@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/11 11:03:31 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 02:27:27 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,17 +120,35 @@ typedef struct s_arrow
 }	t_arrow;
 
 // SQUARE = sq
-typedef struct s_square
+typedef struct s_cube
 {
 	int		type;
 	t_obj	O;
 	t_param	param;
 
-	t_coor	center;
-	t_vect	abc;
-	double	diameter;
-	double	height;
-	t_rgb	color;
-}	t_square;
+	double	size;
+	t_coor	other_p;
+	
+	double	d1;
+	double	d2;
+	double	d3;
+	t_coor	other_p2;
+	t_coor	other_p3;
+	
+}	t_cube;
+
+// PLANE = pl
+typedef struct s_dblplane
+{
+	int		type;
+	t_obj	O;
+	t_param	param;
+
+	double	d;
+	double	width;
+	t_coor	other_point;
+	double	other_d;
+
+}	t_dblplane;
 
 #endif

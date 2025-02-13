@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 12:11:35 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 11:21:47 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	parse_pl(t_data *data, char **raw_split);
 int	parse_sp(t_data *data, char **raw_split);
 int	parse_cy(t_data *data, char **raw_split);
 int	parse_co(t_data *data, char **raw_split);
-int	parse_ar(t_data *data, char **raw_split);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 			CIRCLE
@@ -193,44 +192,5 @@ int	parse_co(t_data *data, char **raw_split)
 		return (1);
 	cone->apex = new_moved_point(&cone->O.c0, &cone->O.view, cone->height);
 	cone->slope = (cone->radius * cone->radius) / (cone->height * cone->height);
-	return (0);
-}
-
-///////////////////////////////////////////////////////////////////////////////]
-// 			ARROW
-// 		XYZ = float
-// 		xyz vector [-1,1] float
-// 		RADIUS = float
-// 		HEIGHT = float
-// 		RGB [0, 255] int
-int	parse_ar(t_data *data, char **raw_split)
-{
-	t_arrow	*arrow;
-	
-	arrow = mem(0, sizeof(t_arrow));
-	if (!arrow)
-		return (put(ERRM), 2);
-	data->objects = expand_tab(data->objects, arrow);
-
-	if (tab_size(raw_split) < 5)
-		return (put(ERR1"bad number of args (ARROW OBJECT)\n"), 1);
-	if (parse_reste(data, &raw_split[5], &arrow->param))
-		return (1);
-
-	arrow->type = ARROW;
-	if (ato_coor(raw_split[0], &arrow->O.c0) ||
-		ato_coor(raw_split[1], (t_coor *)&arrow->O.view) ||
-		ft_atof(raw_split[2], &arrow->radius) ||
-		ft_atof(raw_split[3], &arrow->height) ||
-		ato_rgb(raw_split[4], &arrow->param.color))
-		return (1);
-	if (arrow->radius < EPSILON || arrow->height < EPSILON)
-		return (put(ERR1"(ARROW OBJECT) too small\n"), 1);
-
-	if (h_parse_vect_space(&arrow->O, &arrow->O.view))
-		return (1);
-	arrow->xyz_other = new_moved_point(&arrow->O.c0, &arrow->O.view, arrow->height * 2 / 3);
-	arrow->apex = new_moved_point(&arrow->O.c0, &arrow->O.view, arrow->height);
-	arrow->slope = (9 * arrow->radius * arrow->radius) / (arrow->height * arrow->height);
 	return (0);
 }

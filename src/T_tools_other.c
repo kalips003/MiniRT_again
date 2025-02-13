@@ -77,6 +77,12 @@ void	recalculate_obj_const(t_obj2 *obj)
 		((t_arrow*)obj)->apex = new_moved_point(&obj->O.c0, &obj->O.view, ((t_arrow*)obj)->height);
 		((t_arrow*)obj)->slope = (9.0 * pow(((t_arrow*)obj)->radius, 2.0)) / pow(((t_arrow*)obj)->height, 2.0);
 	}
+	else if (obj->type == DOUBLE_PLAN)
+	{
+		((t_dblplane*)obj)->d = -(obj->O.view.dx * obj->O.c0.x + obj->O.view.dy * obj->O.c0.y + obj->O.view.dz * obj->O.c0.z);
+		((t_dblplane*)obj)->other_point = new_moved_point(&obj->O.c0, &obj->O.view, ((t_dblplane*)obj)->width);
+		((t_dblplane*)obj)->other_d = -(obj->O.view.dx * ((t_dblplane*)obj)->other_point.x + obj->O.view.dy * ((t_dblplane*)obj)->other_point.y + obj->O.view.dz * ((t_dblplane*)obj)->other_point.z);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////]

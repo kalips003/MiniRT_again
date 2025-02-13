@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 15:25:00 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 16:46:07 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static const t_in_shadow_of g_in_shadow_of[] = {
 	distance_from_cone,
 	NULL,
 	distance_from_arrow,
+	distance_from_cube,
+	distance_from_dblplane,
 	NULL
 };
 ///////////////////////////////////////////////////////////////////////////////]
@@ -44,6 +46,7 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	calcul.c0 = c->inter;
 	calcul.v = c->v_light;
 	calcul.dist = c->dist_light;
+	calcul.print = c->print;
 
 	c->transp_light = *light;
 	obj_ptr = data->objects - 1;
@@ -92,21 +95,6 @@ t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal)
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
-{
-	t_calcul_px	c;
-
-	if (calcul->reflected_depth == REFLECTION_BOUNCES)
-		return (calcul->px_color);
-	c.reflected_depth = calcul->reflected_depth + 1;
-	c.c0 = calcul->inter;
-	c.v = ft_vect_reflected(&calcul->v, &calcul->v_normal);
-	c.dist = -1.0;
-	calculate_pixel_color(data, &c, 0);
-	return (c.px_color);
-}
-
-///////////////////////////////////////////////////////////////////////////////]
 t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj)
 {
 	t_vect refracted;
@@ -126,14 +114,37 @@ t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incid
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
+t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
+{
+	t_calcul_px	c;
+
+	if (calcul->reflected_depth == REFLECTION_BOUNCES)
+		return (calcul->px_color);
+	// ft_memset(&c, 0, sizeof(t_calcul_px));
+	c.reflected_depth = calcul->reflected_depth + 1;
+	c.transparence_depth = calcul->transparence_depth;
+
+	c.print = calcul->print;
+	c.v = ft_vect_reflected(&calcul->v, &calcul->v_normal);
+	c.c0 = new_moved_point(&calcul->inter, &calcul->v_normal, EPSILON);
+	c.dist = -1.0;
+	calculate_pixel_color(data, &c, 0);
+	return (c.px_color);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
 t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 {
 	t_calcul_px	c;
 
 	if (calcul->transparence_depth == TRANSPARENCE_BOUNCES)
 		return (calcul->px_color);
+	// ft_memset(&c, 0, sizeof(t_calcul_px));
+	
 	c.transparence_depth = calcul->transparence_depth + 1;
+	c.reflected_depth = calcul->reflected_depth;
 
+	c.print = calcul->print;
 	c.c0 = new_moved_point(&calcul->inter, &calcul->v, EPSILON);
 	if (((t_obj2*)calcul->object)->type == PLANE)
 		c.v = calcul->v;

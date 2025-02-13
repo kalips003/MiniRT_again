@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 00:20:16 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 14:00:45 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int 	ft_loop(t_data *data)
 			data->eye.c = data->camera[0];
 			data->current_camera = 0;
 			data->eye.c->O = old_camera;
+			data->change_obj = NULL;
 			ft_render_frame(data, 0);
 		}
 	}

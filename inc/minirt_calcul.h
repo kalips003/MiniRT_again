@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/12 15:24:57 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 16:21:19 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,34 +63,7 @@ typedef struct s_calcul_px
 
 }	t_calcul_px;
 
-
-typedef struct s_calcul_px2
-{
-	// camera origin + vector
-	void	*object;
-	t_coor	c0;
-	t_vect	v;
-
-	// point intersection + vector normal to the surface
-	t_coor	inter;
-	t_vect	v_normal;
-	
-	t_rgb	px_color;
-	double	dist;
-
-	// double	dist_temp;
-	// int		inside;
-	// t_coor	point_temp;
-	// t_coor	tmp_color;
-	// // double	tmp_dist;
-
-	// double dist_light;
-	// t_vect	v_light;
-	// double	cos_angle;
-
-	// t_rgb	px_color_behind;
-
-}	t_calcul_px2;
+///////////////////////////////////////////////////////////////////////////////]
 ///////////////////////////////////////////////////////////////////////////////]
 // 	CIRCLE
 typedef struct s_circle_calc {
@@ -129,12 +102,12 @@ typedef struct s_sphere_calc {
 ///////////////////////////////////////////////////////////////////////////////]
 // 	PLANE
 typedef struct s_plane_calc {
+	t_vect	o_to_inter;
 	double	top;
 	double	bot;
 
 	double	dist;
 
-	t_vect	o_to_inter;
 	double	u;
 	double	v;
 } t_plane_calc;

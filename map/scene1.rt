@@ -41,6 +41,9 @@ ar 						0,0,0 				1,0,0					0.5 		5 		255,0,0
 ar 						0,0,0 				0,1,0					0.5 		5 		0,255,0
 ar 						0,0,0 				0,0,1					0.5 		5 		0,0,255
 
+# (dp) Double Plane:	POSITION (xyz)		VECTOR [-1.0, 1.0]		WIDTH		COLOR_rgb [0, 255]
+
+# (cu) CUBE:			POSITION (xyz)		VECTOR [-1.0, 1.0]		SIZE		COLOR_rgb [0, 255]
 
 
 # VECTOR AXIS

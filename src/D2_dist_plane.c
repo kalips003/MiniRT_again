@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/11 00:46:40 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 01:20:40 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,9 @@ int	h_dist_plane(t_calcul_px *calcul, t_plane *plane, t_plane_calc* c, int simpl
 		h_txt_plane(calcul, c, plane);
 	if (plane->param.normal_map)
 		h_nmap_plane(calcul, c, plane);
-	
-	if (ft_dot_product(&calcul->v, &plane->O.view) > 0.0)
+		
+	if (c->bot > 0.0)
+	// if (ft_dot_product(&calcul->v, &plane->O.view) > 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 	return (1);
 }

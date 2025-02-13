@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/12 14:30:52 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 16:53:39 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,13 @@
 #define CONE 4
 #define PARABOLOID 5
 #define ARROW 6
+#define CUBE 7
+#define DOUBLE_PLAN 8
 
 #define DELTA_MOV 5.0
 #define DELTA_ROTA (PI / 10)
 
+# define SQRT3 1.7320508075688771931766041
 ///////////////////////////////////////////////////////////////////////////////]
 // 	UNUSED?
 
