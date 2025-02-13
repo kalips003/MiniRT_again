@@ -39,13 +39,14 @@ static const t_dist_of g_ft_dist_of[] = {
 int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
 {
 	void	**obj_ptr;
+	int		rtrn;
 
 	c->dist = -1.0;
 	obj_ptr = data->objects - 1;
 	while (++obj_ptr && *obj_ptr)
 	{
 
-		g_ft_dist_of[((t_obj2*)*obj_ptr)->type](c, *obj_ptr, 0);
+		rtrn = g_ft_dist_of[((t_obj2*)*obj_ptr)->type](c, *obj_ptr, 0);
 	
 	}
 	// if (transparence && max_step limint not reached) ... ;

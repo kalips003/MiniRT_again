@@ -123,8 +123,10 @@ t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
 	// ft_memset(&c, 0, sizeof(t_calcul_px));
 	c.reflected_depth = calcul->reflected_depth + 1;
 	c.transparence_depth = calcul->transparence_depth;
-
+	c.current_gamma = calcul->current_gamma;
+	c.previous_gamma = calcul->previous_gamma;
 	c.print = calcul->print;
+
 	c.v = ft_vect_reflected(&calcul->v, &calcul->v_normal);
 	c.c0 = new_moved_point(&calcul->inter, &calcul->v_normal, EPSILON);
 	c.dist = -1.0;
@@ -143,15 +145,17 @@ t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 	
 	c.transparence_depth = calcul->transparence_depth + 1;
 	c.reflected_depth = calcul->reflected_depth;
+	c.current_gamma = ((t_obj2*)calcul->object)->param.gamma;
+	c.previous_gamma = calcul->current_gamma;
 
 	c.print = calcul->print;
 	c.c0 = new_moved_point(&calcul->inter, &calcul->v, EPSILON);
 	if (((t_obj2*)calcul->object)->type == PLANE)
 		c.v = calcul->v;
 	else
-		c.v = ft_vect_refracted_v2(&calcul->v, &calcul->v_normal, calcul->current_gamma, ((t_obj2*)calcul->object)->param.gamma);
+		c.v = ft_vect_refracted_v2(&calcul->v, &calcul->v_normal, calcul->current_gamma, c.current_gamma);
 	c.dist = -1.0;
-	c.current_gamma = 1.0;
+
 	calculate_pixel_color(data, &c, 0);
 	return (c.px_color);
 }

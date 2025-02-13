@@ -15,6 +15,7 @@
 int		ft_loop(t_data *data);
 int		ft_render_frame(t_data *data, int sublim);
 int		calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
+int		h_bg_texture(t_data *data, t_calcul_px *calcul);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // main loop refresh if file is changed
@@ -81,6 +82,7 @@ int	ft_render_frame(t_data *data, int sublim)
 			angleA = atan((x - SIZE_SCREEN_X / 2) * data->eye.c->fov_cst);
 			c.v = combined_quaternion_rotation(&data->eye.c->O, angleA, angleB);
 			c.current_gamma = 1.0;
+			c.previous_gamma = 1.0;
 			calculate_pixel_color(data, &c, sublim);
 			mlx_pixel_put(data->mlx, data->win, x, y, c.px_color.r << 16 | c.px_color.g << 8 | c.px_color.b);
 		}
@@ -93,6 +95,8 @@ int	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
 {
 	if (!ft_find_pixel_colision(data, c))
 	{
+		if (data->bg_light[0]->texture)
+			return (h_bg_texture(data, c));
 		c->px_color.r = (int)(round(data->bg_light[0]->color.r * data->bg_light[0]->ratio));
 		c->px_color.g = (int)(round(data->bg_light[0]->color.g * data->bg_light[0]->ratio));
 		c->px_color.b = (int)(round(data->bg_light[0]->color.b * data->bg_light[0]->ratio));
@@ -103,4 +107,24 @@ int	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
 	else
 		ft_lighting_simple(data, c);
 	return (1);
+}
+
+int	h_bg_texture(t_data *data, t_calcul_px *calcul)
+{
+	t_img *txt = data->bg_light[0]->texture;
+
+	double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v.dz, calcul->v.dx)  / (2 * PI) + 0.5));
+	double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v.dy) / PI));
+
+	int text_x = ((int)floor(l_θ * txt->sz_x) + txt->sz_x) % txt->sz_x;
+	int text_y = ((int)floor(l_ϕ * txt->sz_y) + txt->sz_y) % txt->sz_y;
+	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
+	int color = *(unsigned int *)pixel;
+
+	calcul->px_color = (t_rgb){
+		(color >> 16) & 0xFF,
+		(color >> 8) & 0xFF,
+		color & 0xFF
+	};
+	return (0);
 }

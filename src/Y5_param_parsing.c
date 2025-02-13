@@ -13,6 +13,7 @@
 #include "../inc/minirt.h"
 
 int	parse_reste(t_data *data, char **raw_split, t_param *obj);
+int	parse_bg_texture(t_data *data, char *path, t_img **bg_txt);
 
 #define	PARAM_DICO "STMXNC"
 
@@ -48,5 +49,27 @@ int	parse_reste(t_data *data, char **raw_split, t_param *obj)
 			return (1);
 		raw_split++;
 	}
+	return (0);
+}
+
+int	parse_bg_texture(t_data *data, char *path, t_img **bg_txt)
+{
+	t_img	*texture;
+
+	if (!path)
+		return (0);
+	if (path[0] != 'X' || !path[1] || !path[2])
+		return (put("UNKNOWN BACKGROUND\n"), 1);
+
+	texture = mem(0, sizeof(t_img));
+	data->textures = (t_img **)expand_tab((void **)data->textures, texture);
+	if (!texture || !data->textures)
+		return (put(ERRM"parse_bg_texture\n"), 1);
+
+	texture->img = mlx_xpm_file_to_image(data->mlx, &path[2], &texture->sz_x, &texture->sz_y);
+	if (!texture->img)
+		return(put(ERR8"Cant open sprite: %s\n", &path[2]), perror(RED"mlx_xpm_file_to_image"), 1);
+	texture->addr = mlx_get_data_addr(texture->img, &texture->bpp, &texture->ll, &texture->end);
+	*bg_txt = texture;
 	return (0);
 }

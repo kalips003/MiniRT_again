@@ -96,10 +96,11 @@ int	parse_A(t_data *data, char **raw_split)
 		return (put(ERRM), 2);
 	data->bg_light = (t_ambient_light **)expand_tab((void **)data->bg_light, light);
 	
-	if (tab_size(raw_split) != 2)
+	if (tab_size(raw_split) < 2 || tab_size(raw_split) > 3)
 		return (put(ERR1"bad number of args (AMBIENT LIGHT)\n"), 1);
 	if (ft_atof(raw_split[0], &light->ratio) ||
-		ato_rgb(raw_split[1], &light->color))
+		ato_rgb(raw_split[1], &light->color) ||
+		parse_bg_texture(data, raw_split[2], &light->texture))
 		return (1);
 	if (light->ratio < 0.0 || light->ratio > 1.0)
 		return (put(ERR1"(%s) ambient lighting ratio should be [0.0,1.0]\n", raw_split[0]), 1);

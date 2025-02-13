@@ -50,6 +50,7 @@ typedef struct s_calcul_px
 // transparence
 	int	transparence_depth;
 	double	current_gamma;
+	double	previous_gamma;
 	// double	transp_l_ratio;
 	// t_coor	transp_light;
 	t_light	transp_light;

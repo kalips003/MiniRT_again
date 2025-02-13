@@ -1,7 +1,16 @@
-# (Shininess) S=20.0		(Transparence, gamma) T=[0,1],[-PI/2, PI/2]		(Mirroir) M=[0,1]	(Texture) X="sphere_texture.xpm"		(Normal Map) N="sphere_normal.xpm"
+# (Specular, Shininess) S=[0-1.0][10-500+]	> [matte surface > perfect mirror] [rougher surface > polished surface]
+# (Color2) C=[0,255],[0,255],[0,255]
+# (Transparence, gamma) T=[0,1],[-PI/2, PI/2]
+# (Mirroir) M=[0,1]
+# (Texture) X=sphere_texture.xpm
+# (Normal Map) N=sphere_normal.xpm
+
+# TEXTURES:		X=texture/earthmap4k.xpm	N=txt/brique_n.xpm	X=texture/rock2.xpm 
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
 # (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
-A 						0.2 					255,255,255
+A 						0.2 					255,255,255 X=texture/earthmap4k.xpm
 
 # (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
 C 						0,10,-30 			0,0,1 					70

@@ -30,7 +30,7 @@
 # define REFLECTION_BOUNCES 1
 # define TRANSPARENCE_BOUNCES 8
 
-# define SIZE_SCREEN_Y 400
+# define SIZE_SCREEN_Y 500
 # define SIZE_SCREEN_X 600
 
 #define CIRCLE 0

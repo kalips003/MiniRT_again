@@ -164,6 +164,8 @@ int	parse_cu(t_data *data, char **raw_split);
 int	parse_dp(t_data *data, char **raw_split);
 // 
 int	parse_reste(t_data *data, char **raw_split, t_param *obj);
+int	parse_bg_texture(t_data *data, char *path, t_img **bg_txt);
+// 
 int	parse_shininess(t_data *data, char *raw, t_param *obj);
 int	parse_transparence(t_data *data, char *raw, t_param *obj);
 int	parse_mirror(t_data *data, char *raw, t_param *obj);

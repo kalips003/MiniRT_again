@@ -28,6 +28,7 @@ typedef struct s_ambient_light
 {
 	double	ratio;
 	t_rgb	color;
+	t_img	*texture;
 }	t_ambient_light;
 
 // CAMERA = C
