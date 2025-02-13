@@ -29,7 +29,7 @@ L 						10,10,10 			0.99 					255,222,222
 co 						0,0,0 				0,0,1					5 			10 		185,8,96 T=0.5,1.0 M=0.4 S=0.7,200
 
 # (pl) Plane:			POSITION (xyz)      VECTOR [-1.0, 1.0]      COLOR_rgb [0, 255]
-pl 						0,-5,0 				0,1,0 				200,200,200
+bp 						0,-5,0 				0,1,0 			5	200,200,200 T=0.5,1.5
 
 # (cu) CUBE:			POSITION (xyz)		VECTOR [-1.0, 1.0]		SIZE		COLOR_rgb [0, 255]
 # cu 						0,0,0 				0,1,0 				5		255,0,0 C=0,0,255 X=txt/brique_t.xpm N=txt/brique_n.xpm 
