@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 15:26:08 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 23:37:55 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	ft_diffuse(t_data *data, t_calcul_px *c, t_light *lights)
 	if (c->cos_angle < EPSILON || something_block_the_light(data, c, lights))
 		return (0);
 	adjusted_intensity = c->transp_light.ratio * c->cos_angle;
-	adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light * c->dist_light);
+	adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (1 + c->dist_light * c->dist_light);
 
 	c->diffuse.x += c->px_color.r * c->transp_light.color.r / 255.0 * adjusted_intensity;
 	c->diffuse.y += c->px_color.g * c->transp_light.color.g / 255.0 * adjusted_intensity;

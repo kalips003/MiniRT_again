@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 17:07:55 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/11 00:56:08 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 00:21:36 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,12 @@ void	h_txt_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v
 	int color = *(unsigned int *)pixel;
 
 	calcul->px_color = (t_rgb){
+		(color >> 16) & 0xFF,
+		(color >> 8) & 0xFF,
+		color & 0xFF
+	};
+	calcul->argb = (t_argb){
+		(color >> 24) & 0xFF,
 		(color >> 16) & 0xFF,
 		(color >> 8) & 0xFF,
 		color & 0xFF

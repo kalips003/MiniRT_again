@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/08 20:36:00 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/13 23:58:46 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,7 @@ mlx_hook(window,  ConfigureNotify, StructureNotifyMask, handle_resize, data);
     handle_resize: Your custom callback function to handle the resize.
 
 
-
->>>	MOUSE CONTROL ROTATION
-
->>> MIRROR
-
->>> TRANSPARENCE
-
->>> MULTI THREAD
-
-if radius sphere, cylinnder == 0?
-
->>> colors:
-Ambient lighting:
-	I = k * obj_color * 
+	partial transparence in sprite > xpm support transparence > pixel effective transparence
 ******************************************************************************/
 ///////////////////////////////////////////////////////////////////////////////]
 // int	g_signalreceived;

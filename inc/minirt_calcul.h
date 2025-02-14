@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/13 16:21:19 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 15:44:15 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_calcul_px
 	t_vect	v_normal;
 	
 	t_rgb	px_color;
+	t_argb	argb;
 	double	dist;
 
 // lighting values
