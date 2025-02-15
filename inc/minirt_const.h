@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/13 16:53:39 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 19:38:26 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 #define ARROW 6
 #define CUBE 7
 #define DOUBLE_PLAN 8
+#define SPRITE 9
 
 #define DELTA_MOV 5.0
 #define DELTA_ROTA (PI / 10)

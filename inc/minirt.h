@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/13 13:48:33 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 00:53:03 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,9 @@
 /********************************
 		A
 ********************************/
-
+t_argb	return_px_img(t_img *img, double x, double y);
+t_vect	return_vect_img(t_img *img, double x, double y);
+int		return_alpha_img(t_img *img, double x, double y);
 /********************************
 		B
 ********************************/
@@ -85,6 +87,8 @@ int		distance_from_arrow(t_calcul_px *calcul, void *obj, int simple);
 int	distance_from_cube(t_calcul_px *calcul, void *obj, int simple);
 // 	BIPLANE
 int	distance_from_dblplane(t_calcul_px *calcul, void *obj, int simple);
+// 	SPRITE
+int	distance_from_sprite(t_calcul_px *calcul, void *obj, int simple);
 /********************************
 		E
 ********************************/
@@ -102,9 +106,9 @@ void	ft_specular(t_data *data, t_calcul_px *c, t_light *lights);
 int		something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
 double	calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
-t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
 t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj);
-t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul);
+t_argb	what_is_reflected(t_data *data, t_calcul_px *calcul);
+t_argb	what_is_behind(t_data *data, t_calcul_px *calcul);
 /********************************
 		K
 ********************************/
@@ -122,11 +126,12 @@ int		keys_wasd(int keysym, t_data *data);
 int		ft_atof(char *string, double *rtrn);
 int		ato_coor(char *str, t_coor *xyz);
 int		ato_rgb(char *str, t_rgb *rgb);
+int		ato_argb(char *str, t_argb *argb);
 // tools other
 void	create_vector_space(t_obj *obj);
 double	h_smalest_Δ(double a, double b);
 void	recalculate_obj_const(t_obj2 *obj);
-t_rgb	dual_color_render(t_rgb *color1, t_rgb *color2, double dist);
+t_argb	dual_color_render(t_argb *color1, t_rgb *color2, double dist);
 // rotation
 t_vect	combined_quaternion_rotation(t_obj *obj, double angle_α, double angle_β);
 t_vect	quaternion_rotation(t_vect *v, t_vect *axis_rota, double angle_α, int posi_neg);
@@ -162,6 +167,7 @@ int	parse_co(t_data *data, char **raw_split);
 int	parse_ar(t_data *data, char **raw_split);
 int	parse_cu(t_data *data, char **raw_split);
 int	parse_dp(t_data *data, char **raw_split);
+int	parse_xi(t_data *data, char **raw_split);
 // 
 int	parse_reste(t_data *data, char **raw_split, t_param *obj);
 int	parse_bg_texture(t_data *data, char *path, t_img **bg_txt);
@@ -171,6 +177,7 @@ int	parse_transparence(t_data *data, char *raw, t_param *obj);
 int	parse_mirror(t_data *data, char *raw, t_param *obj);
 int	parse_texture(t_data *data, char *path, t_param *obj);
 int	parse_nmap(t_data *data, char *path, t_param *obj);
+int	parse_amap(t_data *data, char *path, t_param *obj);
 int	parse_color2(t_data *data, char *raw, t_param *obj);
 /********************************
 		Z

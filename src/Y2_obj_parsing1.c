@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 11:21:47 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 20:46:45 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	parse_ci(t_data *data, char **raw_split)
 	circle->type = CIRCLE;
 	if (ato_coor(raw_split[0], &circle->O.c0) ||
 		ato_coor(raw_split[1], (t_coor*)&circle->O.view) ||
-		ato_rgb(raw_split[2], &circle->param.color) ||
+		ato_argb(raw_split[2], &circle->param.argb) ||
 		ft_atof(raw_split[3], &circle->radius))
 		return (1);
 	if (circle->radius < EPSILON)
@@ -79,7 +79,7 @@ int	parse_pl(t_data *data, char **raw_split)
 	plane->type = PLANE;
 	if (ato_coor(raw_split[0], &plane->O.c0) ||
 		ato_coor(raw_split[1], (t_coor*)&plane->O.view) ||
-		ato_rgb(raw_split[2], &plane->param.color))
+		ato_argb(raw_split[2], &plane->param.argb))
 		return (1);
 	if (h_parse_vect_space(&plane->O, &plane->O.view))
 		return (1);
@@ -109,7 +109,7 @@ int	parse_sp(t_data *data, char **raw_split)
 	sphere->type = SPHERE;
 	if (ato_coor(raw_split[0], &sphere->O.c0) ||
 		ft_atof(raw_split[1], &sphere->radius) ||
-		ato_rgb(raw_split[2], &sphere->param.color))
+		ato_argb(raw_split[2], &sphere->param.argb))
 		return (1);
 	if (sphere->radius < EPSILON)
 		return (put(ERR1"(SPHERE OBJECT) too small\n"), 1);
@@ -145,7 +145,7 @@ int	parse_cy(t_data *data, char **raw_split)
 		ato_coor(raw_split[1], (t_coor *)&cylinder->O.view) ||
 		ft_atof(raw_split[2], &cylinder->radius) ||
 		ft_atof(raw_split[3], &cylinder->height) ||
-		ato_rgb(raw_split[4], &cylinder->param.color))
+		ato_argb(raw_split[4], &cylinder->param.argb))
 		return (1);
 	if (cylinder->radius < EPSILON || cylinder->height < EPSILON)
 		return (put(ERR1"(CYLINDER OBJECT) too small\n"), 1);
@@ -183,7 +183,7 @@ int	parse_co(t_data *data, char **raw_split)
 		ato_coor(raw_split[1], (t_coor *)&cone->O.view) ||
 		ft_atof(raw_split[2], &cone->radius) ||
 		ft_atof(raw_split[3], &cone->height) ||
-		ato_rgb(raw_split[4], &cone->param.color))
+		ato_argb(raw_split[4], &cone->param.argb))
 		return (1);
 	if (cone->radius < EPSILON || cone->height < EPSILON)
 		return (put(ERR1"(CONE OBJECT) too small\n"), 1);

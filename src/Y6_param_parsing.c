@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 14:09:23 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 00:32:08 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	parse_transparence(t_data *data, char *raw, t_param *obj);
 int	parse_mirror(t_data *data, char *raw, t_param *obj);
 int	parse_texture(t_data *data, char *path, t_param *obj);
 int	parse_nmap(t_data *data, char *path, t_param *obj);
+int	parse_amap(t_data *data, char *path, t_param *obj);
 int	parse_color2(t_data *data, char *raw, t_param *obj);
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -110,6 +111,26 @@ int	parse_nmap(t_data *data, char *path, t_param *obj)
 		return(put(ERR8"Cant open sprite: %s\n", path), perror(RED"mlx_xpm_file_to_image"), 1);
 	nmap->addr = mlx_get_data_addr(nmap->img, &nmap->bpp, &nmap->ll, &nmap->end);
 	obj->normal_map = nmap;
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// (Alpha Map) A=sphere_normal.xpm
+int	parse_amap(t_data *data, char *path, t_param *obj)
+{
+	t_img	*amap;
+
+	amap = mem(0, sizeof(t_img));
+	data->textures = (t_img **)expand_tab((void **)data->textures, amap);
+	if (!amap || !data->textures)
+		return (put(ERRM"parse_texture\n"), 1);
+
+	if (path)
+		amap->img = mlx_xpm_file_to_image(data->mlx, path, &amap->sz_x, &amap->sz_y);
+	if (!amap->img)
+		return(put(ERR8"Cant open sprite: %s\n", path), perror(RED"mlx_xpm_file_to_image"), 1);
+	amap->addr = mlx_get_data_addr(amap->img, &amap->bpp, &amap->ll, &amap->end);
+	obj->alpha_map = amap;
 	return (0);
 }
 

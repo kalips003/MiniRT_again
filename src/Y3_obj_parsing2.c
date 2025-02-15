@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 14:14:02 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 22:20:07 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	parse_ar(t_data *data, char **raw_split);
 int	parse_cu(t_data *data, char **raw_split);
 int	parse_dp(t_data *data, char **raw_split);
+int	parse_xi(t_data *data, char **raw_split);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 			ARROW
@@ -42,7 +43,7 @@ int	parse_ar(t_data *data, char **raw_split)
 		ato_coor(raw_split[1], (t_coor *)&arrow->O.view) ||
 		ft_atof(raw_split[2], &arrow->radius) ||
 		ft_atof(raw_split[3], &arrow->height) ||
-		ato_rgb(raw_split[4], &arrow->param.color))
+		ato_argb(raw_split[4], &arrow->param.argb))
 		return (1);
 	if (arrow->radius < EPSILON || arrow->height < EPSILON)
 		return (put(ERR1"(ARROW OBJECT) too small\n"), 1);
@@ -79,7 +80,7 @@ int	parse_cu(t_data *data, char **raw_split)
 	if (ato_coor(raw_split[0], &cube->O.c0) ||
 		ato_coor(raw_split[1], (t_coor*)&cube->O.view) ||
 		ft_atof(raw_split[2], &cube->size) ||
-		ato_rgb(raw_split[3], &cube->param.color))
+		ato_argb(raw_split[3], &cube->param.argb))
 		return (1);
 	if (h_parse_vect_space(&cube->O, &cube->O.view))
 		return (1);
@@ -88,7 +89,7 @@ int	parse_cu(t_data *data, char **raw_split)
 
 
 ///////////////////////////////////////////////////////////////////////////////]
-// 			CUBE
+// 			DOUBLE_PLAN
 // 		XYZ = float
 // 		xyz vector [-1,1] float
 // 		Width	double
@@ -111,9 +112,44 @@ int	parse_dp(t_data *data, char **raw_split)
 	if (ato_coor(raw_split[0], &dbpl->O.c0) ||
 		ato_coor(raw_split[1], (t_coor*)&dbpl->O.view) ||
 		ft_atof(raw_split[2], &dbpl->width) ||
-		ato_rgb(raw_split[3], &dbpl->param.color))
+		ato_argb(raw_split[3], &dbpl->param.argb))
 		return (1);
 	if (h_parse_vect_space(&dbpl->O, &dbpl->O.view))
 		return (1);
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// 			SPRITE
+// 		XYZ = float
+// 		xyz vector [-1,1] float
+// 		Size float
+// 		RGB [0, 255] int
+// 
+int	parse_xi(t_data *data, char **raw_split)
+{
+	t_sprite	*sprite;
+	
+	sprite = mem(0, sizeof(t_sprite));
+	if (!sprite)
+		return (put(ERRM), 2);
+	data->objects = expand_tab(data->objects, sprite);
+
+	if (tab_size(raw_split) < 4)
+		return (put(ERR1"bad number of args (SPRITE OBJECT)\n"), 1);
+	if (parse_reste(data, &raw_split[4], &sprite->param))
+		return (1);
+	if (!sprite->param.texture)
+		return (put(ERR1"SPRITE OBJECT need a sprite\n"), 1);
+
+	sprite->type = SPRITE;
+	if (ato_coor(raw_split[0], &sprite->O.c0) ||
+		ato_coor(raw_split[1], (t_coor*)&sprite->O.view) ||
+		ft_atof(raw_split[2], &sprite->size) ||
+		ato_argb(raw_split[3], &sprite->param.argb))
+		return (1);
+	if (h_parse_vect_space(&sprite->O, &sprite->O.view))
+		return (1);
+	sprite->d = -(sprite->O.up.dx * sprite->O.c0.x + sprite->O.up.dy * sprite->O.c0.y + sprite->O.up.dz * sprite->O.c0.z);
 	return (0);
 }

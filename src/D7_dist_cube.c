@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 15:30:20 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 02:41:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	h_dist_cube1(t_calcul_px *calcul, t_cube *cube, t_cube_calc *c, int simple)
 	double dot1 = ft_dot_product(c->v2, &o_to_inter);
 	double dot2 = ft_dot_product(c->v3, &o_to_inter);
 
-	if (dot1 < EPSILON || dot2 < EPSILON || dot1 > cube->size || dot2 > cube->size)
+	if (dot1 < 0.0 || dot2 < 0.0 || dot1 > cube->size || dot2 > cube->size)
 		return (0);
 	if (simple)
 		return (1);
@@ -118,6 +118,7 @@ void	h_dist_cube2(t_calcul_px *calcul, t_cube *cube, t_cube_calc* c)
 	calcul->object = cube;
 	calcul->inter = c->inter;
 	calcul->px_color = cube->param.color;
+	calcul->argb = cube->param.argb;
 	calcul->v_normal = c->v_norm;
 
 	if (!cube->param.texture && cube->param.color2.r >= 0)
@@ -125,59 +126,30 @@ void	h_dist_cube2(t_calcul_px *calcul, t_cube *cube, t_cube_calc* c)
 		t_vect	o_to_inter = vect_ab(&cube->O.c0, &c->inter);
 		t_vect	diag = vect_ab_norm(&cube->O.c0, &cube->other_p);
 		double	dist_color = ft_dot_product(&o_to_inter, &diag) / (SQRT3 * cube->size);
-		calcul->px_color = dual_color_render(&cube->param.color, &cube->param.color2, dist_color);
+		calcul->argb = dual_color_render(&cube->param.argb, &cube->param.color2, dist_color);
 	}
+	if (cube->param.texture || cube->param.normal_map || cube->param.alpha_map)
+		h_img_cube(calcul, cube, c);
 
-	if (cube->param.texture)
-		h_txt_cube(calcul, c, cube);
-	if (cube->param.normal_map)
-		h_nmap_cube(calcul, c, cube);
-	
 	if (ft_dot_product(&calcul->v, &c->v_norm) > 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 }
 
 
-void	h_txt_cube(t_calcul_px *calcul, t_cube_calc* c, t_cube *plane)
+void	h_img_cube(t_calcul_px *calcul, t_cube *cube, t_cube_calc* c)
 {
-	t_img *txt = plane->param.texture;
-
-	int text_x = (int)floor(c->u * txt->sz_x);
-	int text_y = (int)floor(c->v * txt->sz_y);
-
-	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	calcul->px_color = (t_rgb){
-		(color >> 16) & 0xFF,
-		(color >> 8) & 0xFF,
-		color & 0xFF
-	};
-}
-
-void	h_nmap_cube(t_calcul_px *calcul, t_cube_calc* c, t_cube *plane)
-{
-	t_img *nmap = plane->param.normal_map;
-
-	int text_x = (int)floor(c->u * nmap->sz_x);
-	int text_y = (int)floor(c->v * nmap->sz_y);
-
-	char *pixel = nmap->addr + (text_y * nmap->ll + text_x * (nmap->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	t_vect	normal_map = {
-		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
-		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
-		(color & 0xFF) / 255.0 * 2.0 - 1.0};
-	ft_normalize_vect(&normal_map);
-	// normal_map.dz *= -1; ???
-	normal_map.dx *= -1;// ???
-	// normal_map.dz *= -1; // Flip depth axis if needed (opengl map)
-
-	calcul->v_normal = (t_vect){
-		plane->O.right.dx * normal_map.dx + plane->O.up.dx * normal_map.dy + plane->O.view.dx * normal_map.dz,
-		plane->O.right.dy * normal_map.dx + plane->O.up.dy * normal_map.dy + plane->O.view.dy * normal_map.dz,
-		plane->O.right.dz * normal_map.dx + plane->O.up.dz * normal_map.dy + plane->O.view.dz * normal_map.dz,
-	};
-	ft_normalize_vect(&calcul->v_normal);
+	if (cube->param.texture)
+		calcul->argb = return_px_img(cube->param.texture, c->u, c->v);
+	if (cube->param.alpha_map)
+		calcul->argb = (t_argb){return_alpha_img(cube->param.alpha_map, c->u, c->v), calcul->argb.r, calcul->argb.g, calcul->argb.b};
+	if (cube->param.normal_map)
+	{
+		t_vect	normal_map = return_vect_img(cube->param.normal_map, c->u, c->v);
+		calcul->v_normal = (t_vect){
+			cube->O.right.dx * normal_map.dx + cube->O.up.dx * normal_map.dy + c->v_norm.dx * normal_map.dz,
+			cube->O.right.dy * normal_map.dx + cube->O.up.dy * normal_map.dy + c->v_norm.dy * normal_map.dz,
+			cube->O.right.dz * normal_map.dx + cube->O.up.dz * normal_map.dy + c->v_norm.dz * normal_map.dz,
+		};
+		ft_normalize_vect(&calcul->v_normal);
+	}
 }

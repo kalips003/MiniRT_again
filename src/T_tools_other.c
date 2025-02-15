@@ -15,7 +15,7 @@
 void	create_vector_space(t_obj *obj);
 double	h_smalest_Δ(double a, double b);
 void	recalculate_obj_const(t_obj2 *obj);
-t_rgb	dual_color_render(t_rgb *color1, t_rgb *color2, double dist);
+t_argb	dual_color_render(t_argb *color1, t_rgb *color2, double dist);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // takes an obj with a view vector filled, create the vector space
@@ -83,14 +83,17 @@ void	recalculate_obj_const(t_obj2 *obj)
 		((t_dblplane*)obj)->other_point = new_moved_point(&obj->O.c0, &obj->O.view, ((t_dblplane*)obj)->width);
 		((t_dblplane*)obj)->other_d = -(obj->O.view.dx * ((t_dblplane*)obj)->other_point.x + obj->O.view.dy * ((t_dblplane*)obj)->other_point.y + obj->O.view.dz * ((t_dblplane*)obj)->other_point.z);
 	}
+	else if (obj->type == SPRITE)
+		((t_sprite*)obj)->d = -(obj->O.up.dx * obj->O.c0.x + obj->O.up.dy * obj->O.c0.y + obj->O.up.dz * obj->O.c0.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
 // scale color based on a [0,1] distance
-t_rgb	dual_color_render(t_rgb *color1, t_rgb *color2, double dist)
+t_argb	dual_color_render(t_argb *color1, t_rgb *color2, double dist)
 {
-	t_rgb	rtrn;
+	t_argb	rtrn;
 
+	rtrn.a = color1->a;
 	rtrn.r = (int)((color2->r - color1->r) * dist + color1->r);
 	rtrn.g = (int)((color2->g - color1->g) * dist + color1->g);
 	rtrn.b = (int)((color2->b - color1->b) * dist + color1->b);

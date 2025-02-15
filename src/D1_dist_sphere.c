@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/11 01:01:30 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 01:10:32 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 int		distance_from_sphere(t_calcul_px *calcul, void *obj, int simple);
 int		h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c, int simple);
-void	h_txt_sphere(t_calcul_px *calcul, t_sphere *sphere);
-void	h_nmap_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c);
+void	h_img_sphere(t_calcul_px *calcul, t_sphere *sphere);
 
 ///////////////////////////////////////////////////////////////////////////////]
 // 		if colition, fills in the xyz position of the closest positive contact point
@@ -59,14 +58,13 @@ int	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c, int s
 	calcul->inter = new_moved_point(&calcul->c0, &calcul->v, calcul->dist);
 	calcul->v_normal = vect_ab_norm(&sphere->O.c0, &calcul->inter);
 	calcul->px_color = sphere->param.color;
+	calcul->argb = sphere->param.argb;
 
 	if (!sphere->param.texture && sphere->param.color2.r >= 0)
-		calcul->px_color = dual_color_render(&sphere->param.color, &sphere->param.color2, ft_dot_product(&calcul->v_normal, &sphere->O.view) / 2 + 0.5);
+		calcul->argb = dual_color_render(&sphere->param.argb, &sphere->param.color2, ft_dot_product(&calcul->v_normal, &sphere->O.view) / 2 + 0.5);
 
-	if (sphere->param.texture)
-		h_txt_sphere(calcul, sphere);
-	if (sphere->param.normal_map)
-		h_nmap_sphere(calcul, sphere, c);
+	if (sphere->param.texture || sphere->param.normal_map || sphere->param.alpha_map)
+		h_img_sphere(calcul, sphere);
 
 	if (c->det1 < 0.0 || c->det2 < 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
@@ -76,62 +74,31 @@ int	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c, int s
 ///////////////////////////////////////////////////////////////////////////////]
 // 		ATAN2 [−π,π][−π,π] > [0,1].
 // 		cosϕ=[1top,-1bot]	ACOS [0,π] > [0,1].
-void	h_txt_sphere(t_calcul_px *calcul, t_sphere *sphere)
+void	h_img_sphere(t_calcul_px *calcul, t_sphere *sphere)
 {
-	t_img *txt = sphere->param.texture;
-
 	double cosθ = ft_dot_product(&calcul->v_normal, &sphere->O.up);
 	double sinθ = ft_dot_product(&calcul->v_normal, &sphere->O.right);
 	double cosϕ = ft_dot_product(&calcul->v_normal, &sphere->O.view);
 	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
 	double	l_ϕ = fmin(1.0, fmax(0.0, acos(cosϕ) / PI));
 
-	int text_x = ((int)floor(l_θ * txt->sz_x) + txt->sz_x) % txt->sz_x;
-	int text_y = ((int)floor(l_ϕ * txt->sz_y) + txt->sz_y) % txt->sz_y;
-	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	calcul->px_color = (t_rgb){
-		(color >> 16) & 0xFF,
-		(color >> 8) & 0xFF,
-		color & 0xFF
-	};
-}
-
-///////////////////////////////////////////////////////////////////////////////]
-void	h_nmap_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c)
-{
-	t_img *nmap = sphere->param.normal_map;
-
-	double cosθ = ft_dot_product(&calcul->v_normal, &sphere->O.up);
-	double sinθ = ft_dot_product(&calcul->v_normal, &sphere->O.right);
-	double cosϕ = ft_dot_product(&calcul->v_normal, &sphere->O.view);
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
-	double	l_ϕ = fmin(1.0, fmax(0.0, acos(cosϕ) / PI));
-
-	int text_x = ((int)floor(l_θ * nmap->sz_x) + nmap->sz_x) % nmap->sz_x;
-	int text_y = ((int)floor(l_ϕ * nmap->sz_y) + nmap->sz_y) % nmap->sz_y;
-	char *pixel = nmap->addr + (text_y * nmap->ll + text_x * (nmap->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	t_vect normal_map = (t_vect){
-		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
-		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
-		(color & 0xFF) / 255.0 * 2.0 - 1.0};
-	ft_normalize_vect(&normal_map);
-	normal_map.dx *= -1;// ???
-	// normal_map.dy *= -1;// ???
-	// normal_map.dz *= -1;// ???
-
-	t_obj	local;// ! if both aligned, cross product not defined?
-	local.view = calcul->v_normal;
-	local.right = ft_cross_product_norm(&local.view, &sphere->O.view);
-	local.up = ft_cross_product_norm(&local.right, &local.view);
-
-	calcul->v_normal = (t_vect){
-		local.right.dx * normal_map.dx + local.up.dx * normal_map.dy + local.view.dx * normal_map.dz,
-		local.right.dy * normal_map.dx + local.up.dy * normal_map.dy + local.view.dy * normal_map.dz,
-		local.right.dz * normal_map.dx + local.up.dz * normal_map.dy + local.view.dz * normal_map.dz,
-	};
-	ft_normalize_vect(&calcul->v_normal);
+	if (sphere->param.texture)
+		calcul->argb = return_px_img(sphere->param.texture, l_θ, l_ϕ);
+	if (sphere->param.alpha_map)
+		calcul->argb = (t_argb){return_alpha_img(sphere->param.alpha_map, l_θ, l_ϕ), calcul->argb.r, calcul->argb.g, calcul->argb.b};
+	if (sphere->param.normal_map)
+	{
+		t_vect	normal_map = return_vect_img(sphere->param.normal_map, l_θ, l_ϕ);
+		t_obj	local;
+		local.view = calcul->v_normal;
+		local.right = ft_cross_product_norm(&local.view, &sphere->O.view);
+		local.up = ft_cross_product_norm(&local.right, &local.view);
+	
+		calcul->v_normal = (t_vect){
+			local.right.dx * normal_map.dx + local.up.dx * normal_map.dy + local.view.dx * normal_map.dz,
+			local.right.dy * normal_map.dx + local.up.dy * normal_map.dy + local.view.dy * normal_map.dz,
+			local.right.dz * normal_map.dx + local.up.dz * normal_map.dy + local.view.dz * normal_map.dz,
+		};
+		ft_normalize_vect(&calcul->v_normal);
+	}
 }

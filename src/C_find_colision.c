@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 11:30:01 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 20:42:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static const t_dist_of g_ft_dist_of[] = {
 	distance_from_arrow,
 	distance_from_cube,
 	distance_from_dblplane,
+	distance_from_sprite,
 	NULL
 };
 ///////////////////////////////////////////////////////////////////////////////]

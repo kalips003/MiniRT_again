@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/14 00:20:15 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 22:56:30 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_obj
 typedef struct s_param
 {
 	t_rgb	color;
+	t_argb	argb;
 	t_rgb	color2;
 
 	double	shiny;
@@ -85,6 +86,7 @@ typedef struct s_param
 	double	gamma;
 	t_img	*texture;
 	t_img	*normal_map;
+	t_img	*alpha_map;
 
 }	t_param;//		objeccts param
 

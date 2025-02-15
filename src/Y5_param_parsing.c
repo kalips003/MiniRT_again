@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/12 12:06:45 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 00:32:39 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	parse_reste(t_data *data, char **raw_split, t_param *obj);
 int	parse_bg_texture(t_data *data, char *path, t_img **bg_txt);
 
-#define	PARAM_DICO "STMXNC"
+#define	PARAM_DICO "STMXNAC"
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 // (Shininess) S=[1.0, +]
@@ -29,6 +29,7 @@ static const t_ft_param_parsing g_ft_param_parsing[] = {
 	parse_mirror,
 	parse_texture,
 	parse_nmap,
+	parse_amap,
 	parse_color2
 };
 

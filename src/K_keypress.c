@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 11:29:28 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 22:40:34 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int mouse_release(int button, int x, int y, void *data)
 
 	if (button == 1)
 	{
-		angleA = (((t_data*)data)->eye.clic_px_x - x) * ((t_data*)data)->eye.c->fov_cst;
-		angleB = (((t_data*)data)->eye.clic_px_y - y) * ((t_data*)data)->eye.c->fov_cst;
+		angleA = 1.5 * (((t_data*)data)->eye.clic_px_x - x) * ((t_data*)data)->eye.c->fov_cst;
+		angleB = 1.5 * (((t_data*)data)->eye.clic_px_y - y) * ((t_data*)data)->eye.c->fov_cst;
 		((t_data*)data)->eye.c->O.view = combined_quaternion_rotation(&((t_data*)data)->eye.c->O, angleA, angleB);
 		create_vector_space(&((t_data*)data)->eye.c->O);
 		ft_render_frame((t_data *)data, 0);
@@ -72,10 +72,11 @@ static const char* g_obj_names[] = {
 	"Plane",
 	"Cylinder",
 	"Cone",
-	NULL,
+	"Paraboloid",
 	"Arrow",
 	"Cube",
 	"Bi-Plane",
+	"Sprite",
 	NULL
 };
 
@@ -107,7 +108,7 @@ void	print_clic(t_data *data, int x, int y)
 		printf("\tup \t[% .2f,% .2f,% .2f]\n", obj->O.up.dx, obj->O.up.dy, obj->O.up.dz);
 		printf("\tright \t[% .2f,% .2f,% .2f]\n", obj->O.right.dx, obj->O.right.dy, obj->O.right.dz);
 		printf(C_433"\n\tcolor obj\t[%d,%d,%d]\n", obj->param.color.r, obj->param.color.g, obj->param.color.b);
-		printf(C_433"\tpx color\t[%d,%d,%d]\n\n", c.px_color.r, c.px_color.g, c.px_color.b);
+		printf(C_433"\tpx color\t[%d,%d,%d]\n\n", c.argb.r, c.argb.g, c.argb.b);
 	}
 	printf(C_134"Vector normal surface\t[%.3f, %.3f, %.3f]\n", c.v_normal.dx, c.v_normal.dy, c.v_normal.dz);
 	printf("Intersection point\t[%.2f, %.2f, %.2f]\n\n", c.inter.x, c.inter.y, c.inter.z);

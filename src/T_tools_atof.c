@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 17:17:39 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 19:48:45 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int			ft_atof(char *string, double *rtrn);
 static int	h_atof(char **tab, double *rtrn, int *err);
 int			ato_coor(char *str, t_coor *xyz);
 int			ato_rgb(char *str, t_rgb *rgb);
+int			ato_argb(char *str, t_argb *argb);
 
 ///////////////////////////////////////////////////////////////////////////////]
 
@@ -93,5 +94,28 @@ int	ato_rgb(char *str, t_rgb *rgb)
 		return (put(ERR8"(%s) bad colors\n", str), 1);
 	if ((rgb->r | rgb->g | rgb->b) & 0xFFFFFF00)
 		return (put(ERR8"(%s) rgb value should be [0-255]\n", str), 1);
+	return (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////]
+// a,b,c [0-255]
+int	ato_argb(char *str, t_argb *argb)
+{
+	char	**spl;
+	int		err;
+	
+	spl = split(str, ",");
+	if (tab_size(spl) != 3)
+		return (put(ERR8"(%s) bad colors\n", str), free_tab(spl), 1);
+	err = 0;
+	argb->a = 0;
+	argb->r = ft_atoi(spl[0], &err);
+	argb->g = ft_atoi(spl[1], &err);
+	argb->b = ft_atoi(spl[2], &err);
+	free_tab(spl);
+	if (err)
+		return (put(ERR8"(%s) bad colors\n", str), 1);
+	if ((argb->r | argb->g | argb->b) & 0xFFFFFF00)
+		return (put(ERR8"(%s) argb value should be [0-255]\n", str), 1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 14:00:45 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 21:22:25 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	ft_render_frame(t_data *data, int sublim)
 			c.current_gamma = 1.0;
 			c.previous_gamma = 1.0;
 			calculate_pixel_color(data, &c, sublim);
-			mlx_pixel_put(data->mlx, data->win, x, y, c.px_color.r << 16 | c.px_color.g << 8 | c.px_color.b);
+			mlx_pixel_put(data->mlx, data->win, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
 		}
 	}
 	return (0);
@@ -97,9 +97,9 @@ int	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
 	{
 		if (data->bg_light[0]->texture)
 			return (h_bg_texture(data, c));
-		c->px_color.r = (int)(round(data->bg_light[0]->color.r * data->bg_light[0]->ratio));
-		c->px_color.g = (int)(round(data->bg_light[0]->color.g * data->bg_light[0]->ratio));
-		c->px_color.b = (int)(round(data->bg_light[0]->color.b * data->bg_light[0]->ratio));
+		c->argb.r = (int)(round(data->bg_light[0]->color.r * data->bg_light[0]->ratio));
+		c->argb.g = (int)(round(data->bg_light[0]->color.g * data->bg_light[0]->ratio));
+		c->argb.b = (int)(round(data->bg_light[0]->color.b * data->bg_light[0]->ratio));
 		return (0);
 	}
 	else if (sublim)
@@ -121,7 +121,8 @@ int	h_bg_texture(t_data *data, t_calcul_px *calcul)
 	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
 	int color = *(unsigned int *)pixel;
 
-	calcul->px_color = (t_rgb){
+	calcul->argb = (t_argb){
+		(color >> 24) & 0xFF,
 		(color >> 16) & 0xFF,
 		(color >> 8) & 0xFF,
 		color & 0xFF

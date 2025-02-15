@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/13 02:27:27 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 20:45:38 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 typedef struct s_ambient_light
 {
 	double	ratio;
-	t_rgb	color;
+	t_argb	color;
 	t_img	*texture;
 }	t_ambient_light;
 
@@ -45,7 +45,7 @@ typedef struct s_light
 {
 	t_coor	xyz;
 	double	ratio;
-	t_rgb	color;
+	t_argb	color;
 }	t_light;
 
 ////////////////////////////////////////////]
@@ -151,5 +151,16 @@ typedef struct s_dblplane
 	double	other_d;
 
 }	t_dblplane;
+
+// PLANE = pl
+typedef struct s_sprite
+{
+	int		type;
+	t_obj	O;
+	t_param	param;
+
+	double	d;
+	double	size;
+}	t_sprite;
 
 #endif

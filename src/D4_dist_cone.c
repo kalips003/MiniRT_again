@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/11 13:08:35 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 02:28:38 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 int		distance_from_cone(t_calcul_px *calcul, void *obj, int simple);
 int		h_dist_cone_1(t_calcul_px *c1, t_cone *cone, t_cone_calc_v2 *c2);
 int		h_dist_cone_2(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c, int simple);
-void	h_txt_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c);
-void	h_nmap_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c);
+void	h_img_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c);
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 int	distance_from_cone(t_calcul_px *calcul, void *obj, int simple)
@@ -99,73 +98,46 @@ int	h_dist_cone_2(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c, int simp
 	ft_normalize_vect(&calcul->v_normal);
 
 	calcul->px_color = cone->param.color;
-	c->color_height = (cone->height - c->dist_apex) / cone->height;
+	calcul->argb = cone->param.argb;
+	
+	c->color_height = 1.0 - (cone->height - c->dist_apex) / cone->height;
 	if (!cone->param.texture && cone->param.color2.r >= 0)
-		calcul->px_color = dual_color_render(&cone->param.color, &cone->param.color2, c->color_height);
+		calcul->argb = dual_color_render(&cone->param.argb, &cone->param.color2, c->color_height);
 
-	if (cone->param.texture)
-		h_txt_cone(calcul, cone, c);
-	if (cone->param.normal_map)
-		h_nmap_cone(calcul, cone, c);
+	if (cone->param.texture || cone->param.normal_map || cone->param.alpha_map)
+		h_img_cone(calcul, cone, c);
 
 	if (c->det1 < 0.0 || c->det2 < 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 	return (1);
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////]
-void	h_txt_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c)
+// 		ATAN2 [−π,π][−π,π] > [0,1].
+// 		cosϕ=[1top,-1bot]	ACOS [0,π] > [0,1].
+void	h_img_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c)
 {
-	t_img *txt = cone->param.texture;
-
 	double cosθ = ft_dot_product(&calcul->v_normal, &cone->O.up);
 	double sinθ = ft_dot_product(&calcul->v_normal, &cone->O.right);
 	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
 
-	int text_x = ((int)floor(l_θ * txt->sz_x) + txt->sz_x) % txt->sz_x;
-	int text_y = ((int)floor((1 - c->color_height) * txt->sz_y) + txt->sz_y) % txt->sz_y;
-	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	calcul->px_color = (t_rgb){
-		(color >> 16) & 0xFF,
-		(color >> 8) & 0xFF,
-		color & 0xFF
-	};
-}
-
-void	h_nmap_cone(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c)
-{
-	t_img *txt = cone->param.normal_map;
-
-	double cosθ = ft_dot_product(&calcul->v_normal, &cone->O.up);
-	double sinθ = ft_dot_product(&calcul->v_normal, &cone->O.right);
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
-
-	int text_x = ((int)floor(l_θ * txt->sz_x) + txt->sz_x) % txt->sz_x;
-	int text_y = ((int)floor((1 - c->color_height) * txt->sz_y) + txt->sz_y) % txt->sz_y;
-	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	t_vect	normal_map = {
-		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
-		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
-		(color & 0xFF) / 255.0 * 2.0 - 1.0};
-	ft_normalize_vect(&normal_map);
-	normal_map.dx *= -1;// ???
-	// normal_map.dy *= -1;// ???
-	// normal_map.dz *= -1;// ???
-
-	t_obj	local;
-	local.view = calcul->v_normal;
-	local.right = ft_cross_product_norm(&local.view, &cone->O.view);
-	local.up = ft_cross_product_norm(&local.right, &local.view);
-
-	calcul->v_normal = (t_vect){
-		local.right.dx * normal_map.dx + local.up.dx * normal_map.dy + local.view.dx * normal_map.dz,
-		local.right.dy * normal_map.dx + local.up.dy * normal_map.dy + local.view.dy * normal_map.dz,
-		local.right.dz * normal_map.dx + local.up.dz * normal_map.dy + local.view.dz * normal_map.dz,
-	};
-	ft_normalize_vect(&calcul->v_normal);
+	if (cone->param.texture)
+		calcul->argb = return_px_img(cone->param.texture, l_θ, c->color_height);
+	if (cone->param.alpha_map)
+		calcul->argb = (t_argb){return_alpha_img(cone->param.alpha_map, l_θ, c->color_height), calcul->argb.r, calcul->argb.g, calcul->argb.b};
+	if (cone->param.normal_map)
+	{
+		t_vect	normal_map = return_vect_img(cone->param.normal_map, l_θ, c->color_height);
+		t_obj	local;
+		local.view = calcul->v_normal;
+		local.right = ft_cross_product_norm(&local.view, &cone->O.view);
+		local.up = ft_cross_product_norm(&local.right, &local.view);
+	
+		calcul->v_normal = (t_vect){
+			local.right.dx * normal_map.dx + local.up.dx * normal_map.dy + local.view.dx * normal_map.dz,
+			local.right.dy * normal_map.dx + local.up.dy * normal_map.dy + local.view.dy * normal_map.dz,
+			local.right.dz * normal_map.dx + local.up.dz * normal_map.dy + local.view.dz * normal_map.dz,
+		};
+		ft_normalize_vect(&calcul->v_normal);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 16:46:07 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 22:49:31 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 int		something_block_the_light(t_data *data, t_calcul_px *c, t_light *light);
 double	calculate_light_angle(t_coor *intersection, t_coor *light, t_vect *normal);
 t_vect	ft_vect_reflected(t_vect *incident, t_vect *normal);
-t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul);
 t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incident, double gamma_obj);
-t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul);
+
+t_argb	what_is_reflected(t_data *data, t_calcul_px *calcul);
+t_argb	what_is_behind(t_data *data, t_calcul_px *calcul);
 
 ///////////////////////////////////////////////////////////////////////////////]
 typedef int (*t_in_shadow_of)(t_calcul_px*, void*, int);
@@ -32,6 +33,7 @@ static const t_in_shadow_of g_in_shadow_of[] = {
 	distance_from_arrow,
 	distance_from_cube,
 	distance_from_dblplane,
+	distance_from_sprite,
 	NULL
 };
 ///////////////////////////////////////////////////////////////////////////////]
@@ -59,9 +61,9 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 				return (1);
 			transp = 1.0 - transp;
 			c->transp_light.ratio *= transp;
-			c->transp_light.color.r *= ((t_obj2*)*obj_ptr)->param.color.r / 255.0 * transp;
-			c->transp_light.color.g *= ((t_obj2*)*obj_ptr)->param.color.g / 255.0 * transp;
-			c->transp_light.color.b *= ((t_obj2*)*obj_ptr)->param.color.b / 255.0 * transp;
+			c->transp_light.color.r *= ((t_obj2*)*obj_ptr)->param.argb.r / 255.0 * transp;
+			c->transp_light.color.g *= ((t_obj2*)*obj_ptr)->param.argb.g / 255.0 * transp;
+			c->transp_light.color.b *= ((t_obj2*)*obj_ptr)->param.argb.b / 255.0 * transp;
 		}
 	}
 	return (0);
@@ -114,33 +116,33 @@ t_vect	ft_vect_refracted_v2(t_vect *incident, t_vect *normal, double gamma_incid
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-t_rgb	what_is_reflected(t_data *data, t_calcul_px *calcul)
+t_argb	what_is_reflected(t_data *data, t_calcul_px *calcul)
 {
 	t_calcul_px	c;
 
 	if (calcul->reflected_depth == REFLECTION_BOUNCES)
-		return (calcul->px_color);
+		return (calcul->argb);
 	// ft_memset(&c, 0, sizeof(t_calcul_px));
 	c.reflected_depth = calcul->reflected_depth + 1;
 	c.transparence_depth = calcul->transparence_depth;
 	c.current_gamma = calcul->current_gamma;
 	c.previous_gamma = calcul->previous_gamma;
-	c.print = calcul->print;
+	c.print = calcul->print + !!(calcul->print);
 
 	c.v = ft_vect_reflected(&calcul->v, &calcul->v_normal);
 	c.c0 = new_moved_point(&calcul->inter, &calcul->v_normal, EPSILON);
 	c.dist = -1.0;
 	calculate_pixel_color(data, &c, 0);
-	return (c.px_color);
+	return (c.argb);
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
+t_argb	what_is_behind(t_data *data, t_calcul_px *calcul)
 {
 	t_calcul_px	c;
 
 	if (calcul->transparence_depth == TRANSPARENCE_BOUNCES)
-		return (calcul->px_color);
+		return (calcul->argb);
 	// ft_memset(&c, 0, sizeof(t_calcul_px));
 	
 	c.transparence_depth = calcul->transparence_depth + 1;
@@ -148,16 +150,16 @@ t_rgb	what_is_behind(t_data *data, t_calcul_px *calcul)
 	c.current_gamma = ((t_obj2*)calcul->object)->param.gamma;
 	c.previous_gamma = calcul->current_gamma;
 
-	c.print = calcul->print;
+	c.print = calcul->print + !!(calcul->print);
 	c.c0 = new_moved_point(&calcul->inter, &calcul->v, EPSILON);
-	if (((t_obj2*)calcul->object)->type == PLANE)
+	if (((t_obj2*)calcul->object)->type == PLANE || ((t_obj2*)calcul->object)->type == SPRITE)
 		c.v = calcul->v;
 	else
 		c.v = ft_vect_refracted_v2(&calcul->v, &calcul->v_normal, calcul->current_gamma, c.current_gamma);
 	c.dist = -1.0;
 
 	calculate_pixel_color(data, &c, 0);
-	return (c.px_color);
+	return (c.argb);
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/14 15:44:15 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 20:54:51 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_calcul_px
 	// double	transp_l_ratio;
 	// t_coor	transp_light;
 	t_light	transp_light;
+	double	eff_trans;
 // 
 	t_coor	diffuse;
 	t_coor	reflected;

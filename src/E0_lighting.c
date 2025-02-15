@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 14:19:17 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 22:47:21 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,22 @@ void	ft_lighting_simple(t_data *data, t_calcul_px *c)
 	ft_reflected(data, c);
 	ft_refracted(data, c);
 
-	obj_scalar = 1.0 - ((t_obj2*)c->object)->param.mirror - ((t_obj2*)c->object)->param.transparence;
+	obj_scalar = fmax(0.0, 1.0 - ((t_obj2*)c->object)->param.mirror - c->eff_trans);
 	final = (t_coor){
 		obj_scalar * c->diffuse.x + c->reflected.x + c->behind.x,
 		obj_scalar * c->diffuse.y + c->reflected.y + c->behind.y,
 		obj_scalar * c->diffuse.z + c->reflected.z + c->behind.z
 	};
-	c->px_color.r = fmax(0, fmin(255, round(final.x)));
-	c->px_color.g = fmax(0, fmin(255, round(final.y)));
-	c->px_color.b = fmax(0, fmin(255, round(final.z)));
+	if (c->print == 1)
+	{
+		printf("obj_scalar: %.2f; c->eff_trans: %.2f\n", obj_scalar, c->eff_trans);
+		printf("c->diffuse: [%.2f,%.2f,%.2f]\n", c->diffuse.x, c->diffuse.y, c->diffuse.z);
+		printf("c->reflected: [%.2f,%.2f,%.2f]\n", c->reflected.x, c->reflected.y, c->reflected.z);
+		printf("c->behind: [%.2f,%.2f,%.2f]\n", c->behind.x, c->behind.y, c->behind.z);
+	}
+	c->argb.r = fmax(0, fmin(255, round(final.x)));
+	c->argb.g = fmax(0, fmin(255, round(final.y)));
+	c->argb.b = fmax(0, fmin(255, round(final.z)));
 }
 
 void	ft_lighting_simple_v1(t_data *data, t_calcul_px *c)
@@ -76,12 +83,12 @@ void	ft_lighting_simple_v1(t_data *data, t_calcul_px *c)
 	}
 
 
-	t_rgb	reflected = c->px_color;
+	t_argb	reflected = c->argb;
 	double mirror_scalar = ((t_obj2*)c->object)->param.mirror;
 	if (mirror_scalar > EPSILON)
 		reflected = what_is_reflected(data, c);
 
-	t_rgb	behind = c->px_color;
+	t_argb	behind = c->argb;
 	double transparence_scalar = ((t_obj2*)c->object)->param.transparence;
 	if (transparence_scalar > EPSILON)
 		behind = what_is_behind(data, c);
@@ -139,12 +146,12 @@ void	ft_lighting_sublim(t_data *data, t_calcul_px *c)
 	}
 	
 
-	t_rgb	reflected = c->px_color;
+	t_argb	reflected = c->argb;
 	double mirror_scalar = ((t_obj2*)c->object)->param.mirror;
 	if (mirror_scalar > EPSILON)
 		reflected = what_is_reflected(data, c);
 
-	t_rgb	behind = c->px_color;
+	t_argb	behind = c->argb;
 	double transparence_scalar = ((t_obj2*)c->object)->param.transparence;
 	if (transparence_scalar > EPSILON)
 		behind = what_is_behind(data, c);

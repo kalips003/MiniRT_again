@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 11:29:07 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 00:59:09 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,14 @@ static const t_dico_pair	dico[] = {
 	{"L", parse_L},
 	{"C", parse_C},
 	{"ci", parse_ci},
-	{"pl", parse_pl},
 	{"sp", parse_sp},
+	{"pl", parse_pl},
 	{"cy", parse_cy},
 	{"co", parse_co},
 	{"ar", parse_ar},
 	{"cu", parse_cu},
 	{"dp", parse_dp},
+	{"xi", parse_xi},
 	{NULL, NULL}
 };
 
@@ -99,7 +100,7 @@ int	parse_A(t_data *data, char **raw_split)
 	if (tab_size(raw_split) < 2 || tab_size(raw_split) > 3)
 		return (put(ERR1"bad number of args (AMBIENT LIGHT)\n"), 1);
 	if (ft_atof(raw_split[0], &light->ratio) ||
-		ato_rgb(raw_split[1], &light->color) ||
+		ato_argb(raw_split[1], &light->color) ||
 		parse_bg_texture(data, raw_split[2], &light->texture))
 		return (1);
 	if (light->ratio < 0.0 || light->ratio > 1.0)
@@ -125,7 +126,7 @@ int	parse_L(t_data *data, char **raw_split)
 
 	if (ato_coor(raw_split[0], &light->xyz) || 
 		ft_atof(raw_split[1], &light->ratio) || 
-		ato_rgb(raw_split[2], &light->color))
+		ato_argb(raw_split[2], &light->color))
 		return (1);
 	if (light->ratio < 0.0 || light->ratio > 1.0)
 		return (put(ERR1"(%s) light source ratio should be [0.0,1.0]\n", raw_split[1]), 1);

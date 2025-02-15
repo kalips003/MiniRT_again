@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 17:07:55 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 00:21:36 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 02:19:12 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 int		distance_from_cylinder(t_calcul_px *calcul, void *obj, int simple);
 int		h_dist_cylinder_1(t_calcul_px *c1, t_cylinder *cy, t_cylinder_calc_v2 *c2);
 int		h_dist_cylinder_2(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c, int simple);
-void	h_txt_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c);
-void	h_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c);
+void	h_img_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c);
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 int	distance_from_cylinder(t_calcul_px *calcul, void *obj, int simple)
@@ -83,78 +82,45 @@ int	h_dist_cylinder_2(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc
 	c->projec_point = new_moved_point(&cylinder->O.c0, &cylinder->O.view, c->dist_h);
 	calcul->v_normal = vect_ab_norm(&c->projec_point, &calcul->inter);
 	calcul->px_color = cylinder->param.color;
+	calcul->argb = cylinder->param.argb;
 
 	if (!cylinder->param.texture && cylinder->param.color2.r >= 0)
-		calcul->px_color = dual_color_render(&cylinder->param.color, &cylinder->param.color2, c->dist_h / cylinder->height);
+		calcul->argb = dual_color_render(&cylinder->param.argb, &cylinder->param.color2, c->dist_h / cylinder->height);
 
-	if (cylinder->param.texture)
-		h_txt_cylinder(calcul, cylinder, c);
-	if (cylinder->param.normal_map)
-		h_nmap_cylinder(calcul, cylinder, c);
-
+	if (cylinder->param.texture || cylinder->param.normal_map || cylinder->param.alpha_map)
+		h_img_cylinder(calcul, cylinder, c);
 	if (c->det1 < 0.0 || c->det2 < 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 	return (1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-void	h_txt_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c)
+// 		ATAN2 [−π,π][−π,π] > [0,1].
+// 		cosϕ=[1top,-1bot]	ACOS [0,π] > [0,1].
+void	h_img_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c)
 {
-	t_img *txt = cylinder->param.texture;
-
 	double cosθ = ft_dot_product(&calcul->v_normal, &cylinder->O.up);
 	double sinθ = ft_dot_product(&calcul->v_normal, &cylinder->O.right);
 	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
+	double	h = 1.0 - c->dist_h / cylinder->height;
 
-	int text_x = ((int)floor(l_θ * txt->sz_x) + txt->sz_x) % txt->sz_x;
-	int text_y = ((int)floor((1 - c->dist_h / cylinder->height) * txt->sz_y) + txt->sz_y) % txt->sz_y;
-	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	calcul->px_color = (t_rgb){
-		(color >> 16) & 0xFF,
-		(color >> 8) & 0xFF,
-		color & 0xFF
-	};
-	calcul->argb = (t_argb){
-		(color >> 24) & 0xFF,
-		(color >> 16) & 0xFF,
-		(color >> 8) & 0xFF,
-		color & 0xFF
-	};
-}
-
-void	h_nmap_cylinder(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc_v2 *c)
-{
-	t_img *txt = cylinder->param.normal_map;
-
-	double cosθ = ft_dot_product(&calcul->v_normal, &cylinder->O.up);
-	double sinθ = ft_dot_product(&calcul->v_normal, &cylinder->O.right);
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(sinθ, cosθ)  / (2 * PI) + 0.5));
-
-	int text_x = ((int)floor(l_θ * txt->sz_x) + txt->sz_x) % txt->sz_x;
-	int text_y = ((int)floor((1 - c->dist_h / cylinder->height) * txt->sz_y) + txt->sz_y) % txt->sz_y;
-	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	t_vect	normal_map = {
-		((color >> 16) & 0xFF) / 255.0 * 2.0 - 1.0,
-		((color >> 8) & 0xFF) / 255.0 * 2.0 - 1.0,
-		(color & 0xFF) / 255.0 * 2.0 - 1.0};
-	ft_normalize_vect(&normal_map);
-	normal_map.dx *= -1;// ???
-	// normal_map.dy *= -1;// ???
-	// normal_map.dz *= -1;// ???
-
-	t_obj	local;
-	local.view = calcul->v_normal;
-	local.up = cylinder->O.view;
-	local.right = ft_cross_product_norm(&local.view, &local.up);
-
-	calcul->v_normal = (t_vect){
-		local.right.dx * normal_map.dx + local.up.dx * normal_map.dy + local.view.dx * normal_map.dz,
-		local.right.dy * normal_map.dx + local.up.dy * normal_map.dy + local.view.dy * normal_map.dz,
-		local.right.dz * normal_map.dx + local.up.dz * normal_map.dy + local.view.dz * normal_map.dz,
-	};
-	ft_normalize_vect(&calcul->v_normal);
+	if (cylinder->param.texture)
+		calcul->argb = return_px_img(cylinder->param.texture, l_θ, h);
+	if (cylinder->param.alpha_map)
+		calcul->argb = (t_argb){return_alpha_img(cylinder->param.alpha_map, l_θ, h), calcul->argb.r, calcul->argb.g, calcul->argb.b};
+	if (cylinder->param.normal_map)
+	{
+		t_vect	normal_map = return_vect_img(cylinder->param.normal_map, l_θ, h);
+		t_obj	local;
+		local.view = calcul->v_normal;
+		local.up = cylinder->O.view;
+		local.right = ft_cross_product_norm(&local.view, &local.up);
+	
+		calcul->v_normal = (t_vect){
+			local.right.dx * normal_map.dx + local.up.dx * normal_map.dy + local.view.dx * normal_map.dz,
+			local.right.dy * normal_map.dx + local.up.dy * normal_map.dy + local.view.dy * normal_map.dz,
+			local.right.dz * normal_map.dx + local.up.dz * normal_map.dy + local.view.dz * normal_map.dz,
+		};
+		ft_normalize_vect(&calcul->v_normal);
+	}
 }

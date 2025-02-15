@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 13:49:50 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/14 20:53:22 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int	h_dist_dblplane(t_calcul_px *calcul, t_dblplane *plane, t_dblplane_calc* c, 
 	calcul->object = plane;
 	calcul->inter = new_moved_point(&calcul->c0, &calcul->v, c->dist);
 	calcul->px_color = plane->param.color;
+	calcul->argb = plane->param.argb;
 	calcul->v_normal = plane->O.view;
 
 	if (plane->param.color2.r >= 0 || plane->param.texture || plane->param.normal_map)
