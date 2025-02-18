@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/18 14:27:18 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/18 14:33:10 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ int	ft_render_frame(t_data *data, int sublim)
 		ft_anti_aliasing(data);
 	else
 		mlx_put_image_to_window(data->mlx, data->win, data->buffer.img, 0, 0);
-
 	return (0);
 }
 
