@@ -6,14 +6,14 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 02:41:44 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 12:13:50 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
 
-typedef struct s_cube_calc {
+typedef struct s_cube_calc1 {
 	t_vect	o_to_inter;
 	double	top;
 	double	bot;
@@ -28,14 +28,16 @@ typedef struct s_cube_calc {
 	t_vect	*v3;
 
 	t_coor	inter;
-	t_vect	v_norm;
-} t_cube_calc;
+	t_vect	*v_norm;
+	t_vect	v_right;
+	t_vect	*v_up;
+} t_cube_calc1;
 
-int	distance_from_cube(t_calcul_px *calcul, void *obj, int simple);
-int	h_dist_cube1(t_calcul_px *calcul, t_cube *cube, t_cube_calc *c, int simple);
-void	h_dist_cube2(t_calcul_px *calcul, t_cube *cube, t_cube_calc* c);
-void	h_txt_cube(t_calcul_px *calcul, t_cube_calc* c, t_cube *plane);
-void	h_nmap_cube(t_calcul_px *calcul, t_cube_calc* c, t_cube *plane);
+
+
+int		distance_from_cube(t_calcul_px *calcul, void *obj, int simple);
+int		h_dist_cube1(t_calcul_px *calcul, t_cube *cube, t_cube_calc1 *c, int simple);
+void	h_dist_cube2(t_calcul_px *calcul, t_cube *cube, t_cube_calc1* c);
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 //	a.(x-x0) + b(y-y0) + c(z-z0) + d = 0
@@ -46,24 +48,21 @@ void	h_nmap_cube(t_calcul_px *calcul, t_cube_calc* c, t_cube *plane);
 // bot = dot product view vector / plane vector (means nothing)
 int	distance_from_cube(t_calcul_px *calcul, void *obj, int simple)
 {
-	t_cube_calc	c;
+	t_cube_calc1	c;
 	t_cube *cube = (t_cube*)obj;
 	int	rtrn;
-	
-	cube->other_p = (t_coor){
-		cube->O.c0.x + cube->size * (cube->O.view.dx + cube->O.up.dx + cube->O.right.dx),
-		cube->O.c0.y + cube->size * (cube->O.view.dy + cube->O.up.dy + cube->O.right.dy),
-		cube->O.c0.z + cube->size * (cube->O.view.dz + cube->O.up.dz + cube->O.right.dz)
-	};
 
+	c.dist = calcul->dist;
 	c.main_v = &cube->O.view;
 	c.v2 = &cube->O.up;
 	c.v3 = &cube->O.right;
 	rtrn = h_dist_cube1(calcul, cube, &c, simple);
 	c.main_v = &cube->O.up;
-	c.v2 = &cube->O.view;
+	c.v2 = &cube->O.right;
+	c.v3 = &cube->O.view;
 	rtrn |= h_dist_cube1(calcul, cube, &c, simple);
 	c.main_v = &cube->O.right;
+	c.v2 = &cube->O.view;
 	c.v3 = &cube->O.up;
 	rtrn |= h_dist_cube1(calcul, cube, &c, simple);
 
@@ -74,69 +73,95 @@ int	distance_from_cube(t_calcul_px *calcul, void *obj, int simple)
 	return (rtrn);
 }
 
-int	h_dist_cube1(t_calcul_px *calcul, t_cube *cube, t_cube_calc *c, int simple)
+typedef struct s_cube_calc2 {
+	double	d1;
+	double	d2;
+
+	double	top1;
+	double	top2;
+
+	double	bot;
+
+	double	dist1;
+	double	dist2;
+
+	t_coor	inter;
+	t_vect	o_to_inter;
+	double	dot1;
+	double	dot2;
+} t_cube_calc2;
+
+int	h_dist_cube1(t_calcul_px *calcul, t_cube *cube, t_cube_calc1 *c, int simple)
 {
-	double da1 = -(c->main_v->dx * cube->O.c0.x + c->main_v->dy * cube->O.c0.y + c->main_v->dz * cube->O.c0.z);
-	double da2 = -(c->main_v->dx * cube->other_p.x + c->main_v->dy * cube->other_p.y + c->main_v->dz * cube->other_p.z);
-
-	double top = -(c->main_v->dx * calcul->c0.x + c->main_v->dy * calcul->c0.y + c->main_v->dz * calcul->c0.z + da1);
-	double top2 = top + da1 - da2;
-	double bot = c->main_v->dx * calcul->v.dx + c->main_v->dy * calcul->v.dy + c->main_v->dz * calcul->v.dz;
+	t_cube_calc2	c2;
 	
-	if (fabs(bot) < EPSILON)
-		return (0);
-	double dist = top / bot;
-	double dist2 = top2 / bot;
-	if (dist < EPSILON && dist2 < EPSILON)
-		return (0);
-	dist = h_smalest_Δ(dist, dist2);
+	c2.d1 = -(c->main_v->dx * cube->O.c0.x + c->main_v->dy * cube->O.c0.y + c->main_v->dz * cube->O.c0.z);
+	c2.d2 = -(c->main_v->dx * cube->other_p.x + c->main_v->dy * cube->other_p.y + c->main_v->dz * cube->other_p.z);
 
-	t_coor	inter = new_moved_point(&calcul->c0, &calcul->v, dist);
-	t_vect	o_to_inter = vect_ab(&cube->O.c0, &inter);
-	double dot1 = ft_dot_product(c->v2, &o_to_inter);
-	double dot2 = ft_dot_product(c->v3, &o_to_inter);
+	c2.top1 = -(c->main_v->dx * calcul->c0.x + c->main_v->dy * calcul->c0.y + c->main_v->dz * calcul->c0.z + c2.d1);
+	c2.top2 = c2.top1 + c2.d1 - c2.d2;
+	c2.bot = c->main_v->dx * calcul->v.dx + c->main_v->dy * calcul->v.dy + c->main_v->dz * calcul->v.dz;
+	
+	if (fabs(c2.bot) < EPSILON)
+		return (0);
+	c2.dist1 = c2.top1 / c2.bot;
+	c2.dist2 = c2.top2 / c2.bot;
+	if (c2.dist1 < EPSILON && c2.dist2 < EPSILON)
+		return (0);
+	c2.dist1 = h_smalest_Δ(c2.dist1, c2.dist2);
 
-	if (dot1 < 0.0 || dot2 < 0.0 || dot1 > cube->size || dot2 > cube->size)
+	c2.inter = new_moved_point(&calcul->c0, &calcul->v, c2.dist1);
+	c2.o_to_inter = vect_ab(&cube->O.c0, &c2.inter);
+	c2.dot1 = ft_dot_product(c->v2, &c2.o_to_inter);
+	c2.dot2 = ft_dot_product(c->v3, &c2.o_to_inter);
+
+	if (c2.dot1 < 0.0 || c2.dot2 < 0.0 || c2.dot1 > cube->size || c2.dot2 > cube->size)
+		return (0);
+	if (calcul->dist > 0.0 && c2.dist1 > c->dist)
 		return (0);
 	if (simple)
 		return (1);
-	if (calcul->dist > 0.0 && dist > calcul->dist)
-		return (0);
-	c->dist = dist;
-	c->inter = inter;
-	c->v_norm = *c->main_v;
-	c->o_to_inter = o_to_inter;
-	c->u = dot1 / cube->size;
-	c->v = dot2 / cube->size;
+	c->dist = c2.dist1;
+	c->inter = c2.inter;
+	c->v_norm = c->main_v;
+	c->v_up = c->v2;
+	c->v_right = *c->v3;
+	c->o_to_inter = c2.o_to_inter;
+	c->u = c2.dot1 / cube->size;
+	c->v = c2.dot2 / cube->size;
 	return (1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
-void	h_dist_cube2(t_calcul_px *calcul, t_cube *cube, t_cube_calc* c)
+void	h_dist_cube2(t_calcul_px *calcul, t_cube *cube, t_cube_calc1* c)
 {
+	t_vect	diag;
+	double	dist_color;
+	
 	calcul->dist = c->dist;
 	calcul->object = cube;
 	calcul->inter = c->inter;
-	calcul->px_color = cube->param.color;
 	calcul->argb = cube->param.argb;
-	calcul->v_normal = c->v_norm;
+	calcul->v_normal = *c->v_norm;
 
 	if (!cube->param.texture && cube->param.color2.r >= 0)
 	{
-		t_vect	o_to_inter = vect_ab(&cube->O.c0, &c->inter);
-		t_vect	diag = vect_ab_norm(&cube->O.c0, &cube->other_p);
-		double	dist_color = ft_dot_product(&o_to_inter, &diag) / (SQRT3 * cube->size);
+		diag = vect_ab_norm(&cube->O.c0, &cube->other_p);
+		dist_color = ft_dot_product(&c->o_to_inter, &diag) / (SQRT3 * cube->size);
 		calcul->argb = dual_color_render(&cube->param.argb, &cube->param.color2, dist_color);
+	}
+	if (ft_dot_product(&calcul->v, &c->v_norm) > 0.0)
+	{
+		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
+		c->v_right = (t_vect){-c->v_right.dx, -c->v_right.dy, -c->v_right.dz};
 	}
 	if (cube->param.texture || cube->param.normal_map || cube->param.alpha_map)
 		h_img_cube(calcul, cube, c);
 
-	if (ft_dot_product(&calcul->v, &c->v_norm) > 0.0)
-		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 }
 
 
-void	h_img_cube(t_calcul_px *calcul, t_cube *cube, t_cube_calc* c)
+void	h_img_cube(t_calcul_px *calcul, t_cube *cube, t_cube_calc1* c)
 {
 	if (cube->param.texture)
 		calcul->argb = return_px_img(cube->param.texture, c->u, c->v);
@@ -146,9 +171,9 @@ void	h_img_cube(t_calcul_px *calcul, t_cube *cube, t_cube_calc* c)
 	{
 		t_vect	normal_map = return_vect_img(cube->param.normal_map, c->u, c->v);
 		calcul->v_normal = (t_vect){
-			cube->O.right.dx * normal_map.dx + cube->O.up.dx * normal_map.dy + c->v_norm.dx * normal_map.dz,
-			cube->O.right.dy * normal_map.dx + cube->O.up.dy * normal_map.dy + c->v_norm.dy * normal_map.dz,
-			cube->O.right.dz * normal_map.dx + cube->O.up.dz * normal_map.dy + c->v_norm.dz * normal_map.dz,
+			c->v_right.dx * normal_map.dx + c->v_up->dx * normal_map.dy + calcul->v_normal.dx * normal_map.dz,
+			c->v_right.dy * normal_map.dx + c->v_up->dy * normal_map.dy + calcul->v_normal.dy * normal_map.dz,
+			c->v_right.dz * normal_map.dx + c->v_up->dz * normal_map.dy + calcul->v_normal.dz * normal_map.dz,
 		};
 		ft_normalize_vect(&calcul->v_normal);
 	}

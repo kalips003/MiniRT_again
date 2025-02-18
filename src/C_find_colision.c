@@ -6,13 +6,14 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 20:42:44 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/16 07:05:11 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
 int	ft_find_pixel_colision(t_data *data, t_calcul_px *c);
+int	ft_find_pixel_colision_sublim(t_data *data, t_calcul_px *c);
 
 ///////////////////////////////////////////////////////////////////////////////]
 typedef int (*t_dist_of)(t_calcul_px*, void*, int);
@@ -53,4 +54,17 @@ int	ft_find_pixel_colision(t_data *data, t_calcul_px *c)
 	// if (transparence && max_step limint not reached) ... ;
 
 	return (c->dist != -1.0);
+}
+
+int	ft_find_pixel_colision_sublim(t_data *data, t_calcul_px *c)
+{
+	void	**obj_ptr;
+	int		rtrn;
+
+	rtrn = 0;
+	obj_ptr = data->objects - 1;
+	while (++obj_ptr && *obj_ptr)
+		rtrn |= g_ft_dist_of[((t_obj2*)*obj_ptr)->type](c, *obj_ptr, 0);
+
+	return (rtrn);
 }

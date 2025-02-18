@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 02:28:38 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 05:58:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ int	h_dist_cone_2(t_calcul_px *calcul, t_cone *cone, t_cone_calc_v2 *c, int simp
 	calcul->v_normal.dz -= (1 + cone->slope) * dot_p * cone->O.view.dz;
 	ft_normalize_vect(&calcul->v_normal);
 
-	calcul->px_color = cone->param.color;
 	calcul->argb = cone->param.argb;
 	
 	c->color_height = 1.0 - (cone->height - c->dist_apex) / cone->height;

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 22:40:34 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/18 09:27:55 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,14 @@ int mouse_clic(int button, int x, int y, void *data)
 	{
 		((t_data*)data)->eye.clic_px_x = x;
 		((t_data*)data)->eye.clic_px_y = y;
+	}
+	else if (button == 4 || button == 5)
+	{
+		if (button == 4)
+			((t_data*)data)->zoom *= 2;
+		else
+			((t_data*)data)->zoom /= 2;
+		printf(C_411"ZOOMED MOVEMENT: "RESET RED"%.3f\n"RESET, ((t_data*)data)->zoom);
 	}
 	return (0);
 }
@@ -96,18 +104,18 @@ void	print_clic(t_data *data, int x, int y)
 	printf(C_323"\nMouse clicked at pixel (%d, %d)\n", x, y);
 	
 	printf(C_244"\n-------------------[INSIDE PRINT DATA]-------------------\n");
-	calculate_pixel_color(data, &c, 0);
+	calculate_pixel_color(data, &c, 1);
 	printf(C_244"---------------------------------------------------------\n");
 
 	if (c.object)
 	{
 		t_obj2 *obj = c.object;
 		printf(C_142"\nOBJECT:\t\t%s", g_obj_names[obj->type]);
-		printf(C_533"\n\n\txyz \t[% .1f,% .1f,% .1f]\n", obj->O.c0.x, obj->O.c0.y, obj->O.c0.z);
-		printf(C_455"\n\tview \t[% .2f,% .2f,% .2f]\n", obj->O.view.dx, obj->O.view.dy, obj->O.view.dz);
+		printf(C_533"\n\n\txyz \t[%.1f,%.1f,%.1f]\n", obj->O.c0.x, obj->O.c0.y, obj->O.c0.z);
+		printf(C_455"\n\tview \t[%.2f,%.2f,%.2f]\n", obj->O.view.dx, obj->O.view.dy, obj->O.view.dz);
 		printf("\tup \t[% .2f,% .2f,% .2f]\n", obj->O.up.dx, obj->O.up.dy, obj->O.up.dz);
 		printf("\tright \t[% .2f,% .2f,% .2f]\n", obj->O.right.dx, obj->O.right.dy, obj->O.right.dz);
-		printf(C_433"\n\tcolor obj\t[%d,%d,%d]\n", obj->param.color.r, obj->param.color.g, obj->param.color.b);
+		printf(C_433"\n\tcolor obj\t[%d,%d,%d]\n", obj->param.argb.r, obj->param.argb.g, obj->param.argb.b);
 		printf(C_433"\tpx color\t[%d,%d,%d]\n\n", c.argb.r, c.argb.g, c.argb.b);
 	}
 	printf(C_134"Vector normal surface\t[%.3f, %.3f, %.3f]\n", c.v_normal.dx, c.v_normal.dy, c.v_normal.dz);

@@ -1,11 +1,12 @@
 # -------------------------------------------------------------------------------------------------------------------------------------------
 # (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
 C 						0,1,50		    	0,0,-1				70
+C						0.0,1.0,65.0		0.054,0.043,-0.998	70
 # (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
 A 						0.2 					255,255,255
 # (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
-L 						0,15,0 				0.99 					255,255,255
-L 						10,10,10 			0.99 					255,255,255
+L 						5,5,0 				0.99 					255,255,255
+# L 						10,10,10 			0.99 					255,255,255
 # -------------------------------------------------------------------------------------------------------------------------------------------
 # (ci) Circle:			POSITION (xyz)		VECTOR [-1.0, 1.0]		COLOR_rgb [0, 255]		RADIUS
 # (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255]
@@ -18,13 +19,13 @@ L 						10,10,10 			0.99 					255,255,255
 # (dp) Double Plane:	POSITION (xyz)		VECTOR [-1.0, 1.0]		WIDTH		COLOR_rgb [0, 255]
 # (xi) SPRITE:			POSITION (xyz)		VECTOR [-1.0, 1.0]		SIZE		COLOR_rgb [0, 255]
 # -------------------------------------------------------------------------------------------------------------------------------------------
-xi	0,0,0	0,1,0	0.01	0,0,255	X=texture/Gkey2.xpm	C=255,2,2	A=texture/gkey4.xpm	N=txt/brique_n.xpm
-sp	0,0,0	5.8	0,0,255	C=255,0,0 A=texture/gkey4.xpm
-cy	0,0,0	0,1,0	5.8	12 0,0,255	C=255,0,0 A=texture/gkey4.xpm
-co	0,0,25	0,1,0	50	50 0,0,255	C=255,0,0 N=txt/brique_n.xpm
-cu	0,0,0	0,1,0	3 255,255,255	C=0,255,0 A=texture/gkey4.xpm
+xi	-10.0,-10.0,0.0	0,1,0	0.5	0,0,255	X=texture/player.xpm
+# sp	0,15,0	0.5	255,255,255	M=1 T=1,1
+# cy	0,0,0	0,1,0	5.8	12 0,0,255	C=255,0,0 A=texture/gkey4.xpm
+# co	0,0,25	0,1,0	50	50 0,0,255	C=255,0,0 N=txt/brique_n.xpm
+# cu	-30,-20,0	0,1,0	70 255,0,0 N=txt/brique_n.xpm
 
-pl	0,-5,0	0,1,0	255,100,100 T=0,20  A=texture/n_metal_opengl.xpm
+# pl	0,-5,0	0,1,0	255,100,100 T=0,20  A=texture/n_metal_opengl.xpm
 # -------------------------------------------------------------------------------------------------------------------------------------------
 # (Specular, Shininess) S=[0-1.0][10-500+]	> [matte surface > perfect mirror] [rougher surface > polished surface]
 # 		S=0.10	S=0.5.200
@@ -41,3 +42,9 @@ pl	0,-5,0	0,1,0	255,100,100 T=0,20  A=texture/n_metal_opengl.xpm
 # TEXTURES:		X=texture/earthmap4k.xpm	X=txt/brique_t.xpm	X=texture/rock2.xpm	X=texture/metal.xpm
 # N_MAP:		N=txt/brique_n.xpm
 # -------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# VECTOR AXIS
+ar 						0,0,0 				1,0,0					0.5 		5 		255,0,0
+ar 						0,0,0 				0,1,0					0.5 		5 		0,255,0
+ar 						0,0,0 				0,0,1					0.5 		5 		0,0,255

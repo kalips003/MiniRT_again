@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/08 20:33:29 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/18 13:38:52 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ int	end2(t_data *data)
 	free_tab((char **)data->objects);
 
 	destroy_textures(data);
+	if (data->buffer.img)
+		mlx_destroy_image(data->mlx, data->buffer.img);
 	if (data->mlx)
 	{
 		if (data->win)
@@ -65,8 +67,7 @@ static void	destroy_textures(t_data *data)
 	{
 		if ((*curseur)->img)
 			mlx_destroy_image(data->mlx, (*curseur)->img);
-		curseur++;
+			curseur++;
 	}
-
 	data->textures = (t_img **)free_tab((char **)data->textures);
 }

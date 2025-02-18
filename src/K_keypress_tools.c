@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 14:00:37 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/17 12:00:59 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,17 @@ int	direction_pad(int keysym, t_data *data)
 		xyz = &data->eye.c->O.c0;
 	
 	if (keysym == XK_Home)
-		move_point(xyz, &data->eye.c->O.up, DELTA_MOV);
+		move_point(xyz, &data->eye.c->O.up, data->zoom);
 	else if (keysym == XK_End)
-		move_point(xyz, &data->eye.c->O.up, -DELTA_MOV);
+		move_point(xyz, &data->eye.c->O.up, -data->zoom);
 	else if (keysym == XK_Up)
-		move_point(xyz, &data->eye.c->O.view, DELTA_MOV);
+		move_point(xyz, &data->eye.c->O.view, data->zoom);
 	else if (keysym == XK_Down)
-		move_point(xyz, &data->eye.c->O.view, -DELTA_MOV);
+		move_point(xyz, &data->eye.c->O.view, -data->zoom);
 	else if (keysym == XK_Right)
-		move_point(xyz, &data->eye.c->O.right, DELTA_MOV);
+		move_point(xyz, &data->eye.c->O.right, data->zoom);
 	else if (keysym == XK_Left)
-		move_point(xyz, &data->eye.c->O.right, -DELTA_MOV);
+		move_point(xyz, &data->eye.c->O.right, -data->zoom);
 	else
 		return (0);
 	return (recalculate_obj_const(data->change_obj), 1);

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 00:53:19 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 05:58:04 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ static int	h_dist_circle(t_calcul_px *calcul, t_circle_calc *c, t_circle *circle
 	calcul->object = circle;
 	calcul->dist = c->dist;
 	calcul->inter = c->inter_temp;
-	calcul->px_color = circle->param.color;
 	calcul->argb = circle->param.argb;
 
 	if (circle->param.color2.r >= 0)

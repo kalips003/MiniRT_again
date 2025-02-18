@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 17:07:55 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 02:19:12 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 05:58:34 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ int	h_dist_cylinder_2(t_calcul_px *calcul, t_cylinder *cylinder, t_cylinder_calc
 	calcul->inter = new_moved_point(&calcul->c0, &calcul->v, c->dist);
 	c->projec_point = new_moved_point(&cylinder->O.c0, &cylinder->O.view, c->dist_h);
 	calcul->v_normal = vect_ab_norm(&c->projec_point, &calcul->inter);
-	calcul->px_color = cylinder->param.color;
 	calcul->argb = cylinder->param.argb;
 
 	if (!cylinder->param.texture && cylinder->param.color2.r >= 0)

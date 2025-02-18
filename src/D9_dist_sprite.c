@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 01:01:11 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 06:32:01 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,15 @@ int	h_dist_sprite(t_calcul_px *calcul, t_sprite *sprite, t_plane_calc* c, int si
 	calcul->dist = c->dist;
 	calcul->object = sprite;
 	calcul->inter = new_moved_point(&calcul->c0, &calcul->v, c->dist);
-	calcul->px_color = sprite->param.color;
 	calcul->argb = sprite->param.argb;
 	calcul->v_normal = sprite->O.view;
 
-	h_img_sprite(calcul, c, sprite);
-	if (sprite->param.color2.r >= 0)
-		calcul->argb = (t_argb){calcul->argb.a, sprite->param.color2.r, sprite->param.color2.g, sprite->param.color2.b};
 
 	if (c->bot > 0.0)
 		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
+	h_img_sprite(calcul, c, sprite);
+	if (sprite->param.color2.r >= 0)
+		calcul->argb = (t_argb){calcul->argb.a, sprite->param.color2.r, sprite->param.color2.g, sprite->param.color2.b};
 	return (1);
 }
 
@@ -82,6 +81,7 @@ void	h_img_sprite(t_calcul_px *calcul, t_plane_calc* c, t_sprite *sprite)
 	if (sprite->param.normal_map)
 	{
 		t_vect	normal_map = return_vect_img(sprite->param.normal_map, text_x, text_y);
+		normal_map.dx *= -1.0;
 		calcul->v_normal = (t_vect){
 			sprite->O.right.dx * normal_map.dx + sprite->O.view.dx * normal_map.dy + sprite->O.up.dx * normal_map.dz,
 			sprite->O.right.dy * normal_map.dx + sprite->O.view.dy * normal_map.dy + sprite->O.up.dy * normal_map.dz,

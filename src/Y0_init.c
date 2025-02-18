@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/10 15:08:49 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/18 10:41:26 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	initialization(int ac, char **av, t_data *data)
 
 	ft_memset(data, 0, sizeof(t_data));
 	data->av = av;
+	data->zoom = DELTA_MOV;
 	ini_mlx(data);
 	read_file(ac, av, data);
 
@@ -78,6 +79,12 @@ static void		ini_mlx(t_data *data)
 	data->win = mlx_new_window(data->mlx, SIZE_SCREEN_X, SIZE_SCREEN_Y, "miniRT");
 	if (!data->win)
 		(put(ERRM"Problem initalisazing mlx (2)\n"), end(data, 1, 1));
+
+	data->buffer.img = mlx_new_image(data->mlx, SIZE_SCREEN_X, SIZE_SCREEN_Y);
+	if (!data->buffer.img)
+		(put(ERRM"Problem initializing buffer\n"), end(data, 1, 1));
+	data->buffer.addr = mlx_get_data_addr(data->buffer.img, &data->buffer.bpp, &data->buffer.ll, &data->buffer.end);
+
 
 	mlx_loop_hook(data->mlx, &ft_loop, data);
 	// mlx_loop_hook(data->mlx, &ft_loop, data);

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 01:10:32 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 05:58:18 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ int	h_dist_sphere(t_calcul_px *calcul, t_sphere *sphere, t_sphere_calc *c, int s
 	
 	calcul->inter = new_moved_point(&calcul->c0, &calcul->v, calcul->dist);
 	calcul->v_normal = vect_ab_norm(&sphere->O.c0, &calcul->inter);
-	calcul->px_color = sphere->param.color;
 	calcul->argb = sphere->param.argb;
 
 	if (!sphere->param.texture && sphere->param.color2.r >= 0)

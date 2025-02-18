@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/15 00:53:03 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/18 13:29:17 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,17 @@
 t_argb	return_px_img(t_img *img, double x, double y);
 t_vect	return_vect_img(t_img *img, double x, double y);
 int		return_alpha_img(t_img *img, double x, double y);
+
+int	ft_diffuse_sublim(t_data *data, t_calcul_px *c, t_light *lights);
+int light_tracing_sublim(t_data *data, t_calcul_px *calcul, t_light *light);
+
+void	ft_refracted_sublim(t_data *data, t_calcul_px *c, int sublim);
+t_argb	what_is_behind_sublim(t_data *data, t_calcul_px *calcul, int sublim);
+
+void	put_pixel_buffer(t_data *data, int x, int y, unsigned int color);
+void	ft_anti_aliasing(t_data *data);
+unsigned int	ft_average_pixel(t_data *data, int x, int y);
+void	ft_weighted_color(t_img *buffer, int x, int y, t_coor *rtrn, double scalar);
 /********************************
 		B
 ********************************/
@@ -66,6 +77,7 @@ int		calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
 		C
 ********************************/
 int	ft_find_pixel_colision(t_data *data, t_calcul_px *c);
+int	ft_find_pixel_colision_sublim(t_data *data, t_calcul_px *c);
 /********************************
 		D	Objects
 ********************************/

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 22:20:07 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/15 05:21:36 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,11 @@ int	parse_cu(t_data *data, char **raw_split)
 		return (1);
 	if (h_parse_vect_space(&cube->O, &cube->O.view))
 		return (1);
+	cube->other_p = (t_coor){
+		cube->O.c0.x + cube->size * (cube->O.view.dx + cube->O.up.dx + cube->O.right.dx),
+		cube->O.c0.y + cube->size * (cube->O.view.dy + cube->O.up.dy + cube->O.right.dy),
+		cube->O.c0.z + cube->size * (cube->O.view.dz + cube->O.up.dz + cube->O.right.dz)
+	};
 	return (0);
 }
 

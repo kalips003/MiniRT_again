@@ -1,33 +1,60 @@
-# (Specular, Shininess) S=[0-1.0][10-500+]	> [matte surface > perfect mirror] [rougher surface > polished surface]
-# (Color2) C=[0,255],[0,255],[0,255]
-# (Transparence, gamma) T=[0,1],[-PI/2, PI/2]
-# (Mirroir) M=[0,1]
-# (Texture) X=sphere_texture.xpm
-# (Normal Map) N=sphere_normal.xpm
+# -------------------------------------------------------------------------------------------------------------------------------------------
+# (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
+C 						0,0,50           0,0,-1				70
+C 						0.5,3.7,-56.2          -0.010,-0.133,0.991				70
+# (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
+A 						0.2 					255,255,255
+# (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
+L 						0,10,10 			0.8 					255,255,255
+# L 						5,5,10 			0.8 					255,200,0
+# -------------------------------------------------------------------------------------------------------------------------------------------
+# (ci) Circle:			POSITION (xyz)		VECTOR [-1.0, 1.0]		COLOR_rgb [0, 255]		RADIUS
+# (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255]
+# (pl) Plane:			POSITION (xyz)		VECTOR [-1.0, 1.0]		COLOR_rgb [0, 255]
+# (cy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER	HEIGHT		COLOR_rgb [0, 255]
+# (co) Cone:			POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]
+# (pa) Paraboloid:		POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]
+# (ar) Arrow:			POSITION (xyz)		VECTOR [-1.0, 1.0]		RADIUS		HEIGHT		COLOR_rgb [0, 255]
+# (cu) CUBE:			POSITION (xyz)		VECTOR [-1.0, 1.0]		SIZE		COLOR_rgb [0, 255]
+# (dp) Double Plane:	POSITION (xyz)		VECTOR [-1.0, 1.0]		WIDTH		COLOR_rgb [0, 255]
+# (xi) SPRITE:			POSITION (xyz)		VECTOR [-1.0, 1.0]		SIZE		COLOR_rgb [0, 255]
+# -------------------------------------------------------------------------------------------------------------------------------------------
+pl 						0,-5,0 				0,1,0 				255,255,255
 
-# TEXTURES:		X=texture/earthmap4k.xpm	N=txt/brique_n.xpm	X=texture/rock2.xpm 
+sp 4,0,0	 	5	255,0,0		C=0,0,255	T=0.99,1
+
+xi	-10.0,-6.0,0.0		0,1,0	0.1	0,0,255	X=texture/test_tile.xpm A=texture/gkey4.xpm
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
+# (Specular, Shininess) S=[0-1.0][10-500+]	> [matte surface > perfect mirror] [rougher surface > polished surface]
+# 		S=0.10	S=0.5.200
+# (Color2) C=[0,255],[0,255],[0,255]
+# 		C=255,0,0	C=0,255,0	C=0,0,255
+# (Transparence, gamma) T=[0,1],[1,2.5+]
+# 		T=0.5,1		(water) T=0.7,1.33	(glass) T=0.8,1.5
+# (Mirroir) M=[0,1]
+# 		M=0.7
+# (Texture) X=sphere_texture.xpm
+# (Normal Map) N=sphere_normal.xpm
+# (Alpha Map) A=sphere_normal.xpm
 
-# (A) Ambient light:	BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
-A 						0.2 					255,255,255 X=texture/earthmap4k.xpm
-
-# (C) Camera:			POSITION (xyz)		VECTOR [-1.0, 1.0]		FOV [0, 180]
-C 						0,10,-30 			0,0,1 					70
-
-# (L) Light source:		POSITION (xyz)		BRIGHTNESS [0.0,1.0]	COLOR_rgb [0, 255]
-L 						0,10,-30 			0.7 					255,255,255
-# L 						12,12,12 			0.3 					255,255,255
-
-# (sp) Sphere:			POSITION (xyz)		DIAMETER				COLOR_rgb [0, 255]
-# sp 					0,10,0 				10 					200,200,0 X=texture/big_ball.xpm
-sp 					0,10,0 				10 					200,200,0 X=txt/brique_n.xpm
-#  X=txt/brique_t.xpm N=txt/brique_n.xpm
-
-# pl 						0,-5,0 				0,0.5,0.5 				255,255,10 X=texture/big_ball.xpm T=0,100
+# TEXTURES:		X=texture/earthmap4k.xpm	X=txt/brique_t.xpm	X=texture/rock2.xpm
+# N_MAP:		N=txt/brique_n.xpm
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
 
-# (sy) Cylinder:		POSITION (xyz)		VECTOR [-1.0, 1.0]		DIAMETER		HEIGHT		COLOR_rgb [0, 255] N=texture/rock2_n2.xpm
-# cy 						0,0,0 				0,1,0 					5 			15 		10,96,12	X=texture/big_ball.xpm
-# cy 						0,0,0 				0,1,0 					5 			15 		10,96,12	X=txt/brique_t.xpm N=txt/brique_n.xpm
-# cy 						0,0,0 				0,1,0 					5 			15 		10,96,12	X=txt/rock_t.xpm N=txt/rock_n.xpm
+# VECTOR AXIS
+# ar 						0,0,0 				1,0,0					0.5 		5 		255,0,0
+# ar 						0,0,0 				0,1,0					0.5 		5 		0,255,0
+# ar 						0,0,0 				0,0,1					0.5 		5 		0,0,255
+
+# 9 BALLS
+# sp			-10,10,0		10			255,50,50
+# sp			0,10,0			10			50,255,50
+# sp			10,10,0			10			50,50,255
+# sp			-10,0,0			10			255,255,50
+# sp			0,0,0			10			255,50,255
+# sp			10,0,0			10			50,255,255
+# sp			-10,-10,0		10			255,150,50
+# sp			0,-10,0			10			150,50,255
+# sp			10,-10,0		10			50,150,255

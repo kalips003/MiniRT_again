@@ -14,7 +14,6 @@
 
 void	create_vector_space(t_obj *obj);
 double	h_smalest_Δ(double a, double b);
-void	recalculate_obj_const(t_obj2 *obj);
 t_argb	dual_color_render(t_argb *color1, t_rgb *color2, double dist);
 
 ///////////////////////////////////////////////////////////////////////////////]
@@ -54,37 +53,6 @@ double	h_smalest_Δ(double a, double b)
 	if (b < EPSILON)
 		return (a);
 	return (a * (a < b) + b * (b < a));
-}
-
-///////////////////////////////////////////////////////////////////////////////]
-void	recalculate_obj_const(t_obj2 *obj)
-{
-	if (!obj)
-		return ;
-	
-	if (obj->type == CONE)
-	{
-		((t_cone*)obj)->apex = new_moved_point(&obj->O.c0, &obj->O.view, ((t_cone*)obj)->height);
-		((t_cone*)obj)->slope = pow(((t_cone*)obj)->radius, 2.0) / pow(((t_cone*)obj)->height, 2.0);
-	}
-	else if (obj->type == CYLINDER)
-		((t_cylinder*)obj)->xyz_other = new_moved_point(&obj->O.c0, &obj->O.view, ((t_cylinder*)obj)->height);
-	else if (obj->type == PLANE)
-		((t_plane*)obj)->d = -(obj->O.view.dx * obj->O.c0.x + obj->O.view.dy * obj->O.c0.y + obj->O.view.dz * obj->O.c0.z);
-	else if (obj->type == ARROW)
-	{
-		((t_arrow*)obj)->xyz_other = new_moved_point(&obj->O.c0, &obj->O.view, ((t_arrow*)obj)->height * 2 / 3);
-		((t_arrow*)obj)->apex = new_moved_point(&obj->O.c0, &obj->O.view, ((t_arrow*)obj)->height);
-		((t_arrow*)obj)->slope = (9.0 * pow(((t_arrow*)obj)->radius, 2.0)) / pow(((t_arrow*)obj)->height, 2.0);
-	}
-	else if (obj->type == DOUBLE_PLAN)
-	{
-		((t_dblplane*)obj)->d = -(obj->O.view.dx * obj->O.c0.x + obj->O.view.dy * obj->O.c0.y + obj->O.view.dz * obj->O.c0.z);
-		((t_dblplane*)obj)->other_point = new_moved_point(&obj->O.c0, &obj->O.view, ((t_dblplane*)obj)->width);
-		((t_dblplane*)obj)->other_d = -(obj->O.view.dx * ((t_dblplane*)obj)->other_point.x + obj->O.view.dy * ((t_dblplane*)obj)->other_point.y + obj->O.view.dz * ((t_dblplane*)obj)->other_point.z);
-	}
-	else if (obj->type == SPRITE)
-		((t_sprite*)obj)->d = -(obj->O.up.dx * obj->O.c0.x + obj->O.up.dy * obj->O.c0.y + obj->O.up.dz * obj->O.c0.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////]

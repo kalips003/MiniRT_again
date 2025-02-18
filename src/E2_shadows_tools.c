@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 22:49:31 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/16 06:08:15 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int something_block_the_light(t_data *data, t_calcul_px *c, t_light *light)
 	t_calcul_px	calcul;
 	double	transp;
 
+	// calcul.c0 = new_moved_point(&c->inter, &c->v_normal, 2 * EPSILON);
 	calcul.c0 = c->inter;
 	calcul.v = c->v_light;
 	calcul.dist = c->dist_light;

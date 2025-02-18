@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 21:22:25 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/18 14:27:18 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ int 	ft_loop(t_data *data)
 // used to render while moving
 int	ft_render_frame(t_data *data, int sublim)
 {
-	int			y;
 	int			x;
+	int			y;
 	double		angleA;
 	double		angleB;
 	t_calcul_px	c;
@@ -84,9 +84,18 @@ int	ft_render_frame(t_data *data, int sublim)
 			c.current_gamma = 1.0;
 			c.previous_gamma = 1.0;
 			calculate_pixel_color(data, &c, sublim);
-			mlx_pixel_put(data->mlx, data->win, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
+			if (sublim)
+				put_pixel_buffer(data, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
+			else
+				put_pixel_buffer(data, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
+				// mlx_pixel_put(data->mlx, data->win, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
 		}
 	}
+	if (sublim)
+		ft_anti_aliasing(data);
+	else
+		mlx_put_image_to_window(data->mlx, data->win, data->buffer.img, 0, 0);
+
 	return (0);
 }
 

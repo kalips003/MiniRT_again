@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/14 19:38:26 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/18 13:48:58 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@
 # define PI 3.14159265358979323846
 
 # define EPSILON 1e-6
-# define SCALAR_LIGHT_DIST 300.0
+# define SCALAR_LIGHT_DIST 100.0
 # define SCALAR_SPECULAR 1.0
 # define SCALAR_SHINY 1.0
 # define REFLECTION_BOUNCES 1
 # define TRANSPARENCE_BOUNCES 8
 
-# define SIZE_SCREEN_Y 500
-# define SIZE_SCREEN_X 600
+# define SIZE_SCREEN_Y 800
+# define SIZE_SCREEN_X 1200
 
 #define CIRCLE 0
 #define SPHERE 1
@@ -44,7 +44,7 @@
 #define DOUBLE_PLAN 8
 #define SPRITE 9
 
-#define DELTA_MOV 5.0
+#define DELTA_MOV 4.0
 #define DELTA_ROTA (PI / 10)
 
 # define SQRT3 1.7320508075688771931766041

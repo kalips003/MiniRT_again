@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 20:53:22 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/16 07:56:48 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ int	h_dist_dblplane(t_calcul_px *calcul, t_dblplane *plane, t_dblplane_calc* c, 
 	calcul->dist = c->dist;
 	calcul->object = plane;
 	calcul->inter = new_moved_point(&calcul->c0, &calcul->v, c->dist);
-	calcul->px_color = plane->param.color;
 	calcul->argb = plane->param.argb;
 	calcul->v_normal = plane->O.view;
 
@@ -79,9 +78,9 @@ int	h_dist_dblplane(t_calcul_px *calcul, t_dblplane *plane, t_dblplane_calc* c, 
 		c->u = ft_dot_product(&c->o_to_inter, &plane->O.right) * (plane->param.gamma);
 		c->v = ft_dot_product(&c->o_to_inter, &plane->O.up) * (plane->param.gamma);
 	}
-	if (!plane->param.texture && plane->param.color2.r >= 0)
-		if (((int)floor(c->u) + (int)floor(c->v)) % 2)
-			calcul->px_color = plane->param.color2;
+	// if (!plane->param.texture && plane->param.color2.r >= 0)
+	// 	if (((int)floor(c->u) + (int)floor(c->v)) % 2)
+	// 		calcul->px_color = plane->param.color2;
 
 	if (plane->param.texture)
 		h_txt_plane(calcul, (t_plane_calc*)c, (t_plane*)plane);

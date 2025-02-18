@@ -211,8 +211,8 @@ int	ft_diffuse_v1(t_data *data, t_calcul_px *c, t_light *lights)
 	adjusted_intensity = lights->ratio * c->cos_angle;
 	adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (c->dist_light * c->dist_light);
 
-	c->diffuse.x += c->px_color.r * lights->color.r / 255.0 * adjusted_intensity;
-	c->diffuse.y += c->px_color.g * lights->color.g / 255.0 * adjusted_intensity;
-	c->diffuse.z += c->px_color.b * lights->color.b / 255.0 * adjusted_intensity;
+	c->diffuse.x += c->argb.r * lights->color.r / 255.0 * adjusted_intensity;
+	c->diffuse.y += c->argb.g * lights->color.g / 255.0 * adjusted_intensity;
+	c->diffuse.z += c->argb.b * lights->color.b / 255.0 * adjusted_intensity;
 	return (1);
 }
