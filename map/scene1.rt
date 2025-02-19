@@ -43,6 +43,7 @@ xi	-10.0,-10.0,0.0	0,1,0	0.5	0,0,255	X=texture/player.xpm
 
 # TEXTURES:		X=texture/earthmap4k.xpm	X=txt/brique_t.xpm	X=texture/rock2.xpm
 # N_MAP:		N=txt/brique_n.xpm
+# ALPHA_MAP:	A=texture/gkey4.xpm
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 

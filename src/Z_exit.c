@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 06:21:51 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/18 13:38:52 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 09:34:06 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	end(t_data *data, int exit_code, int full_clean)
 	destroy_textures(data);
 	if (full_clean && data->mlx)
 	{
+		if (data->buffer.img)
+			mlx_destroy_image(data->mlx, data->buffer.img);
 		if (data->win)
 			mlx_destroy_window(data->mlx, data->win);
 		mlx_destroy_display(data->mlx);

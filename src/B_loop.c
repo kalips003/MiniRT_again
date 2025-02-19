@@ -6,13 +6,14 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/18 14:33:10 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 09:39:40 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
 int		ft_loop(t_data *data);
+void	h_refresh_input_file(t_data *data, time_t time);
 int		ft_render_frame(t_data *data, int sublim);
 int		calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim);
 int		h_bg_texture(t_data *data, t_calcul_px *calcul);
@@ -22,22 +23,12 @@ int		h_bg_texture(t_data *data, t_calcul_px *calcul);
 int 	ft_loop(t_data *data)
 {
 	struct stat	file_stat;
-	t_obj		old_camera;
 	
 	if (stat(data->av[1], &file_stat) == 0)
 	{
 		if (file_stat.st_mtime != data->last_modif_time)
 		{
-			old_camera = data->eye.c->O;
-			usleep(100);
-			data->last_modif_time = file_stat.st_mtime;
-			put("REFRESH\n");
-			end(data, 0, 0);
-			read_file(2, data->av, data);
-			data->eye.c = data->camera[0];
-			data->current_camera = 0;
-			data->eye.c->O = old_camera;
-			data->change_obj = NULL;
+			h_refresh_input_file(data, file_stat.st_mtime);
 			ft_render_frame(data, 0);
 		}
 	}
@@ -48,6 +39,22 @@ int 	ft_loop(t_data *data)
 	return (0);
 }
 
+void	h_refresh_input_file(t_data *data, time_t time)
+{
+	t_obj		old_camera;
+
+	old_camera = data->eye.c->O;
+	usleep(100);
+	data->last_modif_time = time;
+	put("REFRESH\n");
+	end(data, 0, 0);
+	read_file(2, data->av, data);
+	usleep(100);
+	data->change_obj = NULL;
+	data->current_camera = 0;
+	data->eye.c = data->camera[0];
+	data->eye.c->O = old_camera;
+}
 // void	ft_change(t_data *data)
 // {
 // 	if (data->change_obj)
@@ -84,11 +91,8 @@ int	ft_render_frame(t_data *data, int sublim)
 			c.current_gamma = 1.0;
 			c.previous_gamma = 1.0;
 			calculate_pixel_color(data, &c, sublim);
-			if (sublim)
-				put_pixel_buffer(data, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
-			else
-				put_pixel_buffer(data, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
-				// mlx_pixel_put(data->mlx, data->win, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
+			put_pixel_buffer(data, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
+			// mlx_pixel_put(data->mlx, data->win, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
 		}
 	}
 	if (sublim)
@@ -99,6 +103,8 @@ int	ft_render_frame(t_data *data, int sublim)
 }
 
 ///////////////////////////////////////////////////////////////////////////////]
+// require ray origin (c0), ray vector (v)
+// fills calcul.argb with the pixel color shaded of the intersection
 int	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
 {
 	if (!ft_find_pixel_colision(data, c))
@@ -117,23 +123,16 @@ int	calculate_pixel_color(t_data *data, t_calcul_px *c, int sublim)
 	return (1);
 }
 
+///////////////////////////////////////////////////////////////////////////////]
+// IF ambient light has a texture, return the correct pixel instead of simple bg color
 int	h_bg_texture(t_data *data, t_calcul_px *calcul)
 {
-	t_img *txt = data->bg_light[0]->texture;
+	double	l_θ;
+	double	l_ϕ;
+	
+	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v.dz, calcul->v.dx)  / (2 * PI) + 0.5));
+	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v.dy) / PI));
 
-	double	l_θ = fmin(1.0, fmax(0.0, atan2(calcul->v.dz, calcul->v.dx)  / (2 * PI) + 0.5));
-	double	l_ϕ = fmin(1.0, fmax(0.0, acos(calcul->v.dy) / PI));
-
-	int text_x = ((int)floor(l_θ * txt->sz_x) + txt->sz_x) % txt->sz_x;
-	int text_y = ((int)floor(l_ϕ * txt->sz_y) + txt->sz_y) % txt->sz_y;
-	char *pixel = txt->addr + (text_y * txt->ll + text_x * (txt->bpp / 8));
-	int color = *(unsigned int *)pixel;
-
-	calcul->argb = (t_argb){
-		(color >> 24) & 0xFF,
-		(color >> 16) & 0xFF,
-		(color >> 8) & 0xFF,
-		color & 0xFF
-	};
+	calcul->argb = return_px_img(data->bg_light[0]->texture, l_θ, l_ϕ);
 	return (0);
 }

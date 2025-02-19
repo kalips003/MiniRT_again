@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 12:13:50 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 10:18:50 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_cube_calc1 {
 int		distance_from_cube(t_calcul_px *calcul, void *obj, int simple);
 int		h_dist_cube1(t_calcul_px *calcul, t_cube *cube, t_cube_calc1 *c, int simple);
 void	h_dist_cube2(t_calcul_px *calcul, t_cube *cube, t_cube_calc1* c);
+void	h_img_cube(t_calcul_px *calcul, t_cube *cube, t_cube_calc1* c);
 
 ///////////////////////////////////////////////////////////////////////////////]///////////////////////////////////////////////////////////////////////////////]
 //	a.(x-x0) + b(y-y0) + c(z-z0) + d = 0
