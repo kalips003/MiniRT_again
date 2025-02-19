@@ -26,6 +26,7 @@ void	recalculate_obj_const(t_obj2 *obj)
 	{
 		((t_cone*)obj)->apex = new_moved_point(&obj->O.c0, &obj->O.view, ((t_cone*)obj)->height);
 		((t_cone*)obj)->slope = pow(((t_cone*)obj)->radius, 2.0) / pow(((t_cone*)obj)->height, 2.0);
+		((t_cone*)obj)->angle = atan(((t_cone*)obj)->radius / ((t_cone*)obj)->height);
 	}
 	else if (obj->type == CYLINDER)
 		((t_cylinder*)obj)->xyz_other = new_moved_point(&obj->O.c0, &obj->O.view, ((t_cylinder*)obj)->height);

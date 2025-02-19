@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 21:10:55 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 15:56:14 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,12 @@ int	ft_diffuse(t_data *data, t_calcul_px *c, t_light *lights)
 	c->dist_light = dist_two_points(&c->inter, &lights->xyz);
 	c->v_light = vect_ab_norm(&c->inter, &lights->xyz);
 	c->cos_angle = ft_dot_product(&c->v_light, &c->v_normal);
-	if (c->cos_angle < EPSILON || something_block_the_light(data, c, lights))
+
+	int	block = something_block_the_light(data, c, lights);
+	if (c->print)
+		printf("%d) cos angle light: %.3f\n\tlight blocked? %d\n", c->print, c->cos_angle, block);
+	// if (c->cos_angle < EPSILON || (block = something_block_the_light(data, c, lights)))
+	if (c->cos_angle < EPSILON || block)
 		return (0);
 	adjusted_intensity = c->transp_light.ratio * c->cos_angle;
 	adjusted_intensity = SCALAR_LIGHT_DIST * adjusted_intensity / (1 + c->dist_light * c->dist_light);

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/15 06:32:01 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 10:31:41 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ int	h_dist_sprite(t_calcul_px *calcul, t_sprite *sprite, t_plane_calc* c, int si
 	calcul->v_normal = sprite->O.view;
 
 
-	if (c->bot > 0.0)
-		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 	h_img_sprite(calcul, c, sprite);
 	if (sprite->param.color2.r >= 0)
-		calcul->argb = (t_argb){calcul->argb.a, sprite->param.color2.r, sprite->param.color2.g, sprite->param.color2.b};
+	calcul->argb = (t_argb){calcul->argb.a, sprite->param.color2.r, sprite->param.color2.g, sprite->param.color2.b};
+	if (c->bot > 0.0)
+		calcul->v_normal = (t_vect){-calcul->v_normal.dx, -calcul->v_normal.dy, -calcul->v_normal.dz};
 	return (1);
 }
 

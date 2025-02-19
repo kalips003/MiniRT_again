@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/19 09:39:40 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 14:50:59 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,23 @@ int 	ft_loop(t_data *data)
 }
 
 void	h_refresh_input_file(t_data *data, time_t time)
+{
+	t_camera		*old_camera;
+
+	old_camera = mem(0, sizeof(t_camera));
+	*old_camera = *data->eye.c;
+	usleep(100);
+	data->last_modif_time = time;
+	printf("REFRESH\n");
+	end(data, 0, 0);
+	data->camera = expand_tab((void **)data->camera, old_camera);
+	read_file(2, data->av, data);
+	data->change_obj = NULL;
+	data->current_camera = 0;
+	data->eye.c = data->camera[0];
+}
+
+void	h_refresh_input_file_v2(t_data *data, time_t time)
 {
 	t_obj		old_camera;
 
@@ -95,7 +112,7 @@ int	ft_render_frame(t_data *data, int sublim)
 			// mlx_pixel_put(data->mlx, data->win, x, y, c.argb.r << 16 | c.argb.g << 8 | c.argb.b);
 		}
 	}
-	if (sublim)
+	if (sublim && ANTI_ALIASING)
 		ft_anti_aliasing(data);
 	else
 		mlx_put_image_to_window(data->mlx, data->win, data->buffer.img, 0, 0);

@@ -66,6 +66,13 @@ void	f_calculate_combined_quaternion_better(t_obj *obj, double angle_α, double 
 	ft_normalize_vect(rotated);
 }
 
+// CONST ROTATION 5 degree
+# define COS_ROTA 0.99619469809174554520
+# define COS_ROTA2 0.99240387650610406567
+# define SIN_ROTA 0.08715574274765816587
+# define SIN_ROTA2 0.00759612349389596903
+# define COSSIN_ROTA 0.08682408883346516559
+
 ///////////////////////////////////////////////////////////////////////////////]
 // rotate the camera (eye) vector of fixed angle (with vector operation)
 void	rotation_camera(t_data *data, t_vect *axis_rota, int posi_neg)

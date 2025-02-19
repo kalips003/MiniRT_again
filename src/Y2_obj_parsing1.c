@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/14 20:46:45 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 13:48:44 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,5 +192,6 @@ int	parse_co(t_data *data, char **raw_split)
 		return (1);
 	cone->apex = new_moved_point(&cone->O.c0, &cone->O.view, cone->height);
 	cone->slope = (cone->radius * cone->radius) / (cone->height * cone->height);
+	cone->angle = atan(cone->radius / cone->height);
 	return (0);
 }

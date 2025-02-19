@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/13 23:58:46 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 10:19:34 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	main(int ac, char **av)
 
 	initialization(ac, av, &data);
 
-	ft_render_frame(&data, 0);
+	ft_render_frame(&data, 1);
 	mlx_loop(data.mlx);
 
 	end(&data, 0, 1);

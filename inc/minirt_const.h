@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/18 13:48:58 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 14:25:33 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define PI 3.14159265358979323846
 
 # define EPSILON 1e-6
-# define SCALAR_LIGHT_DIST 100.0
+# define SCALAR_LIGHT_DIST 300.0
 # define SCALAR_SPECULAR 1.0
 # define SCALAR_SHINY 1.0
 # define REFLECTION_BOUNCES 1
@@ -45,17 +45,10 @@
 #define SPRITE 9
 
 #define DELTA_MOV 4.0
-#define DELTA_ROTA (PI / 10)
+#define DELTA_ROTA (PI / 16)
 
 # define SQRT3 1.7320508075688771931766041
 ///////////////////////////////////////////////////////////////////////////////]
-// 	UNUSED?
-
-// CONST ROTATION 5 degree
-# define COS_ROTA 0.99619469809174554520
-# define COS_ROTA2 0.99240387650610406567
-# define SIN_ROTA 0.08715574274765816587
-# define SIN_ROTA2 0.00759612349389596903
-# define COSSIN_ROTA 0.08682408883346516559
+# define ANTI_ALIASING 0
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:55:43 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/17 11:56:06 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 13:37:30 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,20 +126,22 @@ typedef struct s_cone_calc_v1 {
 	double	C;
 
 	double	Δ;
+	
+	double	det1;
+	double	det2;
+	
+	double	dist_apex1;
+	double	dist_apex2;
 } t_cone_calc_v1;
 
 typedef struct s_cone_calc_v2 {
-	double	det1;
-	double	det2;
-
-	double	dist_apex1;
-	double	dist_apex2;
 	double	dist_apex;
 	double	dist;
 
 	double	color_height;
-
+	int		inside;
 	t_coor	projec_point;
+	t_vect	apex_to_camera;
 	t_circle	circle;
 } t_cone_calc_v2;
 

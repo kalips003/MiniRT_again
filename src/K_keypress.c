@@ -6,7 +6,7 @@
 /*   By: kalipso <kalipso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 04:12:38 by kalipso           #+#    #+#             */
-/*   Updated: 2025/02/18 09:27:55 by kalipso          ###   ########.fr       */
+/*   Updated: 2025/02/19 14:19:05 by kalipso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void	print_clic(t_data *data, int x, int y)
 	printf(C_323"\nMouse clicked at pixel (%d, %d)\n", x, y);
 	
 	printf(C_244"\n-------------------[INSIDE PRINT DATA]-------------------\n");
-	calculate_pixel_color(data, &c, 1);
+	calculate_pixel_color(data, &c, 0);
 	printf(C_244"---------------------------------------------------------\n");
 
 	if (c.object)

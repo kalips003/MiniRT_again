@@ -48,18 +48,25 @@ v: $(NAME)
 	@$(call random_shmol_cat, "vlgrininnng ... $(word 1, $^)!", "$(ARG2)", $(CLS), );
 	-$(VALGRIND) ./$(word 1, $^) $(MAP)
 
-# RUN TESTS IN data/TESTS UNTIL EMPTY LINE
-# RUN MINISHELL & VALGRING 2> out/valgrind
+# RUN MAPS IN map/scene/
 m: $(NAME)
-	@while IFS= read -r line; do \
-		if [ -z "$$line" ]; then break; fi; \
-		$(call random_shmol_cat, "teshiing ... $(word 1, $^)!", "$$line", $(CLS), ); \
-		echo "$(C_1R_4G_1B) \tBASH:$(RESET)"; \
-		bash --posix -c "$$line" < /dev/tty; \
-		echo "$(C_4R_1G_1B) \tMINISHELL:$(RESET)"; \
-		$(VALGRIND) ./$(word 1, $^) -c "$$line" < /dev/tty 2> out/valgrind; \
-		echo "\t$(C_1R_4G_1B)~ Press Enter to continue...$(RESET)"; read -p "" key < /dev/tty; \
-	done < data/TESTS
+	-@for map in map/scene/*; do \
+		$(call random_shmol_cat, teshting ... $$map: miiniRT !!, 'hav fun ね? ($(word 1, $^))', $(CLS), ); \
+		$(call rules); \
+		./$(word 1, $^) $$map; \
+	done
+
+define rules
+	echo "movement is done with arrow keys + home (up) / end (down)"; \
+	echo "rotation wasd + qe"; \
+	echo "left clic + drag moves the camera"; \
+	echo "right clic an object to select it"; \
+	echo "\tmovement is applied to the selected object"; \
+	echo "\tright clic the same object to unselect it"; \
+	echo "mouse wheel control the speed of movement"; \
+	echo "(n) toogle between cameras"; \
+	echo "The input file update in real time"
+endef
 
 ULIMIT = 3000
 m2: $(NAME)
@@ -132,7 +139,7 @@ $(NAME): mlx libft $(OBJ) main.c
 abc: fclean mlx libft $(OBJ) main.c
 	$(CC) $(FLAGS) $(OBJ) main.c lib/libft.a $(FLAGS_MLX) $(ADD_FLAGS) -o $(NAME)
 
-src/obj/%.o: src/%.c inc/$(NAME).h
+src/obj/%.o: src/%.c inc/minirt_const.h
 	@if [ ! -e $(OBJ_FOLDER) ]; then\
 		mkdir -p $(OBJ_FOLDER);\
 	fi
